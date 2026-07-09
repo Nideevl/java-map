@@ -4480,6 +4480,62 @@ export const javaBackendTree = {
                                             ]
                                         }
                                     ]
+                                },
+                                {
+                                    "name": "CSRF (Cross-Site Request Forgery)",
+                                    "children": [
+                                        {
+                                            "name": "Attack Mechanism",
+                                            "children": [
+                                                {"name": "Attacker creates malicious form on attacker-controlled site"},
+                                                {"name": "Form targets victim's bank with hidden fields"},
+                                                {"name": "Form auto-submits when user visits malicious site"},
+                                                {"name": "Ex:-\n\n<form action=\"https://yourbank.com/api/transfer\" method=\"POST\">\n    <input type=\"hidden\" name=\"amount\" value=\"10000\" />\n    <input type=\"hidden\" name=\"to_account\" value=\"attacker_id\" />\n</form>\n<script>\n    document.forms[0].submit();\n</script>"}
+                                            ]
+                                        },
+                                        {
+                                            "name": "How Attack Works Step-by-Step",
+                                            "children": [
+                                                {"name": "Step 1: User logs into bank.com"},
+                                                {"name": "Step 2: Browser stores sessionId cookie for bank.com"},
+                                                {"name": "Step 3: User visits malicious-site.com (still logged into bank)"},
+                                                { "name": "Step 4: Malicious form auto-submits to yourbank.com/api/transfer"},
+                                                {"name": "Step 5: Browser automatically attaches sessionId cookie to request"},
+                                                {"name": "Step 6: Bank receives valid sessionId + transfer request"},
+                                                {"name": "Step 7: Bank treats it as legitimate user action → transfers money"}
+                                            ]
+                                        },
+                                        {
+                                            "name": "Why CSRF Works",
+                                            "children": [
+                                                {"name": "Browser auto-attaches cookies to any request to that domain"},
+                                                {"name": "Cookie doesn't care where request originated from"},
+                                                {"name": "Bank can't distinguish user-initiated vs malicious request"},
+                                                {"name": "No verification that request came from bank's own domain"},
+                                                {"name": "Exploits trust between browser and authenticated session"}
+                                            ]
+                                        },
+                                        {
+                                            "name": "Defense: CSRF Token",
+                                            "children": [
+                                                {"name": "Server generates unpredictable token for each user session"},
+                                                {"name": "Token embedded in legitimate forms: <input name=\"csrf_token\" value=\"random123xyz\" />"},
+                                                {"name": "Token also sent in HTTP headers for AJAX requests"},
+                                                {"name": "Malicious site CANNOT read token (same-origin policy blocks it)"},
+                                                {"name": "Attacker's form missing token → bank rejects request as invalid"},
+                                                {"name": "Token proves request originated from bank's own domain"}
+                                            ]
+                                        },
+                                        {
+                                            "name": "Real-World Implementation",
+                                            "children": [
+                                                {"name": "Spring Security handles via CsrfFilter"},
+                                                {"name": "POST/PUT/DELETE endpoints must include valid CSRF token"},
+                                                {"name": "GET requests typically exempt (read-only operations)"},
+                                                {"name": "Token validated on server before processing request"}
+                                            ]
+                                        }
+                                    ]
                                 }
                             ]
                         },
