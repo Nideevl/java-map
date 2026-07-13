@@ -4168,60 +4168,109 @@ export const javaBackendTree = {
                                         { "name": "Logical address used to identify device on network" },
                                         { "name": "IPv4 → 32-bit address" },
                                         { "name": "IPv6 → 128-bit address" },
+                                        { "name": "Special IPs: Loopback (127.0.0.1), Private ranges (RFC 1918)" },
                                         {
                                             "name": "Ex:-\n\nIPv4 → 192.168.1.10\nIPv6 → 2001:db8::1"
                                         }
                                     ]
                                 },
-
+                                {
+                                    "name": "Subnet Mask & CIDR",
+                                    "children": [
+                                        { "name": "Divides IP address into network portion + host portion" },
+                                        { "name": "First N bits = network, remaining = host" },
+                                        { "name": "Example: /24 means first 24 bits are network" },
+                                        { "name": "255.255.255.0 in dotted decimal = /24 in CIDR" },
+                                        { "name": "Determines: network address, broadcast address, usable IPs" },
+                                        {
+                                            "name": "Common Examples",
+                                            "children": [
+                                                { "name": "/8 (255.0.0.0) → 16.7M addresses (10.0.0.0/8)" },
+                                                { "name": "/16 (255.255.0.0) → 65K addresses (172.16.0.0/16)" },
+                                                { "name": "/24 (255.255.255.0) → 256 addresses (192.168.1.0/24)" },
+                                                { "name": "/32 (255.255.255.255) → 1 address (single host)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Calculation Example",
+                                            "children": [
+                                                { "name": "Given: 192.168.1.100/24" },
+                                                { "name": "Network address: 192.168.1.0" },
+                                                { "name": "Broadcast: 192.168.1.255" },
+                                                { "name": "Usable IPs: 192.168.1.1 - 192.168.1.254 (254 hosts)" }
+                                            ]
+                                        }
+                                    ]
+                                },
                                 {
                                     "name": "MAC Address",
                                     "children": [
                                         { "name": "Physical hardware address of network device" },
                                         { "name": "Works at Data Link Layer" },
+                                        { "name": "48-bit: XX:XX:XX:XX:XX:XX (first 24 = vendor OUI)" },
+                                        { "name": "Local scope only (same network segment)" },
                                         {
                                             "name": "Ex:-\n\n00:1A:2B:3C:4D:5E"
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "IP vs MAC",
                                     "children": [
-                                        { "name": "IP → identifies device globally/logically" },
-                                        { "name": "MAC → identifies device inside local network" },
-                                        { "name": "IP can change, MAC usually fixed to hardware" }
+                                        { "name": "IP → identifies device globally/logically (routing)" },
+                                        { "name": "MAC → identifies device inside local network (switching)" },
+                                        { "name": "IP can change, MAC usually fixed to hardware" },
+                                        { "name": "IP used for Layer 3 routing, MAC for Layer 2 switching" }
                                     ]
                                 },
-
                                 {
                                     "name": "ARP (Address Resolution Protocol)",
                                     "children": [
                                         { "name": "Converts IP address → MAC address in local network" },
+                                        { "name": "Broadcast query: Who has 192.168.1.5?" },
+                                        { "name": "Target replies with MAC address" },
+                                        { "name": "ARP Spoofing: Attacker sends fake ARP responses (MITM)" },
+                                        { "name": "Defense: DNSSEC, static ARP entries, detection systems" },
                                         {
                                             "name": "Ex:-\n\n\"Who has 192.168.1.5?\"\n→ Device replies with MAC address"
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "Gateway & Router",
                                     "children": [
                                         { "name": "Gateway → entry/exit point of local network" },
-                                        { "name": "Router forwards packets between networks" },
+                                        { "name": "Router forwards packets between networks (Layer 3)" },
+                                        { "name": "Uses routing table: IP prefix → next-hop interface" },
+                                        { "name": "Longest prefix match determines best route" },
+                                        { "name": "Dynamic routing protocols: OSPF, BGP" },
                                         {
                                             "name": "Ex:-\n\nHome router sends packets from local WiFi to internet"
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "Network Interface / NIC",
                                     "children": [
                                         { "name": "Hardware/software interface connecting machine to network" },
                                         { "name": "Each NIC has MAC address" },
+                                        { "name": "Can have multiple NICs (multi-homed host)" },
                                         {
                                             "name": "Ex:-\n\nWiFi adapter\nEthernet card"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "NAT (Network Address Translation)",
+                                    "children": [
+                                        { "name": "Allows private IPs to communicate via single public IP" },
+                                        { "name": "Static NAT: One-to-one mapping (port forwarding)" },
+                                        { "name": "Dynamic NAT: Pool of public IPs for private IPs" },
+                                        { "name": "PAT (Port Address Translation): Many private → one public" },
+                                        { "name": "Breaks P2P (can't receive unsolicited inbound connections)" },
+                                        { "name": "Workarounds: UPNP, port forwarding, STUN/TURN, hole punching" },
+                                        {
+                                            "name": "Ex:-\n\nHome router: 192.168.1.100 → maps to ISP's 203.0.113.5:5000"
                                         }
                                     ]
                                 }
@@ -4241,20 +4290,26 @@ export const javaBackendTree = {
                                                 { "name": "Uses acknowledgements, retransmissions, checksums" },
                                                 { "name": "Detects packet loss and retries automatically" },
                                                 { "name": "Notifies sender if connection fails" },
+                                                { "name": "Window-based flow control (sliding window)" },
+                                                { "name": "Congestion control (AIMD: Additive Increase, Multiplicative Decrease)" },
+                                                { "name": "Slow start: exponential growth until packet loss" },
+                                                { "name": "Congestion avoidance: gradual increase after loss" },
                                                 {
-                                                    "name": "Ex:-\n\nHTTP/HTTPS\nDatabase connections\nFile transfer"
+                                                    "name": "Ex:-\n\nHTTP/HTTPS\nDatabase connections\nFile transfer\nEmail (SMTP)"
                                                 }
                                             ]
                                         },
-
                                         {
                                             "name": "UDP",
                                             "children": [
                                                 { "name": "Connectionless protocol" },
                                                 { "name": "No guarantee of order or delivery" },
                                                 { "name": "Lower overhead and lower latency" },
+                                                { "name": "Message boundaries preserved (datagram)" },
+                                                { "name": "No flow control, no congestion control" },
+                                                { "name": "Single datagram = complete message" },
                                                 {
-                                                    "name": "Ex:-\n\nGaming\nVideo streaming\nDNS"
+                                                    "name": "Ex:-\n\nGaming\nVideo streaming\nDNS queries\nVoIP"
                                                 }
                                             ]
                                         }
@@ -4276,7 +4331,8 @@ export const javaBackendTree = {
                                             "children": [
                                                 { "name": "TCP tracks bytes using sequence numbers" },
                                                 { "name": "Helps detect lost, duplicate, or out-of-order packets" },
-                                                { "name": "Both sides choose random initial sequence numbers (ISN)" }
+                                                { "name": "Both sides choose random initial sequence numbers (ISN)" },
+                                                { "name": "Prevents spoofing attacks (attacker must guess sequence)" }
                                             ]
                                         },
                                         {
@@ -4319,6 +4375,17 @@ export const javaBackendTree = {
                                             ]
                                         },
                                         {
+                                            "name": "TCP Connection Termination (4-Way Handshake)",
+                                            "children": [
+                                                { "name": "FIN: Side A initiates close" },
+                                                { "name": "ACK: Side B acknowledges" },
+                                                { "name": "FIN: Side B sends its own FIN" },
+                                                { "name": "ACK: Side A acknowledges" },
+                                                { "name": "TIME_WAIT: Side A waits 2×MSL (60 seconds) to catch delayed packets" },
+                                                { "name": "Prevents confusion if port reused immediately" }
+                                            ]
+                                        },
+                                        {
                                             "name": "Real Understanding",
                                             "children": [
                                                 { "name": "Handshake synchronizes communication state" },
@@ -4329,17 +4396,34 @@ export const javaBackendTree = {
                                     ]
                                 },
                                 {
+                                    "name": "TCP Retransmission & Timeout",
+                                    "children": [
+                                        { "name": "Based on RTT (Round-Trip Time) estimate, not fixed timeout" },
+                                        { "name": "RTO = RTT × 2 (adaptive timeout)" },
+                                        { "name": "Exponential backoff on repeated loss" },
+                                        { "name": "Sender never knows if UDP packet arrived (fire-and-forget)" }
+                                    ]
+                                },
+                                {
                                     "name": "Ports & Sockets",
                                     "children": [
-                                        { "name": "Port → identifies specific service/process" },
-                                        { "name": "Socket → IP + Port combination" },
+                                        { "name": "Port → identifies specific service/process on host" },
+                                        { "name": "Socket → (IP, Port, Protocol) tuple = unique connection endpoint" },
+                                        { "name": "Well-known ports: 0-1023 (HTTP 80, HTTPS 443, SSH 22)" },
+                                        { "name": "Registered ports: 1024-49151" },
+                                        { "name": "Dynamic/private ports: 49152-65535" },
+                                        { "name": "Socket states: LISTEN, ESTABLISHED, TIME_WAIT, CLOSE_WAIT, FIN_WAIT" },
                                         {
                                             "name": "Common Ports",
                                             "children": [
                                                 { "name": "80 → HTTP" },
                                                 { "name": "443 → HTTPS" },
                                                 { "name": "3306 → MySQL" },
-                                                { "name": "6379 → Redis" }
+                                                { "name": "5432 → PostgreSQL" },
+                                                { "name": "6379 → Redis" },
+                                                { "name": "22 → SSH" },
+                                                { "name": "25 → SMTP" },
+                                                { "name": "53 → DNS" }
                                             ]
                                         },
                                         {
@@ -4349,7 +4433,6 @@ export const javaBackendTree = {
                                 }
                             ]
                         },
-
                         {
                             "name": "Web Communication",
                             "children": [
@@ -4357,233 +4440,1162 @@ export const javaBackendTree = {
                                     "name": "HTTP / HTTPS",
                                     "children": [
                                         { "name": "HTTP → Application layer communication protocol" },
-                                        { "name": "HTTPS → HTTP + SSL/TLS encryption" },
-                                        { "name": "Stateless protocol" },
+                                        { "name": "HTTPS → HTTP + SSL/TLS encryption + authentication" },
+                                        { "name": "Stateless protocol (no server-side state per request)" },
                                         {
                                             "name": "HTTP Methods",
                                             "children": [
-                                                { "name": "GET → fetch data" },
-                                                { "name": "POST → create data" },
-                                                { "name": "PUT → update entire resource" },
-                                                { "name": "PATCH → partial update" },
-                                                { "name": "DELETE → remove resource" }
+                                                { "name": "GET → fetch data (idempotent, safe, no body)" },
+                                                { "name": "POST → create data (not idempotent, has body)" },
+                                                { "name": "PUT → replace entire resource (idempotent)" },
+                                                { "name": "PATCH → partial update (not always idempotent)" },
+                                                { "name": "DELETE → remove resource (idempotent)" },
+                                                { "name": "HEAD → like GET but no response body (cache validation)" },
+                                                { "name": "OPTIONS → describe communication options (CORS preflight)" }
                                             ]
                                         },
                                         {
-                                            "name": "Status Codes",
+                                            "name": "Status Codes (Critical)",
                                             "children": [
-                                                { "name": "200 → Success" },
-                                                { "name": "201 → Created" },
-                                                { "name": "400 → Bad Request" },
-                                                { "name": "401 → Unauthorized" },
-                                                { "name": "404 → Not Found" },
-                                                { "name": "500 → Internal Server Error" }
+                                                {
+                                                    "name": "1xx Informational",
+                                                    "children": [
+                                                        { "name": "100 Continue: Client can send body" },
+                                                        { "name": "101 Switching Protocols: WebSocket upgrade" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "2xx Success",
+                                                    "children": [
+                                                        { "name": "200 OK: Request succeeded" },
+                                                        { "name": "201 Created: Resource created (POST/PUT)" },
+                                                        { "name": "204 No Content: Success, no body to return" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "3xx Redirection",
+                                                    "children": [
+                                                        { "name": "301 Moved Permanently: Redirect + cache (old URL gone)" },
+                                                        { "name": "302 Found: Temporary redirect (may resend POST as GET)" },
+                                                        { "name": "304 Not Modified: Client cache valid (If-Modified-Since)" },
+                                                        { "name": "307 Temporary Redirect: Preserve HTTP method" },
+                                                        { "name": "308 Permanent Redirect: Preserve method + cache" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "4xx Client Error",
+                                                    "children": [
+                                                        { "name": "400 Bad Request: Malformed syntax" },
+                                                        { "name": "401 Unauthorized: Missing authentication" },
+                                                        { "name": "403 Forbidden: Authenticated but no permission" },
+                                                        { "name": "404 Not Found: Resource doesn't exist" },
+                                                        { "name": "409 Conflict: Request conflicts with state (e.g., duplicate)" },
+                                                        { "name": "429 Too Many Requests: Rate limited" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "5xx Server Error",
+                                                    "children": [
+                                                        { "name": "500 Internal Server Error: Server bug" },
+                                                        { "name": "502 Bad Gateway: Upstream unreachable" },
+                                                        { "name": "503 Service Unavailable: Temporarily down" },
+                                                        { "name": "504 Gateway Timeout: Upstream no response" }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Cookies & Sessions",
+                                            "children": [
+                                                {
+                                                    "name": "What are Cookies?",
+                                                    "children": [
+                                                        { "name": "\"Small pieces of data stored by browser and sent with each request\"" },
+                                                        { "name": "Purpose: Maintain state across HTTP requests (stateless protocol)" },
+                                                        { "name": "Created by: Server via Set-Cookie header" },
+                                                        { "name": "Sent by: Browser via Cookie header automatically" },
+                                                        { "name": "Size limit: ~4KB per cookie" },
+                                                        { "name": "Maximum: ~20 cookies per domain (browser dependent)" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Cookie Attributes",
+                                                    "children": [
+                                                        {
+                                                            "name": "Secure",
+                                                            "children": [
+                                                                { "name": "Only sent over HTTPS (not HTTP)" },
+                                                                { "name": "Prevents MITM attacks" },
+                                                                { "name": "Ex: Set-Cookie: sessionId=abc123; Secure" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "HttpOnly",
+                                                            "children": [
+                                                                { "name": "Cannot be accessed by JavaScript (document.cookie)" },
+                                                                { "name": "Prevents XSS attacks from stealing cookies" },
+                                                                { "name": "Ex: Set-Cookie: sessionId=abc123; HttpOnly" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "SameSite",
+                                                            "children": [
+                                                                { "name": "Strict: Only sent for same-site requests (best CSRF protection)" },
+                                                                { "name": "Lax: Sent for same-site + top-level navigation (e.g., link clicks)" },
+                                                                { "name": "None: Sent for all requests (requires Secure flag)" },
+                                                                { "name": "Ex: Set-Cookie: sessionId=abc123; SameSite=Strict" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Expires / Max-Age",
+                                                            "children": [
+                                                                { "name": "Expires: Sets expiration date (absolute)" },
+                                                                { "name": "Max-Age: Sets lifetime in seconds (relative)" },
+                                                                { "name": "Session Cookie: No expiry → deleted when browser closes" },
+                                                                { "name": "Ex: Set-Cookie: sessionId=abc123; Max-Age=3600" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Domain & Path",
+                                                            "children": [
+                                                                { "name": "Domain: Which domain receives the cookie" },
+                                                                { "name": "Path: Which URL path receives the cookie" },
+                                                                { "name": "Ex: Set-Cookie: sessionId=abc123; Domain=.example.com; Path=/api" }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Session-based Authentication",
+                                                    "children": [
+                                                        {
+                                                            "name": "How Session Auth Works",
+                                                            "children": [
+                                                                { "name": "Step 1: User submits credentials (username/password)" },
+                                                                { "name": "Step 2: Server validates credentials" },
+                                                                { "name": "Step 3: Server creates session in memory/database (sessionId → user data)" },
+                                                                { "name": "Step 4: Server sends sessionId in Set-Cookie header" },
+                                                                { "name": "Step 5: Browser stores cookie (sessionId)" },
+                                                                { "name": "Step 6: Browser sends cookie automatically with every request" },
+                                                                { "name": "Step 7: Server validates sessionId, retrieves user data from session store" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Session Storage Options",
+                                                            "children": [
+                                                                { "name": "In-Memory (HashMap) → Simple, NOT scalable" },
+                                                                { "name": "Database (PostgreSQL) → Persistent, slower" },
+                                                                { "name": "Redis/Memcached → Fast, scalable, recommended" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Session Lifecycle",
+                                                            "children": [
+                                                                { "name": "Create: On successful login" },
+                                                                { "name": "Destroy: On logout or session expiration" },
+                                                                { "name": "Expiry: After inactivity timeout (e.g., 30 minutes)" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Session vs JWT Comparison",
+                                                            "children": [
+                                                                {
+                                                                    "name": "Session (Stateful)",
+                                                                    "children": [
+                                                                        { "name": "✅ Server can revoke instantly (delete session)" },
+                                                                        { "name": "✅ Simple to implement (browser handles cookies)" },
+                                                                        { "name": "✅ No token parsing overhead" },
+                                                                        { "name": "❌ Requires server-side storage (memory/database)" },
+                                                                        { "name": "❌ Harder to scale (need shared session store)" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "JWT (Stateless)",
+                                                                    "children": [
+                                                                        { "name": "✅ No server-side storage needed" },
+                                                                        { "name": "✅ Horizontal scaling (no session sync needed)" },
+                                                                        { "name": "✅ Works across domains (CORS)" },
+                                                                        { "name": "❌ Cannot revoke easily (until expiry)" },
+                                                                        { "name": "❌ Larger payload (token overhead)" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Session Security",
+                                                            "children": [
+                                                                { "name": "Use HttpOnly cookie (prevent XSS)" },
+                                                                { "name": "Use Secure flag (HTTPS only)" },
+                                                                { "name": "Use SameSite=Strict/Lax (prevent CSRF)" },
+                                                                { "name": "Set short expiration time" },
+                                                                { "name": "Regenerate sessionId on login (prevent session fixation)" },
+                                                                { "name": "Implement logout (clear session server-side + cookie)" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Session Fixation Attack",
+                                                            "children": [
+                                                                { "name": "Attack: Attacker sets sessionId in victim's browser" },
+                                                                { "name": "Then: Attacker uses same sessionId to access victim's account after login" },
+                                                                { "name": "Mitigation: Regenerate sessionId on login" }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "JWT (JSON Web Tokens) - Complete Guide",
+                                                    "children": [
+                                                        {
+                                                            "name": "What is JWT?",
+                                                            "children": [
+                                                                { "name": "\"Compact, URL-safe token format for secure information exchange\"" },
+                                                                { "name": "Self-contained → carries all necessary information" },
+                                                                { "name": "Stateless authentication → no server-side session storage" },
+                                                                { "name": "Can be signed (integrity) or encrypted (confidentiality)" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT Structure (xxxxx.yyyyy.zzzzz)",
+                                                            "children": [
+                                                                {
+                                                                    "name": "Header (xxxxx)",
+                                                                    "children": [
+                                                                        { "name": "Contains metadata about the token" },
+                                                                        { "name": "Typical fields: alg (algorithm), typ (JWT)" },
+                                                                        { "name": "Example: {\"alg\":\"HS256\",\"typ\":\"JWT\"}" },
+                                                                        { "name": "Base64Url: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "Payload (yyyyy)",
+                                                                    "children": [
+                                                                        { "name": "Contains the claims (data/statements about the user)" },
+                                                                        {
+                                                                            "name": "Registered Claims",
+                                                                            "children": [
+                                                                                { "name": "iss (Issuer) → who issued the token" },
+                                                                                { "name": "sub (Subject) → user identifier" },
+                                                                                { "name": "aud (Audience) → intended recipient" },
+                                                                                { "name": "exp (Expiration) → Unix timestamp (REQUIRED)" },
+                                                                                { "name": "iat (Issued At) → when token was created" },
+                                                                                { "name": "nbf (Not Before) → token valid from this time" },
+                                                                                { "name": "jti (JWT ID) → unique identifier" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "Custom Claims",
+                                                                            "children": [
+                                                                                { "name": "Application-specific data" },
+                                                                                { "name": "Example: { \"userId\": 123, \"role\": \"admin\" }" }
+                                                                            ]
+                                                                        },
+                                                                        { "name": "Example: {\"userId\":\"123\",\"role\":\"admin\",\"exp\":1640995200}" },
+                                                                        { "name": "Base64Url: eyJ1c2VySWQiOiIxMjMiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE2NDA5OTUyMDB9" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "Signature (zzzzz)",
+                                                                    "children": [
+                                                                        { "name": "Verifies the token hasn't been tampered with" },
+                                                                        { "name": "Created by hashing: header + payload + secret" },
+                                                                        { "name": "HMAC-SHA256( base64UrlEncode(header) + '.' + base64UrlEncode(payload), secret)" },
+                                                                        { "name": "Example: randomHashValueHere" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "Complete Example",
+                                                                    "children": [
+                                                                        { "name": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE2NDA5OTUyMDB9.signature" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT Authentication Flow",
+                                                            "children": [
+                                                                { "name": "Step 1: User submits credentials" },
+                                                                { "name": "Step 2: Server validates credentials" },
+                                                                { "name": "Step 3: Server creates JWT with user data + expiry" },
+                                                                { "name": "Step 4: Server returns JWT to client (response body or cookie)" },
+                                                                { "name": "Step 5: Client stores JWT (localStorage, sessionStorage, httpOnly cookie)" },
+                                                                { "name": "Step 6: Client sends JWT in Authorization: Bearer <token> header" },
+                                                                { "name": "Step 7: Server validates JWT (signature, expiry, claims)" },
+                                                                { "name": "Step 8: Server extracts user data from JWT (no DB lookup needed)" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Signing Algorithms",
+                                                            "children": [
+                                                                {
+                                                                    "name": "HS256 (HMAC with SHA-256)",
+                                                                    "children": [
+                                                                        { "name": "Symmetric (shared secret key)" },
+                                                                        { "name": "Faster than asymmetric" },
+                                                                        { "name": "Use: Single service, internal APIs" },
+                                                                        { "name": "🔴 Risk: Secret must be kept secure" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "RS256 (RSA with SHA-256)",
+                                                                    "children": [
+                                                                        { "name": "Asymmetric (private + public key)" },
+                                                                        { "name": "Sign with private, verify with public" },
+                                                                        { "name": "Use: Microservices, 3rd party auth" },
+                                                                        { "name": "✅ Secure: Private key only on signing server" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "ES256 (ECDSA with SHA-256)",
+                                                                    "children": [
+                                                                        { "name": "Asymmetric using Elliptic Curve" },
+                                                                        { "name": "More efficient than RSA" },
+                                                                        { "name": "Use: Modern systems, IoT, mobile" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT Storage Options",
+                                                            "children": [
+                                                                {
+                                                                    "name": "localStorage / sessionStorage",
+                                                                    "children": [
+                                                                        { "name": "Vulnerable to XSS (JavaScript can access)" },
+                                                                        { "name": "Persists across page reloads" },
+                                                                        { "name": "❌ Not recommended for sensitive data" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "httpOnly Cookie",
+                                                                    "children": [
+                                                                        { "name": "Cannot be accessed by JavaScript (XSS protection)" },
+                                                                        { "name": "Automatically sent with requests" },
+                                                                        { "name": "Vulnerable to CSRF (use SameSite)" },
+                                                                        { "name": "✅ Recommended for production" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "Bearer Token",
+                                                                    "children": [
+                                                                        { "name": "Sent in Authorization: Bearer <token> header" },
+                                                                        { "name": "Vulnerable to XSS if stored in localStorage" },
+                                                                        { "name": "Works well with mobile apps" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT Security Best Practices",
+                                                            "children": [
+                                                                { "name": "1. Use short expiration times (15-60 mins)" },
+                                                                { "name": "2. Implement refresh tokens for longer sessions" },
+                                                                { "name": "3. Use HTTPS always (prevent MITM attacks)" },
+                                                                { "name": "4. Validate 'iss', 'aud', 'exp' claims" },
+                                                                { "name": "5. Store secrets securely (environment variables, vault)" },
+                                                                { "name": "6. Use strong algorithms (RS256/ES256 over HS256)" },
+                                                                { "name": "7. Never log tokens in debug outputs" },
+                                                                { "name": "8. Implement token blacklist/revocation for sensitive ops" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT Advanced Topics",
+                                                            "children": [
+                                                                {
+                                                                    "name": "Refresh Tokens",
+                                                                    "children": [
+                                                                        { "name": "Long-lived token to get new access tokens" },
+                                                                        { "name": "Stored securely (httpOnly cookie or DB)" },
+                                                                        { "name": "Access Token: 15 min expiry" },
+                                                                        { "name": "Refresh Token: 7 days expiry" },
+                                                                        { "name": "Flow: Access expired → use refresh → get new access token" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "JWT Revocation Strategies",
+                                                                    "children": [
+                                                                        { "name": "1. Short expiry + refresh token rotation" },
+                                                                        { "name": "2. Blacklist (store invalid tokens in Redis)" },
+                                                                        { "name": "3. Version-based: increment user version on logout" },
+                                                                        { "name": "4. Database check: validate against user status" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "JWT Attacks & Mitigations",
+                                                                    "children": [
+                                                                        {
+                                                                            "name": "Token Theft",
+                                                                            "children": [
+                                                                                { "name": "Attack: Steal token via XSS or MITM" },
+                                                                                { "name": "Mitigation: httpOnly cookie, short expiry, HTTPS" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "Algorithm Confusion",
+                                                                            "children": [
+                                                                                { "name": "Attack: Change alg from RS256 to HS256" },
+                                                                                { "name": "Mitigation: Explicitly validate algorithm, reject 'none'" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "Replay Attacks",
+                                                                            "children": [
+                                                                                { "name": "Attack: Intercept and reuse token" },
+                                                                                { "name": "Mitigation: Short expiry, use jti, track used tokens" }
+                                                                            ]
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT vs Session: Which to Choose?",
+                                                            "children": [
+                                                                {
+                                                                    "name": "Use Session When:",
+                                                                    "children": [
+                                                                        { "name": "✅ Need instant revocation (logout, admin blocks)" },
+                                                                        { "name": "✅ Single application (no microservices)" },
+                                                                        { "name": "✅ Simple implementation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "Use JWT When:",
+                                                                    "children": [
+                                                                        { "name": "✅ Need stateless authentication (scalability)" },
+                                                                        { "name": "✅ Microservices architecture" },
+                                                                        { "name": "✅ Cross-domain/CORS requirements" },
+                                                                        { "name": "✅ Mobile apps (no cookie handling)" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "State Management Comparison",
+                                                    "children": [
+                                                        {
+                                                            "name": "Cookies",
+                                                            "children": [
+                                                                { "name": "Client-side storage mechanism" },
+                                                                { "name": "Can store session ID, JWT, user preferences" },
+                                                                { "name": "Automatically sent with requests" },
+                                                                { "name": "Size limit: 4KB" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Session ID (Cookie-based)",
+                                                            "children": [
+                                                                { "name": "Stores reference to server-side session" },
+                                                                { "name": "Server stores actual user data" },
+                                                                { "name": "Stateful authentication" },
+                                                                { "name": "Scalable with shared session store (Redis)" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "JWT Token",
+                                                            "children": [
+                                                                { "name": "Self-contained token with user data" },
+                                                                { "name": "Stateless authentication" },
+                                                                { "name": "No server-side storage needed" },
+                                                                { "name": "Vertically scalable by design" }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Statelessness & Sessions (Overview)",
+                                            "children": [
+                                                { "name": "HTTP stateless: Server doesn't maintain request history" },
+                                                { "name": "Session ID: Maps request to server-side session data" },
+                                                { "name": "JWT: Stateless, self-contained token (no server session needed)" },
+                                                { "name": "Cookies: Server sends Set-Cookie, client includes Cookie header" },
+                                                { "name": "Cookie attributes: Secure (HTTPS only), HttpOnly (no JS), SameSite (CSRF)" },
+                                                { "name": "JWT advantage: Scalable (no server cache)" },
+                                                { "name": "JWT risk: Can't revoke instantly (use short expiry or blacklist)" }
                                             ]
                                         }
                                     ]
                                 },
-
                                 {
-                                    "name": "HTTP/1.1 vs HTTP/2",
+                                    "name": "HTTPS & TLS Handshake",
+                                    "children": [
+                                        { "name": "TLS provides encryption, authentication, integrity" },
+                                        {
+                                            "name": "TLS 1.2/1.3 Handshake",
+                                            "children": [
+                                                { "name": "ClientHello: Supported cipher suites, TLS version" },
+                                                { "name": "ServerHello: Chosen cipher, certificate" },
+                                                { "name": "Certificate validation: Chain of trust, expiry, domain match" },
+                                                { "name": "Key exchange: RSA (old) or ECDHE (perfect forward secrecy)" },
+                                                { "name": "Finished messages: MAC verify handshake integrity" }
+                                            ]
+                                        },
+                                        { "name": "Encryption: AES-256-GCM common" },
+                                        { "name": "Perfect Forward Secrecy (PFS): ECDHE ensures old keys can't decrypt future sessions" },
+                                        { "name": "Certificate proves server identity (not client by default)" },
+                                        { "name": "Mutual TLS: Both parties present certificates (rare, mTLS)" }
+                                    ]
+                                },
+                                {
+                                    "name": "HTTP/1.1 vs HTTP/2 vs HTTP/3",
                                     "children": [
                                         {
                                             "name": "HTTP/1.1",
                                             "children": [
                                                 { "name": "One request per connection (mostly sequential)" },
-                                                { "name": "Head-of-line blocking issue" }
+                                                { "name": "Head-of-line blocking: Slow request blocks faster ones" },
+                                                { "name": "Persistent connections (Connection: keep-alive)" },
+                                                { "name": "Reduces handshake overhead" }
                                             ]
                                         },
                                         {
                                             "name": "HTTP/2",
                                             "children": [
-                                                { "name": "Multiplexing → multiple requests on same connection" },
-                                                { "name": "Header compression" },
-                                                { "name": "Binary protocol → faster" }
+                                                { "name": "Multiplexing: Multiple requests on same connection" },
+                                                { "name": "No head-of-line blocking" },
+                                                { "name": "Header compression (HPACK)" },
+                                                { "name": "Binary protocol: Faster parsing" },
+                                                { "name": "Server push: Send assets proactively" },
+                                                { "name": "Still uses TCP (latency limited by TCP window)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "HTTP/3 (QUIC)",
+                                            "children": [
+                                                { "name": "UDP-based (not TCP)" },
+                                                { "name": "0-RTT resumption (faster reconnect)" },
+                                                { "name": "Better for mobile (connection migration)" },
+                                                { "name": "TLS 1.3 built-in" }
                                             ]
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "REST API Design",
                                     "children": [
                                         { "name": "Resource-based architecture" },
                                         { "name": "Uses HTTP methods semantically" },
                                         { "name": "Stateless communication" },
+                                        { "name": "Proper use of status codes" },
                                         {
-                                            "name": "Ex:-\n\nGET /users\nPOST /users\nDELETE /users/1"
+                                            "name": "Ex:-\n\nGET /users → fetch all\nPOST /users → create new\nGET /users/1 → fetch by ID\nPUT /users/1 → replace user 1\nDELETE /users/1 → remove user 1"
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "WebSocket",
                                     "children": [
-                                        { "name": "Persistent full-duplex communication" },
+                                        { "name": "Persistent full-duplex communication over HTTP upgrade (101)" },
                                         { "name": "Server and client can send data anytime" },
                                         { "name": "Used for real-time communication" },
+                                        { "name": "Lower latency than HTTP polling" },
                                         {
-                                            "name": "Ex:-\n\nChat applications\nLive notifications\nRealtime dashboards"
+                                            "name": "Ex:-\n\nChat applications\nLive notifications\nRealtime dashboards\nOnline multiplayer games"
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "gRPC & Protobuf",
                                     "children": [
                                         { "name": "High-performance RPC framework by Google" },
-                                        { "name": "Uses HTTP/2 internally" },
+                                        { "name": "Uses HTTP/2 internally (multiplexing)" },
                                         { "name": "Uses Protocol Buffers (binary serialization)" },
                                         { "name": "Smaller + faster than JSON" },
+                                        { "name": "Used in microservice communication" },
+                                        { "name": "Strongly typed contracts (proto files)" }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "DNS & Domain Resolution",
+                            "children": [
+                                {
+                                    "name": "DNS (Domain Name System)",
+                                    "children": [
+                                        { "name": "Hierarchical, distributed database" },
+                                        { "name": "Converts domain name → IP address (phonebook of internet)" },
                                         {
-                                            "name": "Used in microservice communication"
+                                            "name": "Hierarchy",
+                                            "children": [
+                                                { "name": "Root nameserver (.): Directs to TLD servers" },
+                                                { "name": "TLD nameserver (.com, .org, .dev): Directs to authoritative" },
+                                                { "name": "Authoritative nameserver: Returns actual IP" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Query Process (Recursive)",
+                                            "children": [
+                                                { "name": "Client queries recursive resolver (ISP or 8.8.8.8)" },
+                                                { "name": "Resolver queries root → TLD → authoritative" },
+                                                { "name": "Response cached at resolver and client (TTL)" },
+                                                { "name": "Future queries bypass resolver (cache hit)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Record Types",
+                                            "children": [
+                                                { "name": "A: IPv4 address" },
+                                                { "name": "AAAA: IPv6 address" },
+                                                { "name": "CNAME: Alias (www → example.com)" },
+                                                { "name": "MX: Mail server (priority)" },
+                                                { "name": "NS: Nameserver delegation" },
+                                                { "name": "TXT: Text records (SPF, DKIM for email security)" },
+                                                { "name": "SOA: Zone authority info (serial, refresh, retry)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Ex:-\n\ngoogle.com → 142.250.x.x\nwww.example.com CNAME example.com"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "DNS Security & Attacks",
+                                    "children": [
+                                        {
+                                            "name": "DNS Spoofing",
+                                            "children": [
+                                                { "name": "Attacker spoofs DNS response (hijack domain)" },
+                                                { "name": "Resolver doesn't validate response source" },
+                                                { "name": "Mitigation: DNSSEC (cryptographic signatures)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "DNS Amplification DDoS",
+                                            "children": [
+                                                { "name": "Attacker spoofs victim's IP, queries open resolvers" },
+                                                { "name": "Resolver sends large response to victim (amplification)" },
+                                                { "name": "Mitigation: Disable recursive resolution on public resolvers" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "DNSSEC",
+                                            "children": [
+                                                { "name": "Cryptographic signatures on DNS records" },
+                                                { "name": "Resolver validates signature chain from root" },
+                                                { "name": "Prevents spoofing" }
+                                            ]
                                         }
                                     ]
                                 }
                             ]
                         },
-
                         {
-                            "name": "DNS & Security",
+                            "name": "Cryptography & Encryption",
                             "children": [
                                 {
-                                    "name": "DNS (Domain Name System)",
+                                    "name": "Symmetric Encryption (Secret Key)",
                                     "children": [
-                                        { "name": "Converts domain name → IP address" },
-                                        { "name": "Works like internet phonebook" },
+                                        { "name": "Same key for encryption and decryption" },
+                                        { "name": "Fast, efficient for bulk data" },
+                                        { "name": "Key distribution problem: How to securely share key with recipient?" },
                                         {
-                                            "name": "Flow",
+                                            "name": "Algorithms",
                                             "children": [
-                                                { "name": "Browser asks DNS resolver" },
-                                                { "name": "Resolver finds IP" },
-                                                { "name": "Browser connects to server" }
+                                                { "name": "AES (Advanced Encryption Standard): 128, 192, 256-bit keys (most common)" },
+                                                { "name": "DES (Data Encryption Standard): 56-bit (obsolete, broken)" },
+                                                { "name": "3DES: Triple DES, improved DES (slow, phase-out)" },
+                                                { "name": "ChaCha20: Modern, competitive with AES" }
                                             ]
                                         },
                                         {
-                                            "name": "Ex:-\n\ngoogle.com → 142.250.x.x"
+                                            "name": "Modes of Operation",
+                                            "children": [
+                                                { "name": "ECB (Electronic Codebook): Deterministic (bad, reveals patterns)" },
+                                                { "name": "CBC (Cipher Block Chaining): Uses IV, deterministic with IV" },
+                                                { "name": "CTR (Counter): Stream cipher mode, parallelizable" },
+                                                { "name": "GCM (Galois/Counter Mode): Authenticated encryption (AES-256-GCM)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Ex:-\n\nAES-256-GCM encrypts HTTPS traffic\nKey: 256 random bits\nPlaintext: HTTP message\nCiphertext: Encrypted message"
                                         }
                                     ]
                                 },
-
                                 {
-                                    "name": "SSL / TLS",
+                                    "name": "Asymmetric Encryption (Public Key)",
                                     "children": [
-                                        { "name": "Provides encryption over network" },
-                                        { "name": "Used in HTTPS" },
-                                        { "name": "Protects against packet sniffing" },
+                                        { "name": "Two keys: Public (encrypt) and Private (decrypt)" },
+                                        { "name": "Solves key distribution: Share public key openly, keep private secret" },
+                                        { "name": "Slow, impractical for bulk data (used for key exchange, not content)" },
+                                        { "name": "One-way function: Easy to encrypt, hard to decrypt without private key" },
                                         {
-                                            "name": "TLS Handshake",
+                                            "name": "Algorithms",
                                             "children": [
-                                                { "name": "Exchange certificates" },
-                                                { "name": "Verify server identity" },
-                                                { "name": "Generate encryption keys" }
+                                                { "name": "RSA: Based on integer factorization (2048+ bits)" },
+                                                { "name": "ECDSA (Elliptic Curve DSA): Shorter keys, same security as RSA" },
+                                                { "name": "ECDH (Elliptic Curve Diffie-Hellman): Key exchange" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "How It Works (RSA Example)",
+                                            "children": [
+                                                { "name": "Alice generates RSA keypair: (public_key, private_key)" },
+                                                { "name": "Alice publishes public_key (anyone can encrypt with it)" },
+                                                { "name": "Bob encrypts message: ciphertext = encrypt(message, public_key)" },
+                                                { "name": "Bob sends ciphertext to Alice (insecure channel OK)" },
+                                                { "name": "Alice decrypts: message = decrypt(ciphertext, private_key)" },
+                                                { "name": "Only Alice can decrypt (only she has private_key)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Ex:-\n\nHTTPS certificate contains server's public key\nClient encrypts session key with public key\nServer decrypts with private key\nBoth then use session key for fast AES encryption"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Hash Functions & Integrity",
+                                    "children": [
+                                        { "name": "One-way function: Hash(data) → fixed-size output, can't reverse" },
+                                        { "name": "Deterministic: Same input always gives same hash" },
+                                        { "name": "Avalanche effect: Tiny change → completely different hash" },
+                                        { "name": "Used to verify data integrity (detect tampering)" },
+                                        {
+                                            "name": "Algorithms",
+                                            "children": [
+                                                { "name": "MD5: 128-bit (broken, collisions found)" },
+                                                { "name": "SHA-1: 160-bit (broken, phase-out)" },
+                                                { "name": "SHA-256: 256-bit (secure, common)" },
+                                                { "name": "SHA-3: Latest standard (secure)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Use Cases",
+                                            "children": [
+                                                { "name": "File integrity: Hash file, send hash separately" },
+                                                { "name": "Password storage: Hash password (not reversible), compare hashes on login" },
+                                                { "name": "Digital signatures: Sign hash of message (faster than signing entire message)" },
+                                                { "name": "Blockchain: Hash previous block to ensure chain integrity" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Ex:-\n\nPassword = 'mypassword'\nHash = SHA-256(password) = 'a1b2c3...'\nServer stores hash, not password\nLogin: User enters password → SHA-256 → compare with stored hash"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Message Authentication Code (MAC)",
+                                    "children": [
+                                        { "name": "Proves message hasn't been tampered + comes from known sender" },
+                                        { "name": "Uses shared secret key + hash algorithm" },
+                                        { "name": "Sender: MAC = HMAC(key, message)" },
+                                        { "name": "Receiver: Verify MAC = HMAC(key, message)" },
+                                        { "name": "Only sender & receiver know key (proves authenticity)" },
+                                        {
+                                            "name": "HMAC (Hash-based MAC)",
+                                            "children": [
+                                                { "name": "Combines secret key with hash function" },
+                                                { "name": "Resistant to length extension attacks" },
+                                                { "name": "Standard in HTTPS (TLS record MAC)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Difference: Hash vs MAC vs Digital Signature",
+                                            "children": [
+                                                { "name": "Hash: Integrity only (no key)" },
+                                                { "name": "MAC: Integrity + authenticity (shared secret key)" },
+                                                { "name": "Digital Signature: Integrity + authenticity + non-repudiation (asymmetric key)" }
                                             ]
                                         }
                                     ]
                                 },
+                                {
+                                    "name": "Digital Signatures",
+                                    "children": [
+                                        { "name": "Proves authenticity + integrity + non-repudiation" },
+                                        { "name": "Only private key holder can sign, anyone with public key can verify" },
+                                        {
+                                            "name": "How It Works",
+                                            "children": [
+                                                { "name": "Alice hashes message: hash = SHA-256(message)" },
+                                                { "name": "Alice signs hash with private key: signature = sign(hash, private_key)" },
+                                                { "name": "Alice sends (message, signature) to Bob" },
+                                                { "name": "Bob verifies: verify(signature, public_key) == hash" },
+                                                { "name": "If match → message is authentic (came from Alice) + unmodified" },
+                                                { "name": "Alice can't deny sending it (only she has private key)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Use Cases",
+                                            "children": [
+                                                { "name": "HTTPS certificates: CA signs server certificate (proves server owns domain)" },
+                                                { "name": "Code signing: Developer signs code (users trust it's unmodified)" },
+                                                { "name": "Git commits: Developer signs commits (verifiable history)" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Key Exchange Protocols",
+                                    "children": [
+                                        {
+                                            "name": "Diffie-Hellman (DH)",
+                                            "children": [
+                                                { "name": "Allows two parties to derive shared secret over insecure channel" },
+                                                { "name": "Alice picks random a, sends g^a mod p" },
+                                                { "name": "Bob picks random b, sends g^b mod p" },
+                                                { "name": "Both compute shared_secret = g^(ab) mod p" },
+                                                { "name": "Eavesdropper can't derive shared_secret (discrete log problem)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "ECDH (Elliptic Curve DH)",
+                                            "children": [
+                                                { "name": "Modern variant, same security with shorter keys" },
+                                                { "name": "Used in TLS 1.3 for perfect forward secrecy" },
+                                                { "name": "Ephemeral ECDH (ECDHE): New keypair per connection" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Perfect Forward Secrecy (PFS)",
+                                            "children": [
+                                                { "name": "Session key independent from server's long-term private key" },
+                                                { "name": "Uses ephemeral key exchange (ECDHE)" },
+                                                { "name": "If server private key leaked, past sessions still secure" },
+                                                { "name": "Standard in TLS 1.3" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Certificate Authority & PKI",
+                                    "children": [
+                                        { "name": "Problem: How to verify public key belongs to claimed owner?" },
+                                        { "name": "Solution: Certificate Authority (CA) signs certificate" },
+                                        {
+                                            "name": "Certificate Contents",
+                                            "children": [
+                                                { "name": "Subject: Domain name (www.example.com)" },
+                                                { "name": "Public key: Server's public key" },
+                                                { "name": "Issuer: CA that signed (DigiCert, Let's Encrypt)" },
+                                                { "name": "Expiry: Valid until date" },
+                                                { "name": "Serial number: Unique ID" },
+                                                { "name": "CA's signature: Proves CA verified ownership" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Chain of Trust",
+                                            "children": [
+                                                { "name": "Root CA: Self-signed, trusted by OS/browser" },
+                                                { "name": "Intermediate CA: Signed by root CA" },
+                                                { "name": "Server certificate: Signed by intermediate or root" },
+                                                { "name": "Browser verifies chain: Server → Intermediate → Root" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "HTTPS Handshake (Simplified)",
+                                            "children": [
+                                                { "name": "Server sends certificate (includes public key + CA signature)" },
+                                                { "name": "Browser verifies CA signature (proves ownership)" },
+                                                { "name": "Browser verifies domain matches certificate" },
+                                                { "name": "Browser verifies expiry date" },
+                                                { "name": "Browser verifies certificate chain to root CA" },
+                                                { "name": "If all valid, browser trusts server" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Self-Signed Certificates",
+                                            "children": [
+                                                { "name": "Signed by owner, not CA" },
+                                                { "name": "Browser warns: 'Certificate not trusted'" },
+                                                { "name": "OK for development, not production" },
+                                                { "name": "Can be used for internal/private networks" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Common Cryptographic Attacks",
+                                    "children": [
+                                        {
+                                            "name": "Brute Force",
+                                            "children": [
+                                                { "name": "Try all possible keys until decryption succeeds" },
+                                                { "name": "Key length is primary defense (AES-256 has 2^256 possibilities)" },
+                                                { "name": "Modern hardware can't brute force 256-bit keys" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Man-in-the-Middle (MITM) on Key Exchange",
+                                            "children": [
+                                                { "name": "Attacker intercepts public keys, substitutes own" },
+                                                { "name": "Attacker decrypts with own private key, re-encrypts with recipient's" },
+                                                { "name": "Defense: Digital signatures (verify public key authenticity)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Replay Attack",
+                                            "children": [
+                                                { "name": "Attacker captures encrypted message, replays it later" },
+                                                { "name": "Server accepts it as new request (if no timestamp/nonce)" },
+                                                { "name": "Defense: Nonce (one-time number), timestamp, sequence numbers" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Padding Oracle Attack",
+                                            "children": [
+                                                { "name": "Exploits error messages about padding (CBC mode)" },
+                                                { "name": "Attacker can decrypt without key" },
+                                                { "name": "Defense: Authenticated encryption (GCM mode)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Timing Attack",
+                                            "children": [
+                                                { "name": "Measures encryption time to infer key bits" },
+                                                { "name": "Example: Constant-time string comparison prevents this" },
+                                                { "name": "Defense: Constant-time algorithms" }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Security Threats & Defenses",
+                            "children": [
                                 {
                                     "name": "CSRF (Cross-Site Request Forgery)",
                                     "children": [
                                         {
                                             "name": "Attack Mechanism",
                                             "children": [
-                                                {"name": "Attacker creates malicious form on attacker-controlled site"},
-                                                {"name": "Form targets victim's bank with hidden fields"},
-                                                {"name": "Form auto-submits when user visits malicious site"},
-                                                {"name": "Ex:-\n\n<form action=\"https://yourbank.com/api/transfer\" method=\"POST\">\n    <input type=\"hidden\" name=\"amount\" value=\"10000\" />\n    <input type=\"hidden\" name=\"to_account\" value=\"attacker_id\" />\n</form>\n<script>\n    document.forms[0].submit();\n</script>"}
+                                                { "name": "Attacker creates malicious form on attacker-controlled site" },
+                                                { "name": "Form targets victim's bank with hidden fields" },
+                                                { "name": "Form auto-submits when user visits malicious site" },
+                                                { "name": "Ex:-\n\n<form action=\"https://yourbank.com/api/transfer\" method=\"POST\">\n    <input type=\"hidden\" name=\"amount\" value=\"10000\" />\n    <input type=\"hidden\" name=\"to_account\" value=\"attacker_id\" />\n</form>\n<script>\n    document.forms[0].submit();\n</script>" }
                                             ]
                                         },
                                         {
                                             "name": "How Attack Works Step-by-Step",
                                             "children": [
-                                                {"name": "Step 1: User logs into bank.com"},
-                                                {"name": "Step 2: Browser stores sessionId cookie for bank.com"},
-                                                {"name": "Step 3: User visits malicious-site.com (still logged into bank)"},
-                                                { "name": "Step 4: Malicious form auto-submits to yourbank.com/api/transfer"},
-                                                {"name": "Step 5: Browser automatically attaches sessionId cookie to request"},
-                                                {"name": "Step 6: Bank receives valid sessionId + transfer request"},
-                                                {"name": "Step 7: Bank treats it as legitimate user action → transfers money"}
+                                                { "name": "Step 1: User logs into bank.com" },
+                                                { "name": "Step 2: Browser stores sessionId cookie for bank.com" },
+                                                { "name": "Step 3: User visits malicious-site.com (still logged into bank)" },
+                                                { "name": "Step 4: Malicious form auto-submits to yourbank.com/api/transfer" },
+                                                { "name": "Step 5: Browser automatically attaches sessionId cookie to request" },
+                                                { "name": "Step 6: Bank receives valid sessionId + transfer request" },
+                                                { "name": "Step 7: Bank treats it as legitimate user action → transfers money" }
                                             ]
                                         },
                                         {
                                             "name": "Why CSRF Works",
                                             "children": [
-                                                {"name": "Browser auto-attaches cookies to any request to that domain"},
-                                                {"name": "Cookie doesn't care where request originated from"},
-                                                {"name": "Bank can't distinguish user-initiated vs malicious request"},
-                                                {"name": "No verification that request came from bank's own domain"},
-                                                {"name": "Exploits trust between browser and authenticated session"}
+                                                { "name": "Browser auto-attaches cookies to any request to that domain" },
+                                                { "name": "Cookie doesn't care where request originated from" },
+                                                { "name": "Bank can't distinguish user-initiated vs malicious request" },
+                                                { "name": "No verification that request came from bank's own domain" },
+                                                { "name": "Exploits trust between browser and authenticated session" }
                                             ]
                                         },
                                         {
                                             "name": "Defense: CSRF Token",
                                             "children": [
-                                                {"name": "Server generates unpredictable token for each user session"},
-                                                {"name": "Token embedded in legitimate forms: <input name=\"csrf_token\" value=\"random123xyz\" />"},
-                                                {"name": "Token also sent in HTTP headers for AJAX requests"},
-                                                {"name": "Malicious site CANNOT read token (same-origin policy blocks it)"},
-                                                {"name": "Attacker's form missing token → bank rejects request as invalid"},
-                                                {"name": "Token proves request originated from bank's own domain"}
+                                                { "name": "Server generates unpredictable token for each user session" },
+                                                { "name": "Token embedded in legitimate forms: <input name=\"csrf_token\" value=\"random123xyz\" />" },
+                                                { "name": "Token also sent in HTTP headers for AJAX requests" },
+                                                { "name": "Malicious site CANNOT read token (same-origin policy blocks it)" },
+                                                { "name": "Attacker's form missing token → bank rejects request as invalid" },
+                                                { "name": "Token proves request originated from bank's own domain" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Defense: SameSite Cookie",
+                                            "children": [
+                                                { "name": "Browser doesn't send cookie cross-site by default" },
+                                                { "name": "SameSite=Strict: Never send cross-site" },
+                                                { "name": "SameSite=Lax: Send only on same-site or safe cross-site (link click)" },
+                                                { "name": "SameSite=None: Send cross-site (requires Secure flag)" }
                                             ]
                                         },
                                         {
                                             "name": "Real-World Implementation",
                                             "children": [
-                                                {"name": "Spring Security handles via CsrfFilter"},
-                                                {"name": "POST/PUT/DELETE endpoints must include valid CSRF token"},
-                                                {"name": "GET requests typically exempt (read-only operations)"},
-                                                {"name": "Token validated on server before processing request"}
+                                                { "name": "Spring Security handles via CsrfFilter" },
+                                                { "name": "POST/PUT/DELETE endpoints must include valid CSRF token" },
+                                                { "name": "GET requests typically exempt (read-only operations)" },
+                                                { "name": "Token validated on server before processing request" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "XSS (Cross-Site Scripting)",
+                                    "children": [
+                                        {
+                                            "name": "Stored XSS",
+                                            "children": [
+                                                { "name": "Attacker injects script into persistent storage (DB, search field)" },
+                                                { "name": "Script runs for all users viewing that page" },
+                                                { "name": "Most dangerous (no user interaction required after injection)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Reflected XSS",
+                                            "children": [
+                                                { "name": "Attacker crafts URL with malicious script" },
+                                                { "name": "Trick user into clicking link" },
+                                                { "name": "Script runs in victim's browser (read cookies, session)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "DOM-based XSS",
+                                            "children": [
+                                                { "name": "JavaScript manipulates page unsafely" },
+                                                { "name": "Input from URL/localStorage used to set innerHTML" },
+                                                { "name": "Ex:- document.body.innerHTML = userInput (dangerous)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Defense",
+                                            "children": [
+                                                { "name": "Output encoding: Escape HTML special chars (<, >, &, \")" },
+                                                { "name": "Content Security Policy (CSP): Restrict script sources" },
+                                                { "name": "Input validation: Reject malicious patterns" },
+                                                { "name": "Use textContent instead of innerHTML" },
+                                                { "name": "DOMPurify library for sanitizing HTML" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "SQL Injection",
+                                    "children": [
+                                        { "name": "Attack: Unsanitized SQL concatenation" },
+                                        { "name": "Ex:- SELECT * FROM users WHERE id = ' + input" },
+                                        { "name": "Malicious input: ' OR '1'='1 (returns all users)" },
+                                        { "name": "Defense: Prepared statements (query + params separate)" },
+                                        { "name": "ORM layers (Hibernate) abstract SQL generation" },
+                                        { "name": "Input validation (whitelist, regex)" }
+                                    ]
+                                },
+                                {
+                                    "name": "Man-in-the-Middle (MITM)",
+                                    "children": [
+                                        { "name": "Attacker intercepts traffic between A and B" },
+                                        { "name": "HTTP unencrypted: Easy eavesdropping" },
+                                        { "name": "ARP spoofing: Redirect traffic through attacker" },
+                                        { "name": "Defense: HTTPS (TLS encryption + auth)" },
+                                        { "name": "Certificate pinning: Mobile apps trust specific certs only" },
+                                        { "name": "Mutual TLS: Both parties authenticate" }
+                                    ]
+                                },
+                                {
+                                    "name": "DDoS (Distributed Denial of Service)",
+                                    "children": [
+                                        {
+                                            "name": "Volumetric Attacks",
+                                            "children": [
+                                                { "name": "UDP flood: Send massive UDP packets to exhaust bandwidth" },
+                                                { "name": "DNS amplification: Spoofed victim IP, queries open resolvers" },
+                                                { "name": "Mitigation: ISP-level filtering, rate limiting" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Protocol Attacks",
+                                            "children": [
+                                                { "name": "SYN flood: Send SYN without ACK, exhaust backlog" },
+                                                { "name": "SYN cookies: Encode state in sequence number (no memory)" },
+                                                { "name": "Teardrop: Malformed fragments (old, patched)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Application Layer",
+                                            "children": [
+                                                { "name": "HTTP flood: Many HTTP requests (slowloris: slow headers)" },
+                                                { "name": "Mitigation: Rate limiting per IP, CAPTCHA, WAF" }
                                             ]
                                         }
                                     ]
                                 }
                             ]
                         },
-
                         {
                             "name": "Network Architecture",
                             "children": [
                                 {
                                     "name": "OSI Model (7 Layers)",
                                     "children": [
-                                        { "name": "1. Physical" },
-                                        { "name": "2. Data Link" },
-                                        { "name": "3. Network" },
-                                        { "name": "4. Transport" },
-                                        { "name": "5. Session" },
-                                        { "name": "6. Presentation" },
-                                        { "name": "7. Application" }
+                                        { "name": "All (7) - Application: HTTP, DNS, SMTP, SSH" },
+                                        { "name": "People (6) - Presentation: Compression, encryption handshake" },
+                                        { "name": "Should (5) - Session: Sockets, WebSocket" },
+                                        { "name": "Try (4) - Transport: TCP, UDP" },
+                                        { "name": "New (3) - Network: IP, ICMP, ARP, routing" },
+                                        { "name": "Dominos (2) - Data Link: Ethernet, MAC, switching" },
+                                        { "name": "Pizza (1) - Physical: Cables, signals, voltage" },
+                                        {
+                                            "name": "Data Flow",
+                                            "children": [
+                                                { "name": "Sender: Top-to-Bottom (encapsulation, add headers)" },
+                                                { "name": "Receiver: Bottom-to-Top (de-encapsulation, remove headers)" }
+                                            ]
+                                        }
                                     ]
                                 },
-
                                 {
-                                    "name": "TCP/IP Model (4 Layers)",
+                                    "name": "Media Access Control (MAC) Protocols",
                                     "children": [
-                                        { "name": "1. Link Layer" },
-                                        { "name": "2. Internet Layer" },
-                                        { "name": "3. Transport Layer" },
-                                        { "name": "4. Application Layer" }
+                                        {
+                                            "name": "ALOHA Protocol (Historical)",
+                                            "children": [
+                                                { "name": "Developed at University of Hawaii for radio networks" },
+                                                { "name": "Multiple stations transmit on shared channel without coordination" },
+                                                {
+                                                    "name": "Pure ALOHA",
+                                                    "children": [
+                                                        { "name": "Station transmits whenever it has data (no carrier sense)" },
+                                                        { "name": "Collision if two stations transmit simultaneously" },
+                                                        { "name": "Efficiency: ~18.4% (very low)" },
+                                                        { "name": "Vulnerable time: 2 × transmission_time" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Slotted ALOHA",
+                                                    "children": [
+                                                        { "name": "Time divided into discrete slots (one frame per slot)" },
+                                                        { "name": "Stations only transmit at slot boundaries" },
+                                                        { "name": "Efficiency: ~36.8% (double pure ALOHA)" },
+                                                        { "name": "Requires synchronization between stations" }
+                                                    ]
+                                                },
+                                                { "name": "CSMA/CD (Carrier Sense Multiple Access with Collision Detection) improved on ALOHA" },
+                                                { "name": "Foundation for Ethernet, WiFi, modern MAC protocols" },
+                                                { "name": "More for GATE exams than core SDE interviews" }
+                                            ]
+                                        }
                                     ]
                                 },
-
+                                {
+                                    "name": "TCP/IP Model (4-5 Layers)",
+                                    "children": [
+                                        { "name": "Application (7+6+5): HTTP, DNS, SMTP, WebSocket" },
+                                        { "name": "Transport (4): TCP, UDP" },
+                                        { "name": "Internet/Network (3): IP, ICMP, ARP" },
+                                        { "name": "Data Link (2): Ethernet, MAC" },
+                                        { "name": "Physical (1): Cables, signals" }
+                                    ]
+                                },
                                 {
                                     "name": "Public vs Private IP",
                                     "children": [
-                                        { "name": "Public IP → accessible over internet" },
-                                        { "name": "Private IP → used inside local networks" },
+                                        { "name": "Public IP → accessible over internet (routable globally)" },
+                                        { "name": "Private IP → used inside local networks only" },
                                         {
-                                            "name": "Private Ranges",
+                                            "name": "Private Ranges (RFC 1918)",
                                             "children": [
-                                                { "name": "10.x.x.x" },
-                                                { "name": "172.16.x.x - 172.31.x.x" },
-                                                { "name": "192.168.x.x" }
+                                                { "name": "10.0.0.0/8 (10.x.x.x)" },
+                                                { "name": "172.16.0.0/12 (172.16.x.x - 172.31.x.x)" },
+                                                { "name": "192.168.0.0/16 (192.168.x.x)" }
                                             ]
-                                        }
+                                        },
+                                        { "name": "Special IPs: Loopback (127.0.0.1), Broadcast (255.255.255.255)" }
                                     ]
                                 }
                             ]
                         },
-
                         {
                             "name": "Infrastructure & Scaling",
                             "children": [
@@ -4592,16 +5604,25 @@ export const javaBackendTree = {
                                     "children": [
                                         { "name": "Distributes traffic across multiple servers" },
                                         { "name": "Improves scalability and availability" },
+                                        { "name": "Session affinity (sticky sessions): Route client to same backend" },
                                         {
                                             "name": "Algorithms",
                                             "children": [
-                                                { "name": "Round Robin" },
-                                                { "name": "Least Connections" }
+                                                { "name": "Round Robin: Cycle through servers" },
+                                                { "name": "Least Connections: Send to server with fewest active" },
+                                                { "name": "IP Hash: Route by client IP (sticky)" },
+                                                { "name": "Weighted Round Robin: Favor powerful servers" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Layer 4 vs Layer 7",
+                                            "children": [
+                                                { "name": "Layer 4 (TCP/UDP): IP + port, fast, unaware of app protocol" },
+                                                { "name": "Layer 7 (HTTP): Read request, route by URL/host, slower but smarter" }
                                             ]
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "Reverse Proxy & Firewall",
                                     "children": [
@@ -4610,27 +5631,27 @@ export const javaBackendTree = {
                                             "children": [
                                                 { "name": "Sits between client and backend servers" },
                                                 { "name": "Handles routing, SSL termination, caching" },
-                                                {
-                                                    "name": "Ex:- Nginx"
-                                                }
+                                                { "name": "Hides backend server IPs (security)" },
+                                                { "name": "Ex:- Nginx, HAProxy, AWS ALB" }
                                             ]
                                         },
                                         {
                                             "name": "Firewall",
                                             "children": [
                                                 { "name": "Filters incoming/outgoing traffic" },
-                                                { "name": "Blocks unauthorized access" }
+                                                { "name": "Blocks unauthorized access (stateful inspection)" },
+                                                { "name": "Can block ports, IPs, protocols" }
                                             ]
                                         }
                                     ]
                                 },
-
                                 {
                                     "name": "CDN (Content Delivery Network)",
                                     "children": [
                                         { "name": "Servers distributed geographically" },
                                         { "name": "Serves static content closer to user" },
-                                        { "name": "Reduces latency" },
+                                        { "name": "Reduces latency and bandwidth costs" },
+                                        { "name": "Cache invalidation: TTL or explicit purge" },
                                         {
                                             "name": "Ex:-\n\nImages, CSS, JS served from nearest edge server"
                                         }
@@ -4638,55 +5659,79 @@ export const javaBackendTree = {
                                 }
                             ]
                         },
-
                         {
                             "name": "Performance & Reliability",
                             "children": [
                                 {
                                     "name": "Latency vs Throughput vs Bandwidth",
                                     "children": [
-                                        { "name": "Latency → delay before response starts" },
-                                        { "name": "Throughput → amount of work done per second" },
-                                        { "name": "Bandwidth → maximum data transfer capacity" },
+                                        { "name": "Latency → delay before response starts (ms scale)" },
+                                        { "name": "Throughput → amount of work done per second (requests/sec)" },
+                                        { "name": "Bandwidth → maximum data transfer capacity (Mbps)" },
                                         {
                                             "name": "Example",
                                             "children": [
                                                 { "name": "High bandwidth ≠ low latency" },
-                                                { "name": "Fiber internet → high bandwidth" },
-                                                { "name": "Nearby server → lower latency" }
+                                                { "name": "Fiber internet → high bandwidth (100 Mbps)" },
+                                                { "name": "Nearby server → lower latency (5ms)" },
+                                                { "name": "Distant server → higher latency (200ms) despite high bandwidth" }
                                             ]
                                         }
                                     ]
                                 },
-
+                                {
+                                    "name": "Caching Strategy",
+                                    "children": [
+                                        { "name": "Cache-Control header: max-age, no-cache, no-store, public/private" },
+                                        { "name": "ETag + If-None-Match: Server returns 304 if unchanged (bandwidth save)" },
+                                        { "name": "Last-Modified + If-Modified-Since: Similar to ETag" },
+                                        { "name": "Browser cache: Local storage of static assets" },
+                                        { "name": "HTTP caching saves round trips (client-side, CDN, reverse proxy)" }
+                                    ]
+                                },
                                 {
                                     "name": "Timeouts & Retries",
                                     "children": [
                                         { "name": "Timeout → stop waiting after fixed duration" },
                                         { "name": "Retry → attempt request again after failure" },
-                                        { "name": "Prevents hanging requests" },
-                                        { "name": "Too many retries can overload systems" }
+                                        { "name": "Prevents hanging requests (improves UX)" },
+                                        { "name": "Exponential backoff: Increase delay between retries" },
+                                        { "name": "Too many retries can overload systems (retry storms)" },
+                                        { "name": "Jitter: Randomize retry time (prevent thundering herd)" }
                                     ]
                                 },
-
                                 {
                                     "name": "Connection Pooling",
                                     "children": [
                                         { "name": "Reuse existing connections instead of creating new ones" },
-                                        { "name": "Reduces connection overhead" },
+                                        { "name": "Reduces connection overhead (handshake, TLS)" },
+                                        { "name": "Improves throughput (more concurrent requests)" },
+                                        { "name": "Max pool size: Limit concurrent connections" },
+                                        { "name": "Idle timeout: Close unused connections" },
                                         {
-                                            "name": "Ex:-\n\nDatabase connection pools in Spring Boot"
+                                            "name": "Ex:-\n\nDatabase connection pools in Spring Boot\nHTTP client pooling (Keep-Alive)"
                                         }
                                     ]
                                 },
-
+                                {
+                                    "name": "HTTP Keep-Alive",
+                                    "children": [
+                                        { "name": "Persistent connection: Reuse TCP for multiple HTTP requests" },
+                                        { "name": "Reduces handshake overhead" },
+                                        { "name": "HTTP/1.1 default (Connection: keep-alive)" },
+                                        { "name": "Idle timeout: Close after period of no requests" },
+                                        { "name": "Max requests: Close after N requests (resource cleanup)" }
+                                    ]
+                                },
                                 {
                                     "name": "Rate Limiting",
                                     "children": [
-                                        { "name": "Restricts number of requests per client" },
+                                        { "name": "Restricts number of requests per client/IP" },
                                         { "name": "Protects against abuse and overload" },
+                                        { "name": "Token bucket algorithm: Refill at rate, consume per request" },
+                                        { "name": "Leaky bucket: Smooth rate (FIFO queue)" },
                                         {
-                                            "name": "Ex:-\n\n100 requests/minute per user"
+                                            "name": "Ex:-\n\n100 requests/minute per user\n429 Too Many Requests response"
                                         }
                                     ]
                                 }
@@ -4706,6 +5751,47 @@ export const javaBackendTree = {
                         { name: "REST APIs & Controllers" },
                         { name: "Dependency Injection (IoC)" },
                         { name: "Request Lifecycle" },
+                        {
+                            "name": "Inter-Service Communication (HTTP Clients)",
+                            "children": [
+                                {
+                                    "name": "RestTemplate (Legacy - Spring 3-5)",
+                                    "children": [
+                                        { "name": "Synchronous blocking client" },
+                                        { "name": "Template method pattern" },
+                                        { "name": "Built-in message converters" },
+                                        { "name": "Semi-deprecated (Spring 6+)" }
+                                    ]
+                                },
+                                {
+                                    "name": "RestClient (Modern - Spring 6+/Boot 3.2+)",
+                                    "children": [
+                                        { "name": "Fluent API design" },
+                                        { "name": "Sync + Async support" },
+                                        { "name": "Builder pattern configuration" },
+                                        { "name": "Recommended for new projects" }
+                                    ]
+                                },
+                                {
+                                    "name": "FeignClient (Spring Cloud)",
+                                    "children": [
+                                        { "name": "Declarative interface-based client" },
+                                        { "name": "Service discovery integration (Eureka)" },
+                                        { "name": "Load balancing (Ribbon/Spring Cloud LoadBalancer)" },
+                                        { "name": "Retry & fallback support" }
+                                    ]
+                                },
+                                {
+                                    "name": "WebClient (Reactive - Spring 5+)",
+                                    "children": [
+                                        { "name": "Reactive non-blocking client" },
+                                        { "name": "Backpressure support" },
+                                        { "name": "Works with Spring WebFlux" },
+                                        { "name": "Better for streaming/scalability" }
+                                    ]
+                                }
+                            ]
+                        },
                         { name: "Validation & Exception Handling" },
                         {
                             name: "Security",
