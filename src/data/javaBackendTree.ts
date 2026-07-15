@@ -4930,12 +4930,17 @@ export const javaBackendTree = {
                                                 { "name": "ServerHello: Chosen cipher, certificate" },
                                                 { "name": "Certificate validation: Chain of trust, expiry, domain match" },
                                                 { "name": "Key exchange: RSA (old) or ECDHE (perfect forward secrecy)" },
+                                                { "name": "ECDHE key exchange: Both sides generate ephemeral key pairs, exchange public halves only" },
+                                                { "name": "Shared secret: Each side combines own private key with other's public key to compute identical secret" },
+                                                { "name": "Private keys never leave the device during ECDHE exchange" },
                                                 { "name": "Finished messages: MAC verify handshake integrity" }
                                             ]
                                         },
                                         { "name": "Encryption: AES-256-GCM common" },
                                         { "name": "Perfect Forward Secrecy (PFS): ECDHE ensures old keys can't decrypt future sessions" },
                                         { "name": "Certificate proves server identity (not client by default)" },
+                                        { "name": "Client certificate: Only sent if server explicitly requests it (mutual TLS)" },
+                                        { "name": "Can't impersonate with copied certificate: Needs matching private key to sign handshake data" },
                                         { "name": "Mutual TLS: Both parties present certificates (rare, mTLS)" }
                                     ]
                                 },
@@ -4971,41 +4976,6 @@ export const javaBackendTree = {
                                                 { "name": "TLS 1.3 built-in" }
                                             ]
                                         }
-                                    ]
-                                },
-                                {
-                                    "name": "REST API Design",
-                                    "children": [
-                                        { "name": "Resource-based architecture" },
-                                        { "name": "Uses HTTP methods semantically" },
-                                        { "name": "Stateless communication" },
-                                        { "name": "Proper use of status codes" },
-                                        {
-                                            "name": "Ex:-\n\nGET /users → fetch all\nPOST /users → create new\nGET /users/1 → fetch by ID\nPUT /users/1 → replace user 1\nDELETE /users/1 → remove user 1"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "WebSocket",
-                                    "children": [
-                                        { "name": "Persistent full-duplex communication over HTTP upgrade (101)" },
-                                        { "name": "Server and client can send data anytime" },
-                                        { "name": "Used for real-time communication" },
-                                        { "name": "Lower latency than HTTP polling" },
-                                        {
-                                            "name": "Ex:-\n\nChat applications\nLive notifications\nRealtime dashboards\nOnline multiplayer games"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "name": "gRPC & Protobuf",
-                                    "children": [
-                                        { "name": "High-performance RPC framework by Google" },
-                                        { "name": "Uses HTTP/2 internally (multiplexing)" },
-                                        { "name": "Uses Protocol Buffers (binary serialization)" },
-                                        { "name": "Smaller + faster than JSON" },
-                                        { "name": "Used in microservice communication" },
-                                        { "name": "Strongly typed contracts (proto files)" }
                                     ]
                                 }
                             ]
@@ -5748,66 +5718,1019 @@ export const javaBackendTree = {
                 {
                     name: "Spring Boot",
                     children: [
-                        { name: "REST APIs & Controllers" },
-                        { name: "Dependency Injection (IoC)" },
-                        { name: "Request Lifecycle" },
                         {
-                            "name": "Inter-Service Communication (HTTP Clients)",
-                            "children": [
+                            name: "Fundamentals & Architecture",
+                            children: [
                                 {
-                                    "name": "RestTemplate (Legacy - Spring 3-5)",
-                                    "children": [
-                                        { "name": "Synchronous blocking client" },
-                                        { "name": "Template method pattern" },
-                                        { "name": "Built-in message converters" },
-                                        { "name": "Semi-deprecated (Spring 6+)" }
+                                    name: "Spring Framework Overview",
+                                    children: [
+                                        { name: "IoC (Inversion of Control) Container", details: "Bean lifecycle, bean factories, application context" },
+                                        { name: "Dependency Injection (DI)", details: "Constructor, setter, field injection; @Autowired, @Inject, @Resource" },
+                                        { name: "Bean Management", details: "Bean scope (singleton, prototype, request, session, global-session), lazy initialization, bean post-processors" },
+                                        { name: "AOP (Aspect-Oriented Programming)", details: "@Aspect, @Pointcut, @Before, @After, @Around, @AfterReturning, @AfterThrowing" },
+                                        { name: "Annotations vs XML Configuration", details: "When to use each, migration strategies" },
                                     ]
                                 },
                                 {
-                                    "name": "RestClient (Modern - Spring 6+/Boot 3.2+)",
-                                    "children": [
-                                        { "name": "Fluent API design" },
-                                        { "name": "Sync + Async support" },
-                                        { "name": "Builder pattern configuration" },
-                                        { "name": "Recommended for new projects" }
+                                    name: "Spring Boot Auto-Configuration",
+                                    children: [
+                                        { name: "@SpringBootApplication", details: "Combines @Configuration, @EnableAutoConfiguration, @ComponentScan" },
+                                        { name: "@EnableAutoConfiguration mechanics", details: "META-INF/spring.factories, conditional beans, exclusions" },
+                                        { name: "Auto-configuration conditions", details: "@ConditionalOnClass, @ConditionalOnMissingBean, @ConditionalOnProperty, @ConditionalOnWebApplication" },
+                                        { name: "Custom auto-configuration", details: "Creating starter projects, auto-config classes" },
+                                        { name: "Configuration Order & Priority", details: "Starters vs application.properties vs application.yml" },
                                     ]
                                 },
                                 {
-                                    "name": "FeignClient (Spring Cloud)",
-                                    "children": [
-                                        { "name": "Declarative interface-based client" },
-                                        { "name": "Service discovery integration (Eureka)" },
-                                        { "name": "Load balancing (Ribbon/Spring Cloud LoadBalancer)" },
-                                        { "name": "Retry & fallback support" }
+                                    name: "Embedded Servers & Application Lifecycle",
+                                    children: [
+                                        { name: "Embedded Tomcat/Undertow/Jetty", details: "Server configuration, port, context-path, servlet configuration" },
+                                        { name: "Application Startup Events", details: "ApplicationStartingEvent, ApplicationEnvironmentPreparedEvent, ApplicationContextInitializedEvent, ApplicationPreparedEvent, ApplicationStartedEvent, ApplicationReadyEvent, ApplicationFailedEvent" },
+                                        { name: "CommandLineRunner & ApplicationRunner", details: "Initialization logic after startup" },
+                                        { name: "Spring Boot Lifecycle Hooks", details: "@PostConstruct, @PreDestroy, InitializingBean, DisposableBean, ContextClosedEvent" },
+                                        { name: "Graceful Shutdown", details: "server.shutdown.grace-period, server.shutdown=graceful" },
                                     ]
                                 },
-                                {
-                                    "name": "WebClient (Reactive - Spring 5+)",
-                                    "children": [
-                                        { "name": "Reactive non-blocking client" },
-                                        { "name": "Backpressure support" },
-                                        { "name": "Works with Spring WebFlux" },
-                                        { "name": "Better for streaming/scalability" }
-                                    ]
-                                }
                             ]
                         },
-                        { name: "Validation & Exception Handling" },
+
+                        // =====================================================================
+                        // 2. REST APIs & WEB LAYER
+                        // =====================================================================
+                        {
+                            name: "REST APIs & Web Layer",
+                            children: [
+                                {
+                                    name: "REST API Fundamentals",
+                                    children: [
+                                        { name: "REST Principles", details: "Resource-oriented design, HATEOAS, content negotiation, statelessness" },
+                                        { name: "@RestController vs @Controller", details: "@RestController = @Controller + @ResponseBody, when to use each" },
+                                        { name: "Request Mapping Annotations", details: "@RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping" },
+                                        { name: "Path Variables & Query Parameters", details: "@PathVariable, @RequestParam, @RequestBody" },
+                                        { name: "HTTP Method Semantics", details: "GET (safe, idempotent), POST (unsafe, non-idempotent), PUT (idempotent), DELETE (idempotent), PATCH (non-idempotent)" },
+                                        { name: "Response Status Codes", details: "1xx, 2xx, 3xx, 4xx, 5xx handling, @ResponseStatus" },
+                                    ]
+                                },
+                                {
+                                    name: "Request Handling & Lifecycle",
+                                    children: [
+                                        { name: "DispatcherServlet", details: "Central servlet, URL routing, handler mapping, request dispatch flow" },
+                                        { name: "Handler Mapping", details: "BeanNameUrlHandlerMapping, RequestMappingHandlerMapping, SimpleUrlHandlerMapping" },
+                                        { name: "Handler Interceptors", details: "@Component, HandlerInterceptor interface, preHandle, postHandle, afterCompletion" },
+                                        { name: "Request/Response Cycle", details: "ServletRequest → HandlerMapping → HandlerAdapter → Controller → View/Response" },
+                                        { name: "Method Parameters Resolution", details: "@RequestParam, @PathVariable, @RequestBody, @RequestHeader, @CookieValue, @ModelAttribute, HttpServletRequest/Response, Model, ModelMap" },
+                                        { name: "Content Negotiation", details: "Accept headers, produces/consumes, media type resolution" },
+                                    ]
+                                },
+                                {
+                                    name: "Validation & Error Handling",
+                                    children: [
+                                        { name: "Bean Validation (JSR-380)", details: "@Valid, @Validated, BindingResult, standard annotations (@NotNull, @NotEmpty, @Size, @Email, @Pattern, @Min, @Max, @Range, @Future, @Past)" },
+                                        { name: "Custom Validators", details: "@Constraint annotation, ConstraintValidator interface, message interpolation" },
+                                        { name: "Method-Level Validation", details: "@Validated on class, @Valid on method parameters" },
+                                        { name: "Exception Handling", details: "@ExceptionHandler, @ControllerAdvice, @RestControllerAdvice, exception hierarchy design" },
+                                        { name: "Global Error Responses", details: "StandardErrorAttributes, ErrorAttribute customization, /error endpoint" },
+                                        { name: "HTTP Status Exceptions", details: "HttpStatusCodeException, ResponseStatusException, why prefer ResponseStatusException" },
+                                        { name: "Validation Error Responses", details: "BindingResult serialization, custom error DTOs, field-level error messages" },
+                                    ]
+                                },
+                                {
+                                    name: "Response Handling & Serialization",
+                                    children: [
+                                        { name: "Message Converters", details: "HttpMessageConverter hierarchy, MappingJackson2HttpMessageConverter, registration order" },
+                                        { name: "JSON Serialization (Jackson)", details: "@JsonProperty, @JsonInclude, @JsonIgnore, @JsonFormat, @JsonDeserialize, @JsonSerialize, custom ObjectMapper config" },
+                                        { name: "Content-Type & Accept Headers", details: "Default application/json, XML support, custom media types" },
+                                        { name: "ResponseEntity", details: "Generic response wrapper, status codes, headers, body customization" },
+                                        { name: "@ResponseBody & View Resolution", details: "When ViewResolver vs message converters are used" },
+                                        { name: "Streaming Responses", details: "StreamingResponseBody for large files, ResponseBodyEmitter for streaming" },
+                                    ]
+                                },
+                                {
+                                    name: "Content Type Handling",
+                                    children: [
+                                        { name: "JSON (Jackson)", details: "Default, automatic serialization, @JsonProperty, custom converters" },
+                                        { name: "XML (JAXB)", details: "Optional dependency, XmlMapper configuration" },
+                                        { name: "Custom Media Types", details: "Registering application/vnd.api+json, application/hal+json" },
+                                        { name: "Multipart File Upload", details: "MultipartFile, MultipartResolver, commons-fileupload, storage handling" },
+                                        { name: "Form Data Binding", details: "@ModelAttribute, form-urlencoded parsing, nested objects" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 3. DATA PERSISTENCE & DATABASE
+                        // =====================================================================
+                        {
+                            name: "Data Persistence & Database",
+                            children: [
+                                {
+                                    name: "Spring Data JPA",
+                                    children: [
+                                        { name: "JPA & Hibernate Basics", details: "ORM concepts, Entity lifecycle (transient, managed, detached, removed)" },
+                                        { name: "Entity Mapping", details: "@Entity, @Table, @Id, @GeneratedValue (IDENTITY, SEQUENCE, TABLE, UUID), @Column, @Transient" },
+                                        { name: "Relationships", details: "@OneToOne (mappedBy, orphanRemoval, cascade), @OneToMany, @ManyToOne, @ManyToMany (join tables), lazy vs eager loading (FetchType.LAZY/EAGER)" },
+                                        { name: "Repository Pattern", details: "CrudRepository, JpaRepository, PagingAndSortingRepository, custom repository implementations" },
+                                        { name: "Query Methods", details: "Method naming conventions (findBy, countBy, existsBy, deleteBy), derived queries, @Query annotation" },
+                                        { name: "@Query Annotations", details: "JPQL queries, native SQL (@Query(nativeQuery=true)), indexed parameters, named parameters" },
+                                        { name: "Pagination & Sorting", details: "Pageable interface, Page vs Slice, Sort objects, custom Sort implementation" },
+                                        { name: "Projections", details: "Interface-based projections, class-based projections, open/closed projections, @Query with projections" },
+                                        { name: "Specifications (QueryDSL)", details: "Specification interface, Predicate building, dynamic query construction, complex filtering" },
+                                        { name: "Auditing", details: "@Audited, @CreatedDate, @LastModifiedDate, @CreatedBy, @LastModifiedBy, AuditorAware, @EnableJpaAuditing" },
+                                    ]
+                                },
+                                {
+                                    name: "Transaction Management",
+                                    children: [
+                                        { name: "@Transactional Semantics", details: "Propagation (REQUIRED, REQUIRES_NEW, NESTED, SUPPORTS, NOT_SUPPORTED, NEVER, MANDATORY), Isolation (READ_UNCOMMITTED, READ_COMMITTED, REPEATABLE_READ, SERIALIZABLE)" },
+                                        { name: "Read-Only Transactions", details: "readOnly=true optimization, JDBC batch updates, query optimization" },
+                                        { name: "Transactional Proxies", details: "How proxying works, self-invocation problem (@Autowired self-injection), target vs proxy" },
+                                        { name: "Rollback Rules", details: "Default rollback for RuntimeException, checked exceptions, @Transactional(rollbackFor), noRollbackFor" },
+                                        { name: "Transaction Lifecycle Events", details: "@TransactionalEventListener, phase (BEFORE_COMMIT, AFTER_COMMIT, AFTER_ROLLBACK, AFTER_COMPLETION)" },
+                                        { name: "Programmatic Transactions", details: "TransactionTemplate, manual begin/commit/rollback, nested transactions" },
+                                        { name: "Multi-Database Transactions", details: "JTA (Java Transaction API), ChainedTransactionManager, XA transactions" },
+                                    ]
+                                },
+                                {
+                                    name: "Advanced Persistence Patterns",
+                                    children: [
+                                        { name: "N+1 Query Problem", details: "Detection, solutions (JOIN FETCH, @EntityGraph, @Query with joins, batch loading strategies)" },
+                                        { name: "Lazy Loading & Proxy Issues", details: "LazyInitializationException, OpenSessionInViewFilter (anti-pattern), proper transaction boundaries" },
+                                        { name: "Hibernate Session & Persistence Context", details: "First-level cache, dirty checking, flush modes, session vs entity manager" },
+                                        { name: "Batch Processing", details: "JdbcBatchItemWriter, flush interval, clear session after batches, insert/update batching" },
+                                        { name: "Second-Level Caching", details: "Hibernate cache (Ehcache, Infinispan), @Cacheable, cache invalidation strategies, concurrency strategies" },
+                                        { name: "Query Result Caching", details: "@Cacheable on repositories, custom query caches, TTL configuration" },
+                                        { name: "Optimistic Locking", details: "@Version, OptimisticLockingFailureException, conflict handling, last-write-wins vs first-write-wins" },
+                                        { name: "Pessimistic Locking", details: "SELECT FOR UPDATE, LockModeType (PESSIMISTIC_READ, PESSIMISTIC_WRITE, PESSIMISTIC_FORCE_INCREMENT)" },
+                                    ]
+                                },
+                                {
+                                    name: "Database Configuration & Connection Pooling",
+                                    children: [
+                                        { name: "DataSource Configuration", details: "HikariCP (default), Tomcat JDBC Pool, Commons DBCP, connection pool sizing" },
+                                        { name: "Connection Pool Tuning", details: "Maximum pool size, minimum idle connections, connection timeout, idle timeout, max lifetime" },
+                                        { name: "Database Drivers", details: "JDBC drivers, driver registration, url format, properties" },
+                                        { name: "Multiple Datasources", details: "@Configuration with @Bean DataSource, routing datasources, multi-tenancy" },
+                                        { name: "Database Migrations", details: "Flyway integration, Liquibase integration, migration versioning, schema versioning" },
+                                    ]
+                                },
+                                {
+                                    name: "Spring Data Alternatives",
+                                    children: [
+                                        { name: "Spring Data MongoDB", details: "@Document, MongoTemplate, MongoRepository, query methods, aggregation framework" },
+                                        { name: "Spring Data Redis", details: "StringRedisTemplate, RedisTemplate, @RedisHash, repository pattern for Redis" },
+                                        { name: "Spring Data Elasticsearch", details: "@Document (Elasticsearch), ElasticsearchRepository, query DSL" },
+                                        { name: "Spring Data JDBC", details: "Lightweight alternative to JPA, @AggregateRoot, @Id, no lazy loading, simple transaction model" },
+                                        { name: "Spring Data R2DBC", details: "Reactive relational database, R2dbcRepository, non-blocking I/O" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 4. INTER-SERVICE COMMUNICATION
+                        // =====================================================================
+                        {
+                            name: "Inter-Service Communication (HTTP Clients)",
+                            children: [
+                                {
+                                    name: "RestTemplate (Spring 3-5 Legacy)",
+                                    children: [
+                                        { name: "Synchronous Blocking Client", details: "Thread blocks until response, SimpleClientHttpRequestFactory, BufferingClientHttpRequestFactory" },
+                                        { name: "Template Method Pattern", details: "getForObject, getForEntity, postForObject, postForEntity, put, delete, exchange, execute" },
+                                        { name: "Error Handling", details: "RestClientException, HttpClientErrorException (4xx), HttpServerErrorException (5xx), DefaultResponseErrorHandler" },
+                                        { name: "Message Converters", details: "Automatic content type handling, custom converters registration" },
+                                        { name: "Interceptors & Request Customization", details: "ClientHttpRequestInterceptor, adding headers, authentication, request/response logging" },
+                                        { name: "Connection Pooling", details: "HttpComponentsClientHttpRequestFactory, connection pool size, timeout configuration" },
+                                        { name: "Deprecation in Spring 6+", details: "Replaced by RestClient, EOL timeline, migration path" },
+                                    ]
+                                },
+                                {
+                                    name: "RestClient (Spring 6+/Boot 3.2+)",
+                                    children: [
+                                        { name: "Fluent Builder API", details: "Method chaining, fluent configuration, more readable than RestTemplate" },
+                                        { name: "Synchronous Operations", details: "get(), post(), put(), delete(), patch() methods" },
+                                        { name: "Request Building", details: ".uri(), .header(), .body(), .contentType(), complex request composition" },
+                                        { name: "Response Handling", details: ".retrieve(), .toEntity(), .toBody(), .toBoolean(), custom response converters" },
+                                        { name: "Error Handling", details: "onStatus(), throwing specific exceptions based on status codes" },
+                                        { name: "Interceptors & Middleware", details: "requestInterceptor(), responseInterceptor(), centralized cross-cutting concerns" },
+                                        { name: "DefaultHttpClientBuilder", details: "ClientHttpRequestFactory configuration, connection pooling, SSL/TLS setup" },
+                                        { name: "Recommended for New Projects", details: "Default choice for synchronous HTTP clients in Spring 6+" },
+                                    ]
+                                },
+                                {
+                                    name: "WebClient (Reactive - Spring 5+)",
+                                    children: [
+                                        { name: "Reactive Non-Blocking Client", details: "Mono/Flux return types, thread pool scalability, no thread per request" },
+                                        { name: "WebClient Configuration", details: "WebClient.builder(), baseUrl(), defaultHeader(), defaultCookie(), timeout(), ssl()" },
+                                        { name: "Request Methods", details: "get(), post(), put(), delete(), patch(), custom request methods" },
+                                        { name: "Mono & Flux Responses", details: "Mono<T> (single value), Flux<T> (stream), no blocking on response" },
+                                        { name: "Backpressure Support", details: "Demand signaling, subscription-based processing, handling of slow consumers" },
+                                        { name: "Error Handling", details: "onErrorResume(), onErrorReturn(), onErrorMap(), retryWhen(), error propagation" },
+                                        { name: "Timeout & Retry", details: "timeout(Duration), retryWhen(Retry.max(n)), exponential backoff, jitter" },
+                                        { name: "Spring WebFlux Integration", details: "Built for WebFlux controllers, streaming responses, SSE (Server-Sent Events)" },
+                                        { name: "Streaming Large Responses", details: "Flux for paginated/streaming data, memory efficiency vs RestTemplate/RestClient" },
+                                        { name: "Performance Characteristics", details: "Better for high-concurrency scenarios, fewer threads needed" },
+                                    ]
+                                },
+                                {
+                                    name: "FeignClient (Spring Cloud)",
+                                    children: [
+                                        { name: "Declarative HTTP Clients", details: "Interface-based definitions, @FeignClient, method signatures map to HTTP calls" },
+                                        { name: "@FeignClient Configuration", details: "name, url, configuration, fallback, fallbackFactory, dismiss404" },
+                                        { name: "Method Annotations", details: "@RequestLine, @RequestMapping, @PathVariable, @QueryMap, @Headers, @Body" },
+                                        { name: "Service Discovery Integration", details: "Eureka registration, service lookup by name instead of URL, load balancer aware" },
+                                        { name: "Load Balancing", details: "Ribbon (legacy), Spring Cloud LoadBalancer, round-robin, random, custom strategies" },
+                                        { name: "Retry Policies", details: "Feign Retryer, @Retry, exponential backoff, configuration" },
+                                        { name: "Fallback & Resilience", details: "@FeignClient fallback, HystrixFeign for circuit breakers, fallbackFactory for exception access" },
+                                        { name: "Error Decoding", details: "ErrorDecoder for exception mapping, feign.Logger for debugging" },
+                                        { name: "Request/Response Interceptors", details: "RequestInterceptor, adding headers, authentication token injection" },
+                                        { name: "Logging & Debugging", details: "feign.Logger level configuration, request/response logging" },
+                                    ]
+                                },
+                                {
+                                    name: "HTTP Client Comparison & Best Practices",
+                                    children: [
+                                        { name: "RestTemplate vs RestClient", details: "When to use each, migration guide from RestTemplate → RestClient" },
+                                        { name: "RestClient vs WebClient", details: "Sync vs reactive, when blocking is acceptable, scalability considerations" },
+                                        { name: "Feign vs RestClient", details: "Declarative vs imperative, service discovery needs, complexity trade-offs" },
+                                        { name: "Error Handling Strategies", details: "Retry logic, circuit breakers, timeout handling, exponential backoff with jitter" },
+                                        { name: "Authentication & Security", details: "Basic auth, bearer tokens, custom headers, interceptors for auth injection" },
+                                        { name: "Timeout Configuration", details: "Connection timeout vs read timeout, defaults, per-request overrides" },
+                                        { name: "Connection Pooling Best Practices", details: "Pool size tuning, idle timeout, max lifetime, keep-alive configuration" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 5. SECURITY
+                        // =====================================================================
                         {
                             name: "Security",
                             children: [
-                                { name: "JWT Authentication" },
-                                { name: "Spring Security Filter Chain" },
-                                { name: "CORS & CSRF basics" },
-                            ],
+                                {
+                                    name: "Spring Security Fundamentals",
+                                    children: [
+                                        { name: "Authentication vs Authorization", details: "Who you are vs what you can do, authentication providers, roles vs authorities" },
+                                        { name: "Authentication Providers", details: "DaoAuthenticationProvider, LdapAuthenticationProvider, custom AuthenticationProvider" },
+                                        { name: "UserDetailsService", details: "Loading user by username, password encoding, authorities mapping, user not found handling" },
+                                        { name: "PasswordEncoder", details: "BCrypt, Argon2, PKCS5, delegation pattern, password history" },
+                                        { name: "Authorities & Roles", details: "GrantedAuthority, SimpleGrantedAuthority, role hierarchy, RoleHierarchy" },
+                                        { name: "SecurityContext", details: "ThreadLocal storage, Authentication object, principal, credentials, authorities" },
+                                        { name: "SecurityContextHolder", details: "MODE_THREADLOCAL, MODE_INHERITABLETHREADLOCAL, MODE_GLOBAL, async task handling" },
+                                    ]
+                                },
+                                {
+                                    name: "Filter Chain Architecture",
+                                    children: [
+                                        { name: "Spring Security Filter Chain", details: "DelegatingFilterProxy, SecurityFilterChain, Order of filters, filter responsibilities" },
+                                        { name: "Core Filters", details: "SecurityContextPersistenceFilter, LogoutFilter, UsernamePasswordAuthenticationFilter, BasicAuthenticationFilter, ExceptionTranslationFilter, FilterSecurityInterceptor" },
+                                        { name: "Filter Ordering", details: "Why order matters, custom filter insertion points (addFilterBefore, addFilterAfter, addFilterAt)" },
+                                        { name: "Custom Filters", details: "Extending GenericFilterBean, OncePerRequestFilter, filter lifecycle, exception handling in filters" },
+                                        { name: "SecurityFilterChain Configuration", details: "@EnableWebSecurity, SecurityConfiguration bean, multiple chains, pattern matching" },
+                                    ]
+                                },
+                                {
+                                    name: "HTTP Security Configuration",
+                                    children: [
+                                        { name: "@EnableWebSecurity & HttpSecurity", details: "WebSecurityConfigurerAdapter vs SecurityFilterChain (6+), method chaining" },
+                                        { name: "Endpoint Protection", details: ".authorizeHttpRequests(), .anyRequest(), .authenticated(), permitAll(), hasRole(), hasAuthority()" },
+                                        { name: "Authentication Methods", details: "httpBasic(), formLogin(), oauth2Login(), saml2Login(), rememberMe()" },
+                                        { name: "CORS Configuration", details: "@CrossOrigin, WebMvcConfigurer.addCorsMappings(), CorsConfigurationSource" },
+                                        { name: "CSRF Protection", details: "CSRF tokens, SameSite cookies, when to disable, stateless APIs" },
+                                        { name: "Session Management", details: "sessionCreationPolicy (ALWAYS, IF_REQUIRED, NEVER, STATELESS), concurrent session control, fixation attack prevention" },
+                                        { name: "Exception Handling", details: "exceptionHandling().authenticationEntryPoint(), .accessDeniedHandler()" },
+                                        { name: "HTTP Headers", details: "X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Strict-Transport-Security, Content-Security-Policy" },
+                                    ]
+                                },
+                                {
+                                    name: "JWT (JSON Web Tokens)",
+                                    children: [
+                                        { name: "JWT Structure & Components", details: "Header (algorithm, type), Payload (claims), Signature (verification), encoding (Base64URL)" },
+                                        { name: "Claims & Custom Claims", details: "Standard claims (sub, iss, aud, exp, iat, nbf), custom claims, private claims" },
+                                        { name: "Token Generation", details: "Key generation (HS256 symmetric, RS256 asymmetric), expiration, signing" },
+                                        { name: "Token Validation", details: "Signature verification, expiration check, issuer/audience validation, key rotation" },
+                                        { name: "JWT Libraries", details: "jjwt (Nimbus), auth0-java-jwt, Spring Security OAuth2, which to choose" },
+                                        { name: "Stateless Authentication Flow", details: "No server-side session, token in Authorization header, refresh token patterns" },
+                                        { name: "Refresh Tokens", details: "Why needed (short-lived access tokens), rotation strategy, revocation" },
+                                        { name: "Token Revocation & Blacklist", details: "Logout handling (removing from client), blacklist implementation, cache invalidation" },
+                                        { name: "Key Rotation", details: "Rolling keys, key versioning, handling token validation during rotation" },
+                                        { name: "Security Considerations", details: "Token size impact, claim size limits, algorithm selection, key security" },
+                                    ]
+                                },
+                                {
+                                    name: "OAuth 2.0 & OpenID Connect",
+                                    children: [
+                                        { name: "OAuth 2.0 Fundamentals", details: "Authorization flows (Authorization Code, Implicit, Resource Owner Password, Client Credentials, Refresh Token)" },
+                                        { name: "Authorization Code Flow", details: "Most common, authorization endpoint, token endpoint, redirect URI, authorization code grant" },
+                                        { name: "OAuth 2.0 Roles", details: "Resource Owner, Client, Authorization Server, Resource Server, delegation of authority" },
+                                        { name: "Scopes & Permissions", details: "Fine-grained permissions, scope validation, scope downscoping" },
+                                        { name: "OpenID Connect", details: "ID token, UserInfo endpoint, discovery document (.well-known/openid-configuration)" },
+                                        { name: "Spring Security OAuth2 Support", details: "@EnableOAuth2Sso (legacy), spring-security-oauth2-client (modern), OAuth2User, OidcUser" },
+                                        { name: "OAuth2 Client Configuration", details: "spring.security.oauth2.client.registration.*, provider configuration" },
+                                        { name: "Token Management", details: "OAuth2AccessToken, OAuth2RefreshToken, TokenRepository, token persistence" },
+                                        { name: "PKCE (Proof Key for Code Exchange)", details: "Preventing authorization code interception, code_challenge, code_verifier" },
+                                    ]
+                                },
+                                {
+                                    name: "API Security Patterns",
+                                    children: [
+                                        { name: "Bearer Token Authentication", details: "Authorization header format, token extraction, Bearer scheme" },
+                                        { name: "API Key Authentication", details: "X-API-Key header, URL parameter keys, key validation, rotation" },
+                                        { name: "Mutual TLS (mTLS)", details: "Client certificate validation, certificate chains, certificate pinning" },
+                                        { name: "Rate Limiting & Throttling", details: "Per-user, per-IP, global limits, sliding window, token bucket algorithms" },
+                                        { name: "Request Signing", details: "AWS Signature V4, HMAC-SHA256, timestamp validation, replay attack prevention" },
+                                        { name: "Input Validation & Sanitization", details: "@Valid, custom validators, XSS prevention, SQL injection prevention" },
+                                        { name: "Output Encoding", details: "JSON encoding, HTML entity encoding, URL encoding context-specific encoding" },
+                                    ]
+                                },
+                                {
+                                    name: "Advanced Security Topics",
+                                    children: [
+                                        { name: "Method-Level Security", details: "@Secured, @PreAuthorize, @PostAuthorize, @PreFilter, @PostFilter, SpEL expressions" },
+                                        { name: "Role-Based Access Control (RBAC)", details: "Roles vs permissions, role hierarchy, role mapping" },
+                                        { name: "Attribute-Based Access Control (ABAC)", details: "Fine-grained policies, decision rules, attribute evaluation" },
+                                        { name: "Auditing & Logging", details: "SecurityEventPublisher, authentication events, access denied events, compliance logging" },
+                                        { name: "Principal Resolver", details: "Getting authenticated user in controllers, @AuthenticationPrincipal, custom resolvers" },
+                                        { name: "Antlr-based SpEL Security Expressions", details: "hasRole(), hasAuthority(), isAnonymous(), isAuthenticated(), permitAll(), denyAll()" },
+                                        { name: "Custom Security Expressions", details: "Custom SpEL functions, complex authorization logic, reusable expressions" },
+                                    ]
+                                },
+                            ]
                         },
+
+                        // =====================================================================
+                        // 6. REACTIVE & ASYNC
+                        // =====================================================================
                         {
-                            name: "Observability",
+                            name: "Reactive Programming & Async Patterns",
                             children: [
-                                { name: "Logging (SLF4J, Logback)" },
-                                { name: "Actuator (health, metrics)" },
-                            ],
+                                {
+                                    name: "Spring WebFlux",
+                                    children: [
+                                        { name: "Reactive Streams Specification", details: "Publisher, Subscriber, Subscription, backpressure protocol" },
+                                        { name: "Project Reactor", details: "Mono<T>, Flux<T>, hot vs cold streams, schedulers, operators" },
+                                        { name: "WebFlux Annotations", details: "@RestController, @RequestMapping work same as MVC, @GetExchange, @PostExchange (modern)" },
+                                        { name: "Functional Routing", details: "RouterFunction, HandlerFunction, RequestPredicate, route() DSL" },
+                                        { name: "Reactive Controllers", details: "Return Mono<T>, Flux<T>, ResponseEntity<Mono<T>>, streaming responses" },
+                                        { name: "Error Handling in WebFlux", details: "onErrorResume(), onErrorReturn(), onErrorMap(), Global WebExceptionHandler, @ExceptionHandler compatibility" },
+                                        { name: "Timeout & Backpressure", details: "timeout(), onBackpressureBuffer(), onBackpressureDrop(), handling slow subscribers" },
+                                        { name: "Testing WebFlux", details: "WebTestClient, StepVerifier, reactor test utilities" },
+                                    ]
+                                },
+                                {
+                                    name: "Async Controllers (Servlet-Based)",
+                                    children: [
+                                        { name: "CompletableFuture Return Types", details: "Non-blocking servlet async, thread pool configuration, timeout handling" },
+                                        { name: "DeferredResult", details: "Manually setting result in callback, timeout handler, exception handler" },
+                                        { name: "Callable Return Type", details: "Spring wraps in async task executor, result resolution happens in separate thread" },
+                                        { name: "AsyncWebUtils", details: "getAsyncDispatcher(), getAsyncManager() for advanced control" },
+                                        { name: "Thread Pool Configuration", details: "TaskExecutor bean naming (async, webMvcAsync), core pool size, queue capacity" },
+                                        { name: "Async Best Practices", details: "Exception propagation, timeout management, context propagation (MDC)" },
+                                    ]
+                                },
+                                {
+                                    name: "Reactive Operators",
+                                    children: [
+                                        { name: "Transformation Operators", details: "map(), flatMap(), concatMap(), switchMap(), transform(), cast()" },
+                                        { name: "Filtering Operators", details: "filter(), take(n), skip(n), distinct(), distinctUntilChanged()" },
+                                        { name: "Combining Operators", details: "merge(), concat(), zip(), combineLatest(), withLatestFrom()" },
+                                        { name: "Time-Based Operators", details: "delayElement(), timeout(), interval(), buffer(duration/count), window()" },
+                                        { name: "Error Handling Operators", details: "onErrorResume(), onErrorReturn(), onErrorMap(), retry(), retryWhen(), retry with backoff" },
+                                        { name: "Side Effect Operators", details: "doOnNext(), doOnError(), doOnComplete(), doFinally(), doOnCancel(), peek() (deprecated)" },
+                                        { name: "Buffering & Collection", details: "buffer(), bufferUntil(), collect(), toList(), reduce()" },
+                                        { name: "Subscription & Scheduling", details: "subscribeOn(), publishOn(), parallel(), sequential(), limitRate()" },
+                                    ]
+                                },
+                                {
+                                    name: "TaskExecutor & Scheduling",
+                                    children: [
+                                        { name: "@Async Methods", details: "@EnableAsync, method return types (void, Future, CompletableFuture, ListenableFuture)" },
+                                        { name: "TaskExecutor Configuration", details: "ThreadPoolTaskExecutor bean, core pool size, max pool size, queue capacity, rejection policy" },
+                                        { name: "TaskScheduler & Scheduling", details: "@Scheduled, @EnableScheduling, fixed delay, fixed rate, cron expressions" },
+                                        { name: "@Scheduled Configuration", details: "initialDelay, fixedDelay, fixedRate, cron, zone, different for concurrent tasks" },
+                                        { name: "Async Result Handling", details: "Future.get(), AsyncResult wrapper, timeout on get()" },
+                                        { name: "Exception Handling in Async", details: "AsyncUncaughtExceptionHandler, AsyncConfigurer, logging uncaught exceptions" },
+                                    ]
+                                },
+                            ]
                         },
+
+                        // =====================================================================
+                        // 7. OBSERVABILITY & MONITORING
+                        // =====================================================================
+                        {
+                            name: "Observability, Monitoring & Logging",
+                            children: [
+                                {
+                                    name: "Logging Framework & Configuration",
+                                    children: [
+                                        { name: "SLF4J (Simple Logging Facade for Java)", details: "Facade pattern, deferred binding, logging framework independence" },
+                                        { name: "Logback", details: "Default Spring Boot logger, appenders, encoders, loggers hierarchy, root logger" },
+                                        { name: "log4j2 Integration", details: "Alternative to Logback, exclusions, configuration" },
+                                        { name: "Logging Configuration", details: "application.yml logging setup, per-package levels, environment-specific configs" },
+                                        { name: "Pattern Configuration", details: "%d{}, %logger{}, %msg, %mdc{}, %X{} for MDC" },
+                                        { name: "Appenders", details: "ConsoleAppender, FileAppender, RollingFileAppender, SyslogAppender" },
+                                        { name: "Async Appenders", details: "Performance improvement, queue size, overflow policy, discard strategy" },
+                                        { name: "Structured Logging", details: "JSON logging, logstash-logback-encoder, structured fields, correlation IDs" },
+                                        { name: "MDC (Mapped Diagnostic Context)", details: "ThreadLocal storage, request ID tracking, %mdc placeholder, automatic cleanup" },
+                                        { name: "Custom Logger Configuration", details: "Custom converters, filters, appender chains" },
+                                    ]
+                                },
+                                {
+                                    name: "Spring Boot Actuator",
+                                    children: [
+                                        { name: "Actuator Basics", details: "spring-boot-starter-actuator, /actuator endpoints, sensitive=true defaults (Spring Boot 1.x)" },
+                                        { name: "Built-in Endpoints", details: "/health, /metrics, /info, /env, /configprops, /loggers, /threaddump, /heapdump, /mappings" },
+                                        { name: "Health Indicators", details: "ApplicationHealthIndicator, DataSourceHealthIndicator, DiskSpaceHealthIndicator, custom HealthIndicator" },
+                                        { name: "Health Groups", details: "management.endpoint.health.group.*, custom health groups, liveness, readiness probes" },
+                                        { name: "Metrics Collection", details: "MeterRegistry, Meter types (Counter, Gauge, Timer, DistributionSummary, LongTaskTimer)" },
+                                        { name: "Micrometer Integration", details: "Metrics export (Prometheus, CloudWatch, InfluxDB, Graphite, New Relic)" },
+                                        { name: "Custom Metrics", details: "@Timed annotation, MeterBinder, registry.counter(), registry.timer()" },
+                                        { name: "Performance Metrics", details: "JVM metrics (memory, GC), process metrics (CPU, file handles), HTTP metrics (requests, response time)" },
+                                        { name: "Endpoint Exposure", details: "management.endpoints.web.exposure.include/exclude, HTTP/JMX exposure" },
+                                        { name: "Custom Actuator Endpoints", details: "@Endpoint, @ReadOperation, @WriteOperation, @DeleteOperation, WebEndpoint" },
+                                        { name: "Audit Events", details: "AuditEventRepository, AuditEvent publishing, tracking configuration changes" },
+                                    ]
+                                },
+                                {
+                                    name: "Distributed Tracing",
+                                    children: [
+                                        { name: "Spring Cloud Sleuth", details: "Trace ID, Span ID, automatic trace context propagation, Brave instrumentation" },
+                                        { name: "Trace Context Propagation", details: "HTTP headers (b3, W3C), async task context, RestTemplate/WebClient/FeignClient integration" },
+                                        { name: "Zipkin Integration", details: "Zipkin exporter, span collection, distributed trace visualization" },
+                                        { name: "Jaeger Integration", details: "OpenTelemetry exporter, complex traces, service dependencies" },
+                                        { name: "Baggage (Propagated Context)", details: "Baggage fields, baggage correlation IDs, thread-local propagation, async context" },
+                                        { name: "Span Customization", details: "@NewSpan, @SpanTag, @ContinueSpan, custom span processors" },
+                                        { name: "Performance Impact", details: "Sampling strategies (AlwaysSampler, ProbabilityBasedSampler), span reporter async delivery" },
+                                    ]
+                                },
+                                {
+                                    name: "Metrics Monitoring",
+                                    children: [
+                                        { name: "Prometheus Integration", details: "/actuator/prometheus endpoint, Prometheus scraping, metric format" },
+                                        { name: "Common Metrics", details: "http_requests_total, http_request_duration_seconds, jvm_memory_used, process_cpu_usage" },
+                                        { name: "Tag-Based Metrics", details: "Dimensionality, cardinality explosion risks, tag naming conventions" },
+                                        { name: "Database Metrics", details: "Connection pool size, idle connections, hikaricp.connections.* metrics" },
+                                        { name: "Request Metrics", details: "Route-level, status code distribution, percentile latencies" },
+                                        { name: "Custom Gauge/Counter/Timer", details: "MeterRegistry.gauge(), .counter(), .timer(), function/callable argument" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 8. CONFIGURATION MANAGEMENT
+                        // =====================================================================
+                        {
+                            name: "Configuration Management",
+                            children: [
+                                {
+                                    name: "Externalized Configuration",
+                                    children: [
+                                        { name: "Configuration Hierarchy", details: "Command-line args > System properties > Environment variables > application.yml > application.properties" },
+                                        { name: "application.yml vs application.properties", details: "YAML hierarchy vs flat keys, Spring prefers YAML, .properties format with dots" },
+                                        { name: "Profile-Specific Configs", details: "application-{profile}.yml, multiple active profiles, profile activation (spring.profiles.active)" },
+                                        { name: "Environment Variables", details: "Uppercase with underscores, Spring Boot variable mapping (SPRING_APPLICATION_NAME → spring.application.name)" },
+                                        { name: "Command-Line Arguments", details: "--key=value format, priority over all other sources" },
+                                        { name: ".env File Support", details: "spring-dotenv or dotenv-java library, local development setup" },
+                                    ]
+                                },
+                                {
+                                    name: "@ConfigurationProperties",
+                                    children: [
+                                        { name: "@ConfigurationProperties Basics", details: "@ConfigurationProperties(prefix=\"app\"), field binding, camelCase to kebab-case conversion" },
+                                        { name: "Type Conversion", details: "String to int/boolean/Duration/List/Map automatic conversion" },
+                                        { name: "Validation", details: "@Validated, @NotNull, @Min, @Max on properties class, ConfigurationPropertiesValidator" },
+                                        { name: "Relaxed Binding", details: "app.name = APP_NAME = app-name support" },
+                                        { name: "Nested Properties", details: "Complex objects, @NestedConfigurationProperty (Spring Boot 2.2+), list of objects" },
+                                        { name: "@EnableConfigurationProperties", details: "Registering configuration class as bean, constructor injection in @Configuration" },
+                                        { name: "Metadata Hints", details: "spring-configuration-metadata.json for IDE autocompletion, @ConfigurationProperty deprecation" },
+                                    ]
+                                },
+                                {
+                                    name: "@Value & Property Injection",
+                                    children: [
+                                        { name: "@Value Basic Usage", details: "${property.name} placeholders, default values (@Value(\"${property:default}\"))" },
+                                        { name: "@Value with SpEL", details: "#{expression} syntax, method invocation, bean references" },
+                                        { name: "Limitations of @Value", details: "Only works on @Component/@Configuration, property with colon is fragile, no type conversion hints" },
+                                        { name: "Type Conversion", details: "String → int, boolean, Duration, List<String>, Map<String, String>" },
+                                        { name: "@Value vs @ConfigurationProperties", details: "Simple properties vs complex configs, type-safe vs string-based" },
+                                    ]
+                                },
+                                {
+                                    name: "Spring Cloud Config Server",
+                                    children: [
+                                        { name: "Centralized Configuration", details: "Remote git repo for configs, environment-specific overrides, Spring Cloud Config Server setup" },
+                                        { name: "@EnableConfigServer", details: "Config server endpoint /config/{application}/{profile}/{label}" },
+                                        { name: "Config Client", details: "spring-cloud-config-client dependency, bootstrap.yml for config server location" },
+                                        { name: "Refresh Configuration", details: "POST /actuator/refresh, @RefreshScope, ConfigurationPropertiesRebinder" },
+                                        { name: "Git Repository Setup", details: "Branch per environment, label/profile resolution" },
+                                        { name: "Fallback & Retry", details: "Offline support, retry template, fail-fast=false" },
+                                        { name: "Encryption", details: "Encrypted values in config, key management, symmetric/asymmetric encryption" },
+                                    ]
+                                },
+                                {
+                                    name: "Secrets Management",
+                                    children: [
+                                        { name: "Environment Variable Secrets", details: "Storing in CI/CD environment, never in git" },
+                                        { name: "HashiCorp Vault Integration", details: "spring-cloud-vault dependency, secret path resolution, dynamic secrets" },
+                                        { name: "AWS Secrets Manager", details: "spring-cloud-aws-starter-secrets-manager, automatic rotation" },
+                                        { name: "Azure Key Vault", details: "spring-cloud-azure-starter-keyvault-secrets, Java Key Store integration" },
+                                        { name: "Google Cloud Secret Manager", details: "spring-cloud-gcp-starter-secretmanager" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 9. TESTING
+                        // =====================================================================
+                        {
+                            name: "Testing",
+                            children: [
+                                {
+                                    name: "Unit Testing with JUnit & Mockito",
+                                    children: [
+                                        { name: "JUnit 5 (Jupiter)", details: "@Test, @ParameterizedTest, @DisplayName, @Nested, @BeforeEach, @AfterEach, assertions" },
+                                        { name: "Mockito Basics", details: "@Mock, @InjectMocks, when().thenReturn(), verify(), ArgumentCaptor" },
+                                        { name: "Mock vs Stub", details: "Spies (partial mocks), MockedStatic for static methods, ArgumentMatchers" },
+                                        { name: "Behavior Verification", details: "verify() call count, argument verification, never(), times(), atLeast(), atMost()" },
+                                        { name: "Test Fixtures & Setup", details: "@BeforeEach, @BeforeAll, Test Factory pattern for complex setups" },
+                                        { name: "Exception Testing", details: "assertThrows(), assertThrowsExactly(), exception message verification" },
+                                    ]
+                                },
+                                {
+                                    name: "Spring Test Framework",
+                                    children: [
+                                        { name: "@SpringBootTest", details: "Full application context loading, integration testing, webEnvironment modes (MOCK, RANDOM_PORT, DEFINED_PORT)" },
+                                        { name: "@WebMvcTest", details: "Only web layer, no business logic beans, MockMvc injection, controller testing" },
+                                        { name: "@DataJpaTest", details: "Only persistence layer, test transactions, TestEntityManager, in-memory database" },
+                                        { name: "@RestClientTest", details: "RestTemplate/RestClient testing, MockRestServiceServer" },
+                                        { name: "@MockMvcTest", details: "MockMvc instance for servlet testing" },
+                                        { name: "TestRestTemplate", details: "Alternative to RestTemplate for testing, @SpringBootTest + TestRestTemplate" },
+                                        { name: "@DirtiesContext", details: "Resets context after test, avoiding test pollution, performance implications" },
+                                        { name: "@Transactional on Tests", details: "Auto-rollback, avoiding test pollution, isolation issues" },
+                                    ]
+                                },
+                                {
+                                    name: "MockMvc for REST Testing",
+                                    children: [
+                                        { name: "MockMvc Basics", details: "perform(), andExpect(), andReturn(), andDo(), status(), jsonPath()" },
+                                        { name: "Request Building", details: "MockMvcRequestBuilders.get/post/put/delete/patch(), headers, body, contentType" },
+                                        { name: "Response Assertions", details: "status().isOk(), content().json(), content().string(), jsonPath() matchers" },
+                                        { name: "JSON Path Testing", details: "$.fieldName, $.array[0], $.array[*].field, complex JSON navigation" },
+                                        { name: "Mock Beans", details: "@MockBean for replacing beans, behaviors with when().thenReturn()" },
+                                        { name: "Performance Testing", details: "print() for debugging, request/response logging" },
+                                    ]
+                                },
+                                {
+                                    name: "Testcontainers Integration",
+                                    children: [
+                                        { name: "Container-Based Testing", details: "Docker containers for databases, message queues, external services in tests" },
+                                        { name: "Supported Containers", details: "PostgreSQL, MySQL, MongoDB, Redis, RabbitMQ, Kafka, Elasticsearch, S3 (LocalStack)" },
+                                        { name: "Spring Boot Integration", details: "@Testcontainers, @Container, static vs instance containers, lifecycle management" },
+                                        { name: "Database Testing", details: "JDBC URL from container, automatic schema creation, test data loading" },
+                                        { name: "Custom Containers", details: "GenericContainer for custom images, environment variables, port mapping" },
+                                        { name: "Network Modes", details: "Container networking, service discovery between containers" },
+                                    ]
+                                },
+                                {
+                                    name: "Test Data Management",
+                                    children: [
+                                        { name: "Builders & Factories", details: "TestDataBuilder pattern, Factory pattern for test fixtures" },
+                                        { name: "Faker Libraries", details: "java-faker for random test data, reproducible seeds" },
+                                        { name: "Database Fixtures", details: "SQL scripts (data.sql, schema.sql), DBUnit, FlyWay test migrations" },
+                                        { name: "Reset & Cleanup", details: "Truncate all tables between tests, database state management" },
+                                    ]
+                                },
+                                {
+                                    name: "Testing Best Practices",
+                                    children: [
+                                        { name: "Test Naming Conventions", details: "Given-When-Then, descriptive names (@DisplayName)" },
+                                        { name: "Test Independence", details: "No shared state, @DirtiesContext, transaction rollback, test ordering" },
+                                        { name: "Avoid Test Pollution", details: "Cleanup after tests, independent setup per test" },
+                                        { name: "Performance Considerations", details: "Context caching, avoiding unnecessary full app context loads, parallel test execution" },
+                                        { name: "Mocking External Dependencies", details: "@MockBean for beans, WireMock for HTTP endpoints, testcontainers for data services" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 10. CACHING
+                        // =====================================================================
+                        {
+                            name: "Caching",
+                            children: [
+                                {
+                                    name: "Spring Cache Abstraction",
+                                    children: [
+                                        { name: "@Cacheable", details: "Cache hit → return cached result, cache miss → execute method, store result, condition & unless" },
+                                        { name: "@CachePut", details: "Always execute method, always update cache, use after write operations" },
+                                        { name: "@CacheEvict", details: "Remove cache entry, allEntries=true for clearing entire cache, beforeInvocation" },
+                                        { name: "@Caching", details: "Combining multiple cache annotations, complex caching scenarios" },
+                                        { name: "Cache Key Generation", details: "SimpleKeyGenerator, custom KeyGenerator, SpEL expressions in @Cacheable(\"#id\")" },
+                                        { name: "Conditional Caching", details: "condition (before method), unless (after method), SpEL conditions" },
+                                        { name: "@EnableCaching", details: "Enabling cache support, proxy-based AOP, aspect configuration" },
+                                    ]
+                                },
+                                {
+                                    name: "Cache Providers & Configuration",
+                                    children: [
+                                        { name: "ConcurrentHashMap Cache", details: "Default, in-memory, no TTL or eviction" },
+                                        { name: "Ehcache Integration", details: "spring-boot-starter-cache + ehcache dependency, ehcache.xml configuration, eviction policies" },
+                                        { name: "Caffeine Cache", details: "Modern alternative to Guava, expireAfterWrite, expireAfterAccess, maximumSize, weak references" },
+                                        { name: "Redis Cache", details: "Distributed cache, serialization, TTL configuration, RedisTemplate setup" },
+                                        { name: "Memcached", details: "spring-boot-starter-cache + memcached client, client configuration" },
+                                        { name: "Spring Session with Cache", details: "Session storage in Redis/Memcached, distributed session management" },
+                                    ]
+                                },
+                                {
+                                    name: "Redis Caching Details",
+                                    children: [
+                                        { name: "RedisTemplate & StringRedisTemplate", details: "Serialization (JDK, JSON), operations, template method pattern" },
+                                        { name: "Cache Configuration", details: "RedisConnectionFactory, RedisTemplate bean setup, serialization strategy" },
+                                        { name: "TTL & Expiration", details: "EXPIRE, expireAt commands, automatic cleanup, redis eviction policies" },
+                                        { name: "Cache Invalidation", details: "Manual invalidation (DEL), pattern-based invalidation (KEYS pattern), @CacheEvict" },
+                                        { name: "Distributed Locking", details: "Redis SETEX/SETNX for pessimistic locking, lua scripts for atomic operations" },
+                                        { name: "Pub/Sub for Cache Events", details: "Notification on cache updates, listening to Redis events" },
+                                    ]
+                                },
+                                {
+                                    name: "Advanced Caching Patterns",
+                                    children: [
+                                        { name: "Write-Through Cache", details: "Write to cache first, then database, consistency guarantee, slower writes" },
+                                        { name: "Write-Behind Cache", details: "Write to cache immediately, async flush to database, risk of data loss" },
+                                        { name: "Read-Through Cache", details: "Cache-aside vs cache-as-aside, logic in cache or application" },
+                                        { name: "Cache Stampede", details: "Problem definition, locks for cache miss, probabilistic early refresh" },
+                                        { name: "Cache Invalidation Strategies", details: "TTL, manual invalidation, event-based invalidation, versioning" },
+                                        { name: "Two-Level Caching", details: "L1 (in-memory), L2 (Redis), consistency challenges" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 11. MESSAGE QUEUES & ASYNCHRONOUS MESSAGING
+                        // =====================================================================
+                        {
+                            name: "Message Queues & Asynchronous Messaging",
+                            children: [
+                                {
+                                    name: "Spring Cloud Stream",
+                                    children: [
+                                        { name: "Message-Driven Architecture", details: "Event streaming, loose coupling, publish-subscribe vs point-to-point" },
+                                        { name: "@EnableBinding", details: "Binding interfaces to message brokers, Source/Sink/Processor (deprecated in 3.0)" },
+                                        { name: "Functional Programming Model", details: "Function<>, Consumer<>, Supplier<> beans, declarative bindings (Spring Cloud Stream 3.0+)" },
+                                        { name: "Channel Binding", details: "input, output channel configuration, multiple bindings" },
+                                        { name: "@StreamListener", details: "Message handling (deprecated in 3.0), consumer routing, header mapping" },
+                                        { name: "Message Headers", details: "Custom headers, contentType header, standard headers (correlationId, sequenceSize)" },
+                                        { name: "Error Handling", details: "ErrorChannel binding, error handler configuration, Dead Letter Queue (DLQ)" },
+                                        { name: "Partitioning", details: "partitionKeyExpression, partitionCount, ordered message processing" },
+                                    ]
+                                },
+                                {
+                                    name: "Kafka Integration",
+                                    children: [
+                                        { name: "Kafka Basics", details: "Topics, partitions, consumer groups, offsets, replication factor" },
+                                        { name: "spring-cloud-stream-kafka", details: "Kafka binder configuration, producer/consumer properties" },
+                                        { name: "KafkaTemplate", details: "Sending messages, callbacks, transactions, serialization" },
+                                        { name: "@KafkaListener", details: "Message consumption, topic/partition subscription, group id" },
+                                        { name: "Consumer Groups", details: "Automatic load balancing, offset management, group rebalancing" },
+                                        { name: "Exactly-Once Semantics", details: "Idempotent producers, transactional consumers, offset management" },
+                                        { name: "Error Handling in Kafka", details: "DefaultErrorHandler, retry template, DLT (Dead Letter Topic)" },
+                                        { name: "Monitoring & Metrics", details: "Consumer lag monitoring, offset lag metrics" },
+                                    ]
+                                },
+                                {
+                                    name: "RabbitMQ Integration",
+                                    children: [
+                                        { name: "RabbitMQ Concepts", details: "Exchanges (direct, fanout, topic, headers), queues, bindings, routing keys" },
+                                        { name: "spring-cloud-stream-rabbit", details: "RabbitMQ binder, producer/consumer configuration" },
+                                        { name: "RabbitTemplate", details: "Sending messages, routing key, exchange setup, reply-to patterns" },
+                                        { name: "@RabbitListener", details: "Message consumption, queue binding, handler selection" },
+                                        { name: "Dead Letter Exchange (DLX)", details: "Automatic DLQ setup, requeue strategy, ttl + dlx pattern" },
+                                        { name: "Acknowledgement Modes", details: "AUTO, MANUAL, NONE, channel-back on error" },
+                                        { name: "Prefetch & QoS", details: "consumer.prefetch configuration, fair dispatch" },
+                                    ]
+                                },
+                                {
+                                    name: "Event Sourcing & CQRS",
+                                    children: [
+                                        { name: "Event Sourcing Concept", details: "Append-only log, state reconstruction, time travel debugging" },
+                                        { name: "Event Store Implementation", details: "Database table per event type vs single event store, event versioning" },
+                                        { name: "Event Publishing", details: "ApplicationEventPublisher, @EventListener, async event handling (@Async)" },
+                                        { name: "Saga Pattern", details: "Distributed transactions, orchestration vs choreography, Spring Cloud Stream implementation" },
+                                        { name: "CQRS (Command Query Responsibility Segregation)", details: "Separate models for write/read, read replicas, eventual consistency" },
+                                        { name: "Eventual Consistency", details: "Reconciliation, conflict resolution, out-of-order event handling" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 12. MICROSERVICES & DISTRIBUTED SYSTEMS
+                        // =====================================================================
+                        {
+                            name: "Microservices & Distributed Systems",
+                            children: [
+                                {
+                                    name: "Spring Cloud Core Concepts",
+                                    children: [
+                                        { name: "Service Discovery", details: "Client-side discovery, server-side discovery, service registry (Eureka, Consul, Zookeeper)" },
+                                        { name: "Service Registration", details: "@EnableEurekaClient, @EnableDiscoveryClient (platform-agnostic), automatic registration/deregistration" },
+                                        { name: "Load Balancing", details: "Ribbon (legacy), Spring Cloud LoadBalancer, round-robin, random, weighted strategies" },
+                                        { name: "@LoadBalanced RestTemplate", details: "Automatic service lookup, service name as host" },
+                                        { name: "API Gateway", details: "Spring Cloud Gateway, route predicates, filters, service routing" },
+                                        { name: "Service Mesh Concepts", details: "Istio, Linkerd, sidecar proxies, traffic management without framework changes" },
+                                    ]
+                                },
+                                {
+                                    name: "Resilience Patterns",
+                                    children: [
+                                        { name: "Circuit Breaker Pattern", details: "Failure detection, circuit states (CLOSED, OPEN, HALF_OPEN), state transitions, timeout" },
+                                        { name: "Spring Cloud Circuit Breaker", details: "@CircuitBreaker annotation, Resilience4j/Hystrix implementation, fallback methods" },
+                                        { name: "Retry Logic", details: "RetryTemplate, @Retry annotation, max attempts, backoff strategy, exponential backoff with jitter" },
+                                        { name: "Bulkhead Pattern", details: "Thread pool isolation, ThreadPoolBulkhead vs SemaphoreBulkhead, failure isolation" },
+                                        { name: "Rate Limiting", details: "RateLimiter, token bucket algorithm, permit reservation" },
+                                        { name: "Timeout Handling", details: "Timeout configuration, timeout vs CircuitBreaker, cascading failures" },
+                                        { name: "Fallback Strategies", details: "Default values, cached values, degraded service mode, fallback method design" },
+                                    ]
+                                },
+                                {
+                                    name: "Distributed Tracing with Spring Cloud Sleuth",
+                                    children: [
+                                        { name: "Trace Context", details: "Trace ID, Span ID, parent span tracking across services" },
+                                        { name: "Automatic Instrumentation", details: "HTTP clients (RestTemplate, WebClient, FeignClient), messaging (Kafka, RabbitMQ)" },
+                                        { name: "Zipkin Integration", details: "Distributed trace visualization, latency analysis, service dependency graph" },
+                                        { name: "Sampler Configuration", details: "Always, never, probability-based sampling, adaptive sampling" },
+                                    ]
+                                },
+                                {
+                                    name: "API Gateway Patterns",
+                                    children: [
+                                        { name: "Spring Cloud Gateway", details: "@EnableGatewayConfiguration, RouteLocator bean, routes with predicates/filters" },
+                                        { name: "Route Predicates", details: "Path, Host, Method, Query, Headers, Cookie, Before/After/Between time predicates" },
+                                        { name: "Gateway Filters", details: "AddRequestHeader, AddResponseHeader, RewritePath, RateLimiter, CircuitBreaker" },
+                                        { name: "Load Balancing", details: "LB:// prefix for service discovery, load balancer strategy" },
+                                        { name: "CORS in Gateway", details: "Global CORS configuration, CorsWebFilter" },
+                                        { name: "Request/Response Transformation", details: "Modifying headers, body rewriting, content-type transformation" },
+                                    ]
+                                },
+                                {
+                                    name: "Distributed Configuration Management",
+                                    children: [
+                                        { name: "Spring Cloud Config", details: "Centralized config server, git backend, environment-specific configs, client-side resolution" },
+                                        { name: "Config Server Setup", details: "@EnableConfigServer, git repository structure, label/profile/application mapping" },
+                                        { name: "Config Client", details: "bootstrap.yml configuration, actuator refresh endpoint, @RefreshScope" },
+                                        { name: "Encryption", details: "Spring Cloud Config encryption, key management, encrypted property values" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 13. BUILD & DEPLOYMENT
+                        // =====================================================================
+                        {
+                            name: "Build, Deployment & DevOps",
+                            children: [
+                                {
+                                    name: "Build Tools & Maven",
+                                    children: [
+                                        { name: "Maven Project Structure", details: "src/main/java, src/test/java, pom.xml, multimodule projects" },
+                                        { name: "pom.xml Essentials", details: "Parent POM, dependencyManagement, version management, Spring Boot parent" },
+                                        { name: "Dependency Management", details: "Transitive dependencies, exclusions, scope (compile, provided, runtime, test)" },
+                                        { name: "Maven Plugins", details: "spring-boot-maven-plugin, maven-compiler-plugin, maven-surefire-plugin" },
+                                        { name: "Maven Profiles", details: "Environment-specific builds, profile activation, property overrides" },
+                                        { name: "Build Lifecycle", details: "clean, compile, test, package, install, deploy phases" },
+                                        { name: "Plugin Management", details: "pluginManagement, version consistency, plugin configuration" },
+                                    ]
+                                },
+                                {
+                                    name: "Gradle (Alternative)",
+                                    children: [
+                                        { name: "Gradle Basics", details: "build.gradle file, tasks, configurations, plugins" },
+                                        { name: "Gradle Plugins", details: "org.springframework.boot plugin, dependency management plugin" },
+                                        { name: "Multi-project Builds", details: "settings.gradle, subproject configuration, shared build logic" },
+                                        { name: "Task Customization", details: "Custom tasks, task dependencies, lifecycle hooks" },
+                                    ]
+                                },
+                                {
+                                    name: "Docker & Containerization",
+                                    children: [
+                                        { name: "Docker Basics", details: "Images, containers, layers, Dockerfile best practices" },
+                                        { name: "Multi-Stage Docker Builds", details: "Reducing image size, build stage → runtime stage, distroless images" },
+                                        { name: "Spring Boot Docker", details: "spring-boot-docker-compose support, layered jars, OCI image build support" },
+                                        { name: "Spring Boot Maven/Gradle Plugin", details: "build-image goal/task, Docker daemon config, registry authentication" },
+                                        { name: "Spring Boot Layered JARs", details: "Faster layer caching, dependencies → application layers, OCI image build" },
+                                        { name: ".dockerignore", details: "Excluding files from build context, .git, /target, optimization" },
+                                        { name: "Runtime Security", details: "Non-root user, read-only filesystem, resource limits, health checks" },
+                                    ]
+                                },
+                                {
+                                    name: "Kubernetes Deployment",
+                                    children: [
+                                        { name: "Kubernetes Concepts", details: "Pods, Services, Deployments, ConfigMaps, Secrets, Ingress, StatefulSets" },
+                                        { name: "Spring Cloud Kubernetes", details: "spring-cloud-starter-kubernetes, ConfigMap/Secret loading, auto-configuration" },
+                                        { name: "Health Checks", details: "Liveness probes (/actuator/health/liveness), Readiness probes (/actuator/health/readiness)" },
+                                        { name: "Resource Limits", details: "Memory requests/limits, CPU requests/limits, QoS classes" },
+                                        { name: "ConfigMaps & Secrets", details: "Mounting as environment variables, volume mounts, Spring Cloud Config alternative" },
+                                        { name: "Graceful Shutdown", details: "preStop hooks, termination grace period, connection draining" },
+                                    ]
+                                },
+                                {
+                                    name: "CI/CD Integration",
+                                    children: [
+                                        { name: "GitHub Actions", details: "Workflows, triggers, matrix builds, action marketplace" },
+                                        { name: "GitLab CI", details: ".gitlab-ci.yml, pipelines, stages, runners" },
+                                        { name: "Jenkins", details: "Declarative pipelines, Groovy scripting, integration with Maven/Gradle" },
+                                        { name: "Build Pipeline Stages", details: "Build, test, package, push to registry, deploy" },
+                                        { name: "Automated Testing in CI", details: "Unit tests, integration tests, container testing" },
+                                        { name: "Artifact Repository", details: "Nexus, Artifactory, ECR (Elastic Container Registry), Harbor" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 14. PERFORMANCE OPTIMIZATION
+                        // =====================================================================
+                        {
+                            name: "Performance Optimization",
+                            children: [
+                                {
+                                    name: "JVM Performance Tuning",
+                                    children: [
+                                        { name: "Heap Size Configuration", details: "-Xms (initial), -Xmx (maximum), sizing rules, monitoring" },
+                                        { name: "Garbage Collection", details: "G1GC vs ZGC vs Shenandoah, GC logging, young/old gen sizing" },
+                                        { name: "GC Tuning", details: "Pause time vs throughput, GC overhead target, NewRatio, SurvivorRatio" },
+                                        { name: "Memory Profiling", details: "Heap dump analysis, memory leaks, object retention, profiler tools (JProfiler, YourKit)" },
+                                        { name: "Thread Pool Tuning", details: "Core vs max threads, queue size, rejection policy, monitoring" },
+                                        { name: "JFR (Java Flight Recorder)", details: "Low-overhead profiling, event streaming, analysis" },
+                                    ]
+                                },
+                                {
+                                    name: "Database Performance",
+                                    children: [
+                                        { name: "Query Optimization", details: "Execution plans, index usage, EXPLAIN analysis, query rewriting" },
+                                        { name: "Index Strategy", details: "Primary key, unique indexes, composite indexes, covering indexes" },
+                                        { name: "N+1 Problem Solutions", details: "JOIN FETCH in JPQL, @EntityGraph, batch loading" },
+                                        { name: "Connection Pool Optimization", details: "Pool sizing, idle connection timeout, connection validation" },
+                                        { name: "Batch Operations", details: "Batch inserts/updates, JdbcBatchItemWriter, entity manager flushing" },
+                                        { name: "Database Caching", details: "Query result caching, read replicas, materialized views" },
+                                    ]
+                                },
+                                {
+                                    name: "HTTP & Network Optimization",
+                                    children: [
+                                        { name: "Compression", details: "gzip compression, Content-Encoding: gzip, compression threshold" },
+                                        { name: "Connection Reuse", details: "Keep-Alive headers, connection pooling in HTTP clients, multiplexing" },
+                                        { name: "Caching Headers", details: "Cache-Control, ETag, Last-Modified, 304 Not Modified responses" },
+                                        { name: "CDN & Static Assets", details: "Serving assets from CDN, cache-busting with file hashing" },
+                                        { name: "HTTP/2 & HTTP/3", details: "Server push, multiplexing, header compression, QUIC protocol" },
+                                    ]
+                                },
+                                {
+                                    name: "Application-Level Optimization",
+                                    children: [
+                                        { name: "Lazy Initialization", details: "@Lazy on @Bean, deferred bean creation, startup time reduction" },
+                                        { name: "Startup Time Reduction", details: "Conditional auto-configuration, exclude unnecessary starters, profiling startup" },
+                                        { name: "Response Time Optimization", details: "Async processing, reactive streams, parallel stream processing" },
+                                        { name: "Memory Optimization", details: "Object pooling, stream processing vs loading all in memory, data structure selection" },
+                                    ]
+                                },
+                                {
+                                    name: "Monitoring Performance Metrics",
+                                    children: [
+                                        { name: "Request Latency Tracking", details: "Response time percentiles (p50, p95, p99), distribution analysis" },
+                                        { name: "Throughput Metrics", details: "Requests per second, error rate, success rate" },
+                                        { name: "Resource Utilization", details: "CPU usage, memory usage, disk I/O, network bandwidth" },
+                                        { name: "Database Performance Metrics", details: "Query execution time, slow query log, connection pool utilization" },
+                                        { name: "GC Metrics", details: "GC frequency, pause time, full GC occurrences" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 15. ADVANCED TOPICS
+                        // =====================================================================
+                        {
+                            name: "Advanced Topics",
+                            children: [
+                                {
+                                    name: "Spring Data Advanced",
+                                    children: [
+                                        { name: "Custom Repository Methods", details: "Implementing repository fragments, custom behavior, @Query limitations" },
+                                        { name: "Dynamic Queries", details: "Specifications, Criteria API, QueryDSL, MongoDB Criteria" },
+                                        { name: "Reactive Data", details: "R2DBC, ReactiveCrudRepository, reactive transactions, backpressure" },
+                                        { name: "Graph Databases", details: "Spring Data Neo4j, @Node, @Relationship, pattern-based queries" },
+                                        { name: "Time Series Databases", details: "Spring Data InfluxDB, TimescaleDB integration" },
+                                    ]
+                                },
+                                {
+                                    name: "Spring Batch Processing",
+                                    children: [
+                                        { name: "Batch Architecture", details: "JobLauncher, Job, Step, ItemReader/Processor/Writer" },
+                                        { name: "Item Processing", details: "ItemProcessor for transformations, filtering, validation" },
+                                        { name: "Chunked Processing", details: "chunk-oriented processing, commit interval, fault tolerance" },
+                                        { name: "Tasklet Processing", details: "Simple single-operation steps, custom logic" },
+                                        { name: "Error Handling & Retry", details: "Skip policies, Retry policy, exception classification" },
+                                        { name: "Scaling Batch Jobs", details: "Partitioning, parallel steps, remote chunking" },
+                                        { name: "Job Scheduling", details: "Scheduled job execution, trigger after previous completion" },
+                                    ]
+                                },
+                                {
+                                    name: "Spring Integration (EAI)",
+                                    children: [
+                                        { name: "Message-Driven Architecture", details: "MessageChannel, Message<?>, messaging DSL" },
+                                        { name: "Adapters & Channels", details: "InboundChannelAdapter, OutboundChannelAdapter, DirectChannel, QueueChannel" },
+                                        { name: "Error Handling", details: "ErrorChannel, ExpressionEvaluatingErrorMessageHandler, error routing" },
+                                        { name: "Transformers & Filters", details: "@Transformer, @Filter, content-based routing" },
+                                        { name: "Aggregators & Splitters", details: "Message aggregation, splitting composite messages" },
+                                        { name: "File & FTP Integration", details: "Reading/writing files, polling directories, FTP adapter" },
+                                    ]
+                                },
+                                {
+                                    name: "Scheduled & Batch Operations",
+                                    children: [
+                                        { name: "@Scheduled Methods", details: "Fixed rate, fixed delay, cron expressions, timezone support" },
+                                        { name: "TaskScheduler Customization", details: "ScheduledThreadPoolTaskScheduler configuration, thread pool sizing" },
+                                        { name: "Distributed Scheduling", details: "Shedlock for distributed locking, preventing concurrent execution" },
+                                        { name: "Batch Processing", details: "Spring Batch framework, Job/Step architecture, fault tolerance" },
+                                    ]
+                                },
+                                {
+                                    name: "Web Technologies",
+                                    children: [
+                                        { name: "WebSocket Support", details: "@EnableWebSocket, WebSocketHandler, STOMP protocol" },
+                                        { name: "Server-Sent Events (SSE)", details: "SseEmitter, push notifications, automatic reconnection" },
+                                        { name: "GraphQL", details: "Spring GraphQL, @QueryMapping, @MutationMapping, type definitions" },
+                                        { name: "HATEOAS", details: "Spring HATEOAS, Link generation, ResourceAssembler, Link relations" },
+                                    ]
+                                },
+                                {
+                                    name: "Code Quality & Maintainability",
+                                    children: [
+                                        { name: "Code Coverage", details: "JaCoCo plugin, line/branch coverage, coverage thresholds" },
+                                        { name: "Static Analysis", details: "SonarQube, Spotbugs, Checkstyle, PMD, code smell detection" },
+                                        { name: "Architectural Testing", details: "ArchUnit for architecture enforcement, layer separation, cyclic dependency detection" },
+                                        { name: "Documentation", details: "Javadoc, API documentation, Spring REST Docs, OpenAPI/Swagger" },
+                                    ]
+                                },
+                            ]
+                        },
+
+                        // =====================================================================
+                        // 16. TROUBLESHOOTING & COMMON ISSUES
+                        // =====================================================================
+                        {
+                            name: "Troubleshooting & Common Issues",
+                            children: [
+                                {
+                                    name: "Dependency & Conflict Resolution",
+                                    children: [
+                                        { name: "Dependency Tree Analysis", details: "mvn dependency:tree, gradle dependencies, finding conflicting versions" },
+                                        { name: "Version Conflicts", details: "Transitive dependency resolution, exclusions, bill of materials (BOM)" },
+                                        { name: "Circular Dependencies", details: "Detecting cycles, design refactoring, lazy initialization" },
+                                        { name: "Spring Boot Version Compatibility", details: "Spring Framework version, Java version requirements, deprecated features" },
+                                    ]
+                                },
+                                {
+                                    name: "Common Errors & Solutions",
+                                    children: [
+                                        { name: "BeanCreationException", details: "Missing dependency, circular bean references, @Autowired on final field" },
+                                        { name: "LazyInitializationException", details: "Accessing lazy-loaded entity outside transaction, solution with OpenSessionInView (anti-pattern)" },
+                                        { name: "DataIntegrityViolationException", details: "Constraint violations, cascade delete issues, transaction rollback" },
+                                        { name: "RequestMethodNotSupportedException", details: "Wrong HTTP method, missing @GetMapping/@PostMapping on endpoint" },
+                                        { name: "HttpMessageNotWritableException", details: "Circular JSON references, serialization issue, custom JsonSerializer needed" },
+                                        { name: "Timeout Exceptions", details: "Connection timeout, read timeout, database query timeout" },
+                                    ]
+                                },
+                                {
+                                    name: "Debugging Techniques",
+                                    children: [
+                                        { name: "Debug Logging", details: "DEBUG level for Spring framework, logging specific packages" },
+                                        { name: "IDE Debugging", details: "Breakpoints, conditional breakpoints, watches, step over/into" },
+                                        { name: "Remote Debugging", details: "-agentlib:jdwp configuration, remote JVM debugging" },
+                                        { name: "Thread Dumps", details: "jstack tool, deadlock detection, thread state analysis" },
+                                        { name: "Heap Dump Analysis", details: "jmap tool, heap dump file analysis, memory leak detection" },
+                                    ]
+                                },
+                                {
+                                    name: "Performance Issues",
+                                    children: [
+                                        { name: "Slow Startup", details: "Component scanning optimization, class path scanning exclusion" },
+                                        { name: "High Memory Usage", details: "Heap size tuning, memory leak detection, caching strategy review" },
+                                        { name: "Slow Queries", details: "Query plan analysis, missing indexes, N+1 detection" },
+                                        { name: "Connection Pool Exhaustion", details: "Pool size configuration, connection timeout, long-running transactions" },
+                                    ]
+                                },
+                            ]
+                        }
                     ],
                 },
                 {
