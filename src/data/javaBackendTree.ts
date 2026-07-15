@@ -4690,7 +4690,7 @@ export const javaBackendTree = {
                                                                             ]
                                                                         },
                                                                         { "name": "Example: {\"userId\":\"123\",\"role\":\"admin\",\"exp\":1640995200}" },
-                                                                        { "name": "Base64Url: eyJ1c2VySWQiOiIxMjMiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE2NDA5OTUyMDB9" }
+                                                                        { "name": "Base64Url: eyJ1c2VySWQiOiIxMjMiLCJyb2xlIjoiYWRtaW4DB9" }
                                                                     ]
                                                                 },
                                                                 {
@@ -4705,7 +4705,7 @@ export const javaBackendTree = {
                                                                 {
                                                                     "name": "Complete Example",
                                                                     "children": [
-                                                                        { "name": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjMiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE2NDA5OTUyMDB9.signature" }
+                                                                        { "name": "eyJhbGciOiIs---9.eyJ1c2VySWQi---k.signature" }
                                                                     ]
                                                                 }
                                                             ]
@@ -4898,7 +4898,7 @@ export const javaBackendTree = {
                                                                 { "name": "Self-contained token with user data" },
                                                                 { "name": "Stateless authentication" },
                                                                 { "name": "No server-side storage needed" },
-                                                                { "name": "Vertically scalable by design" }
+                                                                { "name": "Horizontally scalable by design" }
                                                             ]
                                                         }
                                                     ]
@@ -5829,7 +5829,7 @@ export const javaBackendTree = {
         },
 
         {
-            "name": "Data & Persistence (Interview-Optimized DBMS)",
+            "name": "Data & Persistence",
             "children": [
                 {
                     "name": "DBMS Foundations",
@@ -5846,7 +5846,7 @@ export const javaBackendTree = {
                     ]
                 },
                 {
-                    "name": "Database Modeling (ER Model)",
+                    "name": "Data Modeling (ER Model)",
                     "children": [
                         {
                             "name": "ER Model Basics",
