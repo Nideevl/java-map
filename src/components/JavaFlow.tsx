@@ -37,7 +37,7 @@ function getNodeDimensions(label: string, isCode = false) {
     return total + Math.max(1, wrappedCount);
   }, 0);
   
-  const height = Math.max(50, Math.min(estimatedWrappedLines * 18 + 24, 380));
+  const height = Math.max(50, estimatedWrappedLines * 15 + 24);
 
   return { width, height };
 }
