@@ -22,19 +22,25 @@ function getNeonColor(nodeId: string, isDark: boolean = true): string {
   const depth = nodeId.split('-').length - 1;
   return (isDark ? darkNeonColors : lightNeonColors)[depth % 8];
 }
-
 function getNodeDimensions(label: string, isCode = false) {
   const lines = label.split('\n');
   const maxLineLength = Math.max(...lines.map(l => l.length));
 
-  const maxWidth = isCode ? 600 : 320;
-
-  const width = Math.max(140, Math.min(maxLineLength * 7 + 40, maxWidth));
-  const height = Math.max(50, lines.length * 15 + 24);
+  const maxWidth = isCode ? 600 : 350;
+  
+  // Calculate width more conservatively
+  const width = Math.max(160, Math.min(maxLineLength * 8 + 60, maxWidth)); // ← 6px per char, not 4
+  
+  // Account for text wrapping: estimate wrapped lines
+  const estimatedWrappedLines = lines.reduce((total, line) => {
+    const wrappedCount = Math.ceil((line.length * 6 + 60) / maxWidth);
+    return total + Math.max(1, wrappedCount);
+  }, 0);
+  
+  const height = Math.max(50, Math.min(estimatedWrappedLines * 18 + 24, 380));
 
   return { width, height };
 }
-
 function getSubtreeIds(id: string, edges: any[]): string[] {
   const result: string[] = [id];
   const queue = [id];
@@ -75,7 +81,8 @@ function buildStyledNodes(
     const isCodeNode =
       node.data.label.includes("class") ||
       node.data.label.includes("System.out") ||
-      node.data.label.includes(";");
+      node.data.label.includes(";") ||
+      node.data.label.includes("|");
 
     const nodeDims = getNodeDimensions(node.data.label, isCodeNode);
 

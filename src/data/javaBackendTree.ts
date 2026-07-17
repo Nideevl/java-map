@@ -5719,1019 +5719,2001 @@ export const javaBackendTree = {
                     name: "Spring Boot",
                     children: [
                         {
-                            name: "Fundamentals & Architecture",
+                            name: "Spring Framework Basics",
                             children: [
                                 {
-                                    name: "Spring Framework Overview",
+                                    name: "Dependency Injection (DI)",
                                     children: [
-                                        { name: "IoC (Inversion of Control) Container", details: "Bean lifecycle, bean factories, application context" },
-                                        { name: "Dependency Injection (DI)", details: "Constructor, setter, field injection; @Autowired, @Inject, @Resource" },
-                                        { name: "Bean Management", details: "Bean scope (singleton, prototype, request, session, global-session), lazy initialization, bean post-processors" },
-                                        { name: "AOP (Aspect-Oriented Programming)", details: "@Aspect, @Pointcut, @Before, @After, @Around, @AfterReturning, @AfterThrowing" },
-                                        { name: "Annotations vs XML Configuration", details: "When to use each, migration strategies" },
+                                        {
+                                            name: "IoC Container",
+                                            children: [
+                                                { name: "\"Central registry that creates, manages, and wires beans\"" },
+                                                { name: "Inversion of Control: Framework controls object lifecycle, not application" },
+                                                { name: "Benefits: Loose coupling, testability, flexibility, centralized configuration" },
+                                                { name: "Container Types: ApplicationContext (most used), BeanFactory (lightweight)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Autowired Annotation",
+                                            children: [
+                                                { name: "\"Instructs container to inject dependency automatically\"" },
+                                                { name: "Can be applied to: fields, constructors, setters, methods" },
+                                                { name: "required=false: Injection optional (null if not available)" },
+                                                { name: "Ex:- @Autowired private UserService userService;" },
+                                                { name: "Problem: NullPointerException if bean not found and required=true" },
+                                                { name: "Field Injection: Less testable (hard to inject mock in unit tests)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Qualifier Annotation",
+                                            children: [
+                                                { name: "\"Disambiguate when multiple beans of same type exist\"" },
+                                                { name: "Spring: 'Which PaymentService should I inject?' (Credit or Debit?)" },
+                                                { name: "Solution: @Qualifier specifies bean name explicitly" },
+                                                {
+                                                    name: "Ex:-\n\n@Component(\"creditCardService\")\nclass CreditCardService implements PaymentService { }\n\n@Component(\"debitCardService\")\nclass DebitCardService implements PaymentService { }\n\n// Injection:\n@Autowired\n@Qualifier(\"creditCardService\")\nprivate PaymentService paymentService;"
+                                                },
+                                                { name: "NoUniqueBeanDefinitionException: Thrown if @Qualifier missing + multiple beans found" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Primary Annotation",
+                                            children: [
+                                                { name: "\"Mark bean as default when multiple candidates exist\"" },
+                                                { name: "Priority: @Primary > @Qualifier > error if multiple" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\n@Primary // This is default PaymentService\nclass CreditCardService implements PaymentService { }\n\n@Component\nclass DebitCardService implements PaymentService { }\n\n// If no @Qualifier, CreditCardService injected\n@Autowired\nprivate PaymentService paymentService;"
+                                                },
+                                                { name: "Use when: One bean is obviously the default choice" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Constructor Injection (Best Practice)",
+                                            children: [
+                                                { name: "\"Inject dependencies via constructor parameters\"" },
+                                                { name: "Advantages: Immutability (final fields), explicit dependencies, testable (easy mock), fail-fast (missing deps detected at startup)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    private final UserRepository userRepository;\n    private final EmailService emailService;\n    \n    // Spring automatically calls this constructor\n    public UserService(UserRepository userRepository, EmailService emailService) {\n        this.userRepository = userRepository;\n        this.emailService = emailService;\n    }\n}"
+                                                },
+                                                { name: "Modern Spring (4.3+): @Autowired on constructor is optional if single constructor" },
+                                                { name: "Immutability: Prevents accidental reassignment (final keyword)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Setter Injection",
+                                            children: [
+                                                { name: "\"Inject via setter method\"" },
+                                                { name: "Advantages: Flexible (optional dependencies), can change after creation" },
+                                                { name: "Disadvantages: Mutable (object state can change), circular dependency risk" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    private UserRepository userRepository;\n    private EmailService emailService;\n    \n    @Autowired\n    public void setUserRepository(UserRepository userRepository) {\n        this.userRepository = userRepository;\n    }\n    \n    @Autowired(required = false)\n    public void setEmailService(EmailService emailService) {\n        this.emailService = emailService; // Optional\n    }\n}"
+                                                },
+                                                { name: "Use when: Dependency is optional or needs to change at runtime" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Field Injection",
+                                            children: [
+                                                { name: "\"Inject directly into field\"" },
+                                                { name: "Advantages: Concise, clean syntax" },
+                                                { name: "Disadvantages: Hard to test (can't inject mock without reflection), hidden dependencies, mutable state" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Autowired\n    private EmailService emailService;\n}"
+                                                },
+                                                { name: "Spring team discourages: Prefer constructor injection" },
+                                                { name: "Testing problem: Unit test must use Spring context or reflection to set field" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Circular Dependency Problem",
+                                            children: [
+                                                { name: "\"Bean A depends on B, Bean B depends on A\"" },
+                                                {
+                                                    name: "Ex (Circular):-\n\n@Service\nclass UserService {\n    @Autowired\n    private OrderService orderService; // depends on OrderService\n}\n\n@Service\nclass OrderService {\n    @Autowired\n    private UserService userService; // depends on UserService\n}"
+                                                },
+                                                { name: "Constructor Injection: Detects circular dependency at startup → BeanCurrentlyInCreationException (FAIL FAST)" },
+                                                { name: "Field Injection: May not detect until runtime → NullPointerException (FAIL LATE)" },
+                                                {
+                                                    name: "Solutions:",
+                                                    "children": [
+                                                        { name: "Refactor design: Extract common logic to third bean" },
+                                                        { name: "Use setter injection with @Lazy" },
+                                                        { name: "Use @PostConstruct for delayed initialization" },
+                                                        { name: "Use ObjectProvider<T> for lazy resolution" }
+                                                    ]
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Spring Boot Auto-Configuration",
+                                    name: "Beans & Component Scanning",
                                     children: [
-                                        { name: "@SpringBootApplication", details: "Combines @Configuration, @EnableAutoConfiguration, @ComponentScan" },
-                                        { name: "@EnableAutoConfiguration mechanics", details: "META-INF/spring.factories, conditional beans, exclusions" },
-                                        { name: "Auto-configuration conditions", details: "@ConditionalOnClass, @ConditionalOnMissingBean, @ConditionalOnProperty, @ConditionalOnWebApplication" },
-                                        { name: "Custom auto-configuration", details: "Creating starter projects, auto-config classes" },
-                                        { name: "Configuration Order & Priority", details: "Starters vs application.properties vs application.yml" },
+                                        {
+                                            name: "@Bean Annotation",
+                                            children: [
+                                                { name: "\"Manually register bean returned by method\"" },
+                                                { name: "Used in @Configuration classes" },
+                                                { name: "Useful: Third-party classes (can't add @Component), complex initialization, conditional beans" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\npublic class AppConfig {\n    @Bean\n    public DataSource dataSource() {\n        // Complex initialization\n        return new HikariDataSource(config);\n    }\n    \n    @Bean\n    public JdbcTemplate jdbcTemplate(DataSource dataSource) {\n        // Spring automatically injects DataSource from above @Bean\n        return new JdbcTemplate(dataSource);\n    }\n}"
+                                                },
+                                                { name: "Bean Name: Method name by default, @Bean(name=\"customName\") to override" },
+                                                { name: "Dependencies: Can inject into method parameters (Spring resolves them)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Component Annotation",
+                                            children: [
+                                                { name: "\"Generic stereotype for any Spring-managed component\"" },
+                                                { name: "Auto-discovered during component scanning" },
+                                                { name: "No parameters needed (class name becomes bean name)" },
+                                                { name: "Ex:- @Component public class MyService { }" },
+                                                { name: "Spring scans classpath at startup for @Component, @Service, @Repository, @Controller" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Service Annotation",
+                                            children: [
+                                                { name: "\"Specialized @Component for business logic layer\"" },
+                                                { name: "Semantically indicates service/business logic" },
+                                                { name: "Functionally identical to @Component (just a stereotype)" },
+                                                { name: "Best practice: Use @Service for services, improves code readability" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    public void registerUser(User user) { }\n    public User findById(Long id) { }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Repository Annotation",
+                                            children: [
+                                                { name: "\"Specialized @Component for data access layer\"" },
+                                                { name: "Semantically indicates data access / persistence" },
+                                                { name: "PersistenceExceptionTranslator: Translates database exceptions to Spring exceptions" },
+                                                { name: "Functionally similar to @Component but with exception translation" },
+                                                {
+                                                    name: "Ex:-\n\n@Repository\npublic class UserRepository {\n    public User findById(Long id) { }\n    public void save(User user) { }\n}"
+                                                },
+                                                { name: "Note: For Spring Data JPA, repository interfaces extend CrudRepository (no @Repository needed)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Controller Annotation",
+                                            children: [
+                                                { name: "\"Specialized @Component for web controllers\"" },
+                                                { name: "Handles HTTP requests, returns views or data" },
+                                                { name: "Methods can return: String (view name), ModelAndView, ResponseEntity, POJO (converted to JSON)" },
+                                                {
+                                                    name: "Ex:-\n\n@Controller\n@RequestMapping(\"/users\")\npublic class UserController {\n    @GetMapping(\"/{id}\")\n    public String getUser(@PathVariable Long id, Model model) {\n        // Fetch user, add to model, return view name\n        model.addAttribute(\"user\", userService.findById(id));\n        return \"user-detail\"; // View name (user-detail.html)\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Configuration Annotation",
+                                            children: [
+                                                { name: "\"Mark class as Spring configuration source\"" },
+                                                { name: "Contains @Bean method definitions" },
+                                                { name: "Processed at startup to create beans" },
+                                                { name: "Enables conditional bean registration (@Conditional)" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\npublic class DatabaseConfig {\n    @Bean\n    public DataSource devDataSource() {\n        return new HikariDataSource(devConfig);\n    }\n    \n    @Bean\n    public DataSource prodDataSource() {\n        return new HikariDataSource(prodConfig);\n    }\n}"
+                                                },
+                                                { name: "CGLIB: Spring uses CGLIB to enhance @Configuration classes (intercepts method calls)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Component Scanning",
+                                            children: [
+                                                { name: "\"Automatic discovery and registration of @Component beans\"" },
+                                                { name: "Triggered at application startup by Spring Boot" },
+                                                { name: "Default: Scans same package and sub-packages as @SpringBootApplication" },
+                                                { name: "@ComponentScan: Explicitly specify packages to scan" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\n@ComponentScan(basePackages = {\"com.example.service\", \"com.example.repository\"})\npublic class AppConfig { }"
+                                                },
+                                                { name: "Exclusion: @ComponentScan(excludeFilters = @ComponentScan.Filter(type=FilterType.ANNOTATION, classes=Deprecated.class))" },
+                                                { name: "Performance: Narrower scan scope improves startup time" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Embedded Servers & Application Lifecycle",
+                                    name: "Bean Lifecycle",
                                     children: [
-                                        { name: "Embedded Tomcat/Undertow/Jetty", details: "Server configuration, port, context-path, servlet configuration" },
-                                        { name: "Application Startup Events", details: "ApplicationStartingEvent, ApplicationEnvironmentPreparedEvent, ApplicationContextInitializedEvent, ApplicationPreparedEvent, ApplicationStartedEvent, ApplicationReadyEvent, ApplicationFailedEvent" },
-                                        { name: "CommandLineRunner & ApplicationRunner", details: "Initialization logic after startup" },
-                                        { name: "Spring Boot Lifecycle Hooks", details: "@PostConstruct, @PreDestroy, InitializingBean, DisposableBean, ContextClosedEvent" },
-                                        { name: "Graceful Shutdown", details: "server.shutdown.grace-period, server.shutdown=graceful" },
+                                        {
+                                            name: "Complete Lifecycle Flow",
+                                            children: [
+                                                { name: "1. Instantiation: Spring creates bean instance via constructor" },
+                                                { name: "2. Populate Properties: Set field values via setters" },
+                                                { name: "3. Set Bean Name: BeanNameAware.setBeanName() called (if implements interface)" },
+                                                { name: "4. Set Application Context: ApplicationContextAware.setApplicationContext() (if implements)" },
+                                                { name: "5. Pre-Initialization: BeanPostProcessor.postProcessBeforeInitialization() called" },
+                                                { name: "6. Initialization: @PostConstruct method OR InitializingBean.afterPropertiesSet() OR init-method in @Bean" },
+                                                { name: "7. Post-Initialization: BeanPostProcessor.postProcessAfterInitialization()" },
+                                                { name: "8. Bean Ready: Available in container for injection/use" },
+                                                { name: "9. Destruction: @PreDestroy method OR DisposableBean.destroy() on shutdown" },
+                                                { name: "Order of init methods: @PostConstruct > InitializingBean.afterPropertiesSet() > @Bean(initMethod)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PostConstruct Annotation",
+                                            children: [
+                                                { name: "\"Called after dependency injection complete\"" },
+                                                { name: "Perfect for initialization logic (connect to DB, load cache, validate)" },
+                                                { name: "Runs only once, before bean returned to container" },
+                                                { name: "Can throw exception to prevent bean creation" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    @Autowired\n    private UserRepository userRepository;\n    \n    private Cache<Integer, User> userCache;\n    \n    @PostConstruct\n    public void init() {\n        userCache = CacheBuilder.newBuilder().build();\n        // Load initial data\n        List<User> users = userRepository.findAll();\n        users.forEach(u -> userCache.put(u.getId(), u));\n        System.out.println(\"UserService initialized with \" + users.size() + \" users\");\n    }\n}"
+                                                },
+                                                { name: "Exception in @PostConstruct: Prevents bean creation → BeanCreationException" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PreDestroy Annotation",
+                                            children: [
+                                                { name: "\"Called just before bean destruction (on shutdown)\"" },
+                                                { name: "Perfect for cleanup: close DB connection, flush cache, release resources" },
+                                                { name: "Called when ApplicationContext.close() OR JVM shutdown (via shutdown hooks)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class ConnectionPoolManager {\n    private HikariDataSource dataSource;\n    \n    @PostConstruct\n    public void init() {\n        dataSource = new HikariDataSource(config);\n        System.out.println(\"Connection pool initialized\");\n    }\n    \n    @PreDestroy\n    public void cleanup() {\n        if (dataSource != null) {\n            dataSource.close();\n            System.out.println(\"Connection pool closed\");\n        }\n    }\n}"
+                                                },
+                                                { name: "Timeout: Spring waits for @PreDestroy completion before proceeding" }
+                                            ]
+                                        },
+                                        {
+                                            name: "InitializingBean Interface",
+                                            children: [
+                                                { name: "\"Alternative to @PostConstruct (older approach)\"" },
+                                                { name: "Implement afterPropertiesSet() method" },
+                                                { name: "Called after all properties set and dependencies injected" },
+                                                { name: "Less readable than @PostConstruct (couples to Spring API)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class ConfigService implements InitializingBean {\n    @Override\n    public void afterPropertiesSet() throws Exception {\n        // Initialization logic\n    }\n}"
+                                                },
+                                                { name: "Preference: @PostConstruct preferred (decouples from Spring)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "DisposableBean Interface",
+                                            children: [
+                                                { name: "\"Alternative to @PreDestroy (older approach)\"" },
+                                                { name: "Implement destroy() method" },
+                                                { name: "Called before bean destruction" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class ResourceManager implements DisposableBean {\n    @Override\n    public void destroy() throws Exception {\n        // Cleanup logic\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "BeanPostProcessor",
+                                            children: [
+                                                { name: "\"Customize bean creation before/after initialization\"" },
+                                                { name: "Implements: postProcessBeforeInitialization() and postProcessAfterInitialization()" },
+                                                { name: "Applied to ALL beans in container (or filtered by type)" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class LoggingBeanPostProcessor implements BeanPostProcessor {\n    @Override\n    public Object postProcessAfterInitialization(Object bean, String beanName) {\n        System.out.println(\"Bean \" + beanName + \" of type \" + bean.getClass() + \" initialized\");\n        return bean; // Return modified or original bean\n    }\n}"
+                                                },
+                                                { name: "Use Cases: Proxy creation (AOP), property validation, bean enhancement" }
+                                            ]
+                                        }
                                     ]
                                 },
+                                {
+                                    name: "Bean Scopes",
+                                    children: [
+                                        {
+                                            name: "Singleton (Default)",
+                                            children: [
+                                                { name: "\"One instance created, shared across entire application\"" },
+                                                { name: "Instance created at container startup (eager initialization)" },
+                                                { name: "Every injection receives same instance" },
+                                                { name: "Memory efficient (shared resources)" },
+                                                { name: "Thread-safe responsibility on developer (avoid mutable state)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\n// @Scope(\"singleton\") // default, no need to specify\npublic class UserService {\n    // All components injecting UserService get SAME instance\n}"
+                                                },
+                                                { name: "Best Practice: Keep singleton beans stateless (immutable)" },
+                                                { name: "Thread Safety: If state needed, use ThreadLocal or synchronization" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Prototype",
+                                            children: [
+                                                { name: "\"New instance created for EACH injection/request\"" },
+                                                { name: "No shared state between callers" },
+                                                { name: "Higher memory usage (multiple instances)" },
+                                                { name: "@PreDestroy not called (responsibility on caller)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\n@Scope(\"prototype\")\npublic class RequestContext {\n    // Each component gets NEW RequestContext instance\n}"
+                                                },
+                                                { name: "Use Cases: Request-scoped state (user input, temporary data), beans with mutable state" },
+                                                { name: "Performance: Create overhead, avoid for frequently used beans" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Request Scope (Web Only)",
+                                            children: [
+                                                { name: "\"New instance per HTTP request\"" },
+                                                { name: "Instance created at request start, destroyed at request end" },
+                                                { name: "Available throughout request lifecycle" },
+                                                { name: "Useful: Request-specific data (user, authentication, request ID)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\n@Scope(\"request\")\n@RequestScope // Shorthand\npublic class RequestLogger {\n    @PostConstruct\n    public void init() {\n        System.out.println(\"Request started\");\n    }\n    \n    @PreDestroy\n    public void cleanup() {\n        System.out.println(\"Request ended\");\n    }\n}"
+                                                },
+                                                { name: "ScopedProxyMode.TARGET_CLASS: Proxy bean for lazy initialization" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Session Scope (Web Only)",
+                                            children: [
+                                                { name: "\"New instance per HTTP session\"" },
+                                                { name: "Lives throughout user session (persists across requests)" },
+                                                { name: "Destroyed when session expires/invalidates" },
+                                                { name: "Good for: User preferences, shopping cart, authentication state" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\n@Scope(\"session\")\n@SessionScope // Shorthand\npublic class UserCart {\n    private List<Item> items = new ArrayList<>();\n    \n    public void addItem(Item item) {\n        items.add(item); // Persists across requests\n    }\n}"
+                                                },
+                                                { name: "Memory: Each user session has separate instance" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Application Scope (Web Only)",
+                                            children: [
+                                                { name: "\"One instance per ServletContext (entire web application)\"" },
+                                                { name: "Shared across all sessions and requests" },
+                                                { name: "Similar to singleton but application-specific" },
+                                                { name: "Good for: Global app state, shared resources" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\n@Scope(\"application\")\n@ApplicationScope // Shorthand\npublic class ApplicationConfig {\n    private String appVersion = \"1.0\";\n    private int totalUsers = 0;\n    // Shared across entire app\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Scoped Proxies & Thread Safety",
+                                            children: [
+                                                { name: "Problem: Injecting request-scoped bean into singleton" },
+                                                { name: "Solution: Spring creates proxy (lazy initialization) to handle lifecycle mismatch" },
+                                                { name: "@Scope(value=\"request\", proxyMode=ScopedProxyMode.TARGET_CLASS)" },
+                                                { name: "ScopedProxyMode.TARGET_CLASS: Class-based proxy (uses CGLIB)" },
+                                                { name: "ScopedProxyMode.INTERFACES: Interface-based proxy (JDK Proxy)" }
+                                            ]
+                                        }
+                                    ]
+                                }
                             ]
                         },
-
-                        // =====================================================================
-                        // 2. REST APIs & WEB LAYER
-                        // =====================================================================
                         {
-                            name: "REST APIs & Web Layer",
+                            name: "Spring Web MVC",
                             children: [
                                 {
-                                    name: "REST API Fundamentals",
+                                    name: "Controllers & Routing",
                                     children: [
-                                        { name: "REST Principles", details: "Resource-oriented design, HATEOAS, content negotiation, statelessness" },
-                                        { name: "@RestController vs @Controller", details: "@RestController = @Controller + @ResponseBody, when to use each" },
-                                        { name: "Request Mapping Annotations", details: "@RequestMapping, @GetMapping, @PostMapping, @PutMapping, @DeleteMapping, @PatchMapping" },
-                                        { name: "Path Variables & Query Parameters", details: "@PathVariable, @RequestParam, @RequestBody" },
-                                        { name: "HTTP Method Semantics", details: "GET (safe, idempotent), POST (unsafe, non-idempotent), PUT (idempotent), DELETE (idempotent), PATCH (non-idempotent)" },
-                                        { name: "Response Status Codes", details: "1xx, 2xx, 3xx, 4xx, 5xx handling, @ResponseStatus" },
+                                        {
+                                            name: "@Controller Annotation",
+                                            children: [
+                                                { name: "\"Marks class as Spring MVC controller\"" },
+                                                { name: "Handles HTTP requests, returns views (HTML) or data" },
+                                                { name: "Methods can return: String (view name), ModelAndView, Model, ResponseEntity, void" },
+                                                {
+                                                    name: "Ex (View-based):-\n\n@Controller\n@RequestMapping(\"/users\")\npublic class UserController {\n    @GetMapping(\"/{id}\")\n    public String getUser(@PathVariable Long id, Model model) {\n        User user = userService.findById(id);\n        model.addAttribute(\"user\", user);\n        return \"user-detail\"; // Thymeleaf template: user-detail.html\n    }\n}"
+                                                },
+                                                { name: "Template Engines: Thymeleaf, Freemarker, Velocity" },
+                                                { name: "Model: Passed to view template for rendering" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@RestController Annotation",
+                                            children: [
+                                                { name: "\"Combines @Controller + @ResponseBody\"" },
+                                                { name: "Automatically serializes return value to JSON/XML" },
+                                                { name: "Used for REST APIs (no view rendering)" },
+                                                {
+                                                    name: "Ex:-\n\n@RestController\n@RequestMapping(\"/api/users\")\npublic class UserRestController {\n    @GetMapping(\"/{id}\")\n    public UserDto getUser(@PathVariable Long id) {\n        // Return POJO → automatically converted to JSON\n        return userService.findById(id);\n    }\n    \n    @PostMapping\n    public ResponseEntity<UserDto> createUser(@RequestBody CreateUserRequest req) {\n        UserDto created = userService.create(req);\n        return ResponseEntity.status(201).body(created); // 201 CREATED\n    }\n}"
+                                                },
+                                                { name: "ContentNegotiation: Spring chooses JSON/XML based on Accept header" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@RequestMapping",
+                                            children: [
+                                                { name: "\"Maps HTTP requests to handler method\"" },
+                                                { name: "Flexible: Can specify path, method, headers, consumes, produces" },
+                                                {
+                                                    name: "Parameters:-\n\npath: \"/users\" or value: \"/users\"\nmethod: RequestMethod.GET, POST, PUT, DELETE\nheaders: \"Content-Type=application/json\"\nconsumes: \"application/json\" (request body type)\nproduces: \"application/json\" (response type)"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n@RequestMapping(path=\"/users\", method=RequestMethod.GET, produces=\"application/json\")\npublic List<User> getAllUsers() { }\n\n@RequestMapping(path=\"/users\", method=RequestMethod.POST, consumes=\"application/json\")\npublic User createUser(@RequestBody User user) { }"
+                                                },
+                                                { name: "Class-level: Apply to all methods in controller" },
+                                                { name: "Method-level: Override class-level mapping" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@GetMapping",
+                                            children: [
+                                                { name: "\"Shorthand for @RequestMapping(method=GET)\"" },
+                                                { name: "Maps HTTP GET requests" },
+                                                {
+                                                    name: "Ex:-\n\n@GetMapping(\"/users/{id}\")\npublic User getUser(@PathVariable Long id) { }\n\n@GetMapping(\"/users\")\npublic List<User> getAllUsers() { }"
+                                                },
+                                                { name: "Safe & Idempotent: No side effects, multiple calls = same result" },
+                                                { name: "Query Parameters: @RequestParam String search, int page, int size" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PostMapping",
+                                            children: [
+                                                { name: "\"Shorthand for @RequestMapping(method=POST)\"" },
+                                                { name: "Maps HTTP POST requests (create new resources)" },
+                                                {
+                                                    name: "Ex:-\n\n@PostMapping(\"/users\")\npublic ResponseEntity<User> createUser(@RequestBody CreateUserRequest req) {\n    User created = userService.create(req);\n    return ResponseEntity.status(201).location(URI.create(\"/users/\" + created.getId())).body(created);\n}"
+                                                },
+                                                { name: "Idempotency: POST not idempotent (each call creates new resource)" },
+                                                { name: "Status: Return 201 CREATED with Location header pointing to new resource" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PutMapping",
+                                            children: [
+                                                { name: "\"Shorthand for @RequestMapping(method=PUT)\"" },
+                                                { name: "Maps HTTP PUT requests (replace entire resource)" },
+                                                {
+                                                    name: "Ex:-\n\n@PutMapping(\"/users/{id}\")\npublic User updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest req) {\n    return userService.update(id, req);\n}"
+                                                },
+                                                { name: "Idempotent: Multiple identical PUT calls = same result" },
+                                                { name: "vs PATCH: PUT replaces entire resource, PATCH partial update" },
+                                                { name: "Difference: PUT(entire body required), PATCH(only modified fields)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@DeleteMapping",
+                                            children: [
+                                                { name: "\"Shorthand for @RequestMapping(method=DELETE)\"" },
+                                                { name: "Maps HTTP DELETE requests (remove resource)" },
+                                                {
+                                                    name: "Ex:-\n\n@DeleteMapping(\"/users/{id}\")\npublic ResponseEntity<Void> deleteUser(@PathVariable Long id) {\n    userService.delete(id);\n    return ResponseEntity.noContent().build(); // 204 NO CONTENT\n}"
+                                                },
+                                                { name: "Idempotent: Deleting already-deleted resource = same result" },
+                                                { name: "Status: Return 204 NO CONTENT (no body) or 200 OK" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PathVariable",
+                                            children: [
+                                                { name: "\"Extract value from URL path\"" },
+                                                { name: "Variable enclosed in {braces} in path" },
+                                                {
+                                                    name: "Ex:-\n\n@GetMapping(\"/users/{id}/posts/{postId}\")\npublic Post getUserPost(@PathVariable Long id, @PathVariable Long postId) {\n    return postService.findById(postId); // id=100, postId=5\n}"
+                                                },
+                                                { name: "Type Conversion: Spring auto-converts string to Long, UUID, etc." },
+                                                { name: "Required: true (default), path variable must exist (throw 404 if missing)" },
+                                                { name: "Name: Optional, defaults to parameter name (must match if using different name)" },
+                                                {
+                                                    name: "Ex (regex validation):-\n\n@GetMapping(\"/posts/{id:\\\\d+}\")\npublic Post getPost(@PathVariable Long id) {\n    // Only matches numeric IDs\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@RequestParam",
+                                            children: [
+                                                { name: "\"Extract query parameters from URL\"" },
+                                                { name: "Key=value pairs after ? in URL" },
+                                                {
+                                                    name: "Ex:-\n\n@GetMapping(\"/users\")\npublic List<User> searchUsers(\n    @RequestParam(required=false) String name,\n    @RequestParam(defaultValue=\"0\") int page,\n    @RequestParam(defaultValue=\"10\") int size\n) {\n    // /users?name=John&page=2&size=20\n}"
+                                                },
+                                                { name: "required=false: Parameter optional (null if missing)" },
+                                                { name: "defaultValue: Provide default if missing" },
+                                                { name: "Multiple values: List<String> tags → /search?tags=java&tags=spring" },
+                                                {
+                                                    name: "Ex (multiple):-\n\n@GetMapping(\"/search\")\npublic List<Article> search(@RequestParam List<String> tags) {\n    // tags = [\"java\", \"spring\"]\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "REST Routing Best Practices",
+                                            children: [
+                                                { name: "Use nouns for resources, not verbs: /users NOT /getUsers" },
+                                                { name: "Hierarchical resources: /users/{id}/posts/{postId}/comments/{commentId}" },
+                                                { name: "Standard HTTP methods: GET (read), POST (create), PUT (update), DELETE (delete), PATCH (partial)" },
+                                                { name: "Status codes: 200 OK, 201 CREATED, 204 NO CONTENT, 400 BAD REQUEST, 404 NOT FOUND, 500 INTERNAL ERROR" },
+                                                { name: "Versioning: /api/v1/users OR Accept header: Accept: application/vnd.myapi.v1+json" },
+                                                { name: "Consistency: Use same naming convention (camelCase, kebab-case, snake_case)" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Request Handling & Lifecycle",
+                                    name: "Request & Response Handling",
                                     children: [
-                                        { name: "DispatcherServlet", details: "Central servlet, URL routing, handler mapping, request dispatch flow" },
-                                        { name: "Handler Mapping", details: "BeanNameUrlHandlerMapping, RequestMappingHandlerMapping, SimpleUrlHandlerMapping" },
-                                        { name: "Handler Interceptors", details: "@Component, HandlerInterceptor interface, preHandle, postHandle, afterCompletion" },
-                                        { name: "Request/Response Cycle", details: "ServletRequest → HandlerMapping → HandlerAdapter → Controller → View/Response" },
-                                        { name: "Method Parameters Resolution", details: "@RequestParam, @PathVariable, @RequestBody, @RequestHeader, @CookieValue, @ModelAttribute, HttpServletRequest/Response, Model, ModelMap" },
-                                        { name: "Content Negotiation", details: "Accept headers, produces/consumes, media type resolution" },
+                                        {
+                                            name: "@RequestBody",
+                                            children: [
+                                                { name: "\"Deserialize HTTP request body to Java object\"" },
+                                                { name: "Automatically converts JSON → POJO (or XML, etc.)" },
+                                                { name: "Content-Type header determines serializer (application/json)" },
+                                                {
+                                                    name: "Ex:-\n\n@PostMapping(\"/users\")\npublic User createUser(@RequestBody CreateUserRequest request) {\n    // HTTP body: {\"name\": \"John\", \"email\": \"john@example.com\"}\n    // Spring converts to CreateUserRequest object\n    return userService.create(request);\n}"
+                                                },
+                                                { name: "Validation: Use @Valid annotation with @RequestBody for constraint validation" },
+                                                { name: "Deserialization: Uses Jackson ObjectMapper by default" },
+                                                { name: "Type Safety: Mismatch in JSON → HttpMessageNotReadableException" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@ResponseBody",
+                                            children: [
+                                                { name: "\"Serialize Java object to HTTP response body\"" },
+                                                { name: "Converts POJO → JSON (or XML)" },
+                                                { name: "Can be applied to controller class or method" },
+                                                {
+                                                    name: "Ex:-\n\n@GetMapping(\"/users/{id}\")\n@ResponseBody // Optional with @RestController\npublic User getUser(@PathVariable Long id) {\n    // Returns: {\"id\": 1, \"name\": \"John\", \"email\": \"john@example.com\"}\n    return userService.findById(id);\n}"
+                                                },
+                                                { name: "Automatic: @RestController includes @ResponseBody" },
+                                                { name: "Serialization: Jackson's ObjectMapper converts POJO → JSON" }
+                                            ]
+                                        },
+                                        {
+                                            name: "ResponseEntity<T>",
+                                            children: [
+                                                { name: "\"Provides complete control over HTTP response (status, headers, body)\"" },
+                                                { name: "Fluent builder API for constructing responses" },
+                                                {
+                                                    name: "Common Status Codes:-\n\nOK(200): GET successful\nCREATED(201): POST successful (resource created)\nNO_CONTENT(204): DELETE/update successful (no body)\nBAD_REQUEST(400): Validation error\nUNAUTHORIZED(401): Missing/invalid authentication\nFORBIDDEN(403): Authenticated but no permission\nNOT_FOUND(404): Resource doesn't exist\nINTERNAL_SERVER_ERROR(500): Server error"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n@PostMapping(\"/users\")\npublic ResponseEntity<User> createUser(@RequestBody CreateUserRequest req) {\n    User created = userService.create(req);\n    return ResponseEntity\n        .status(HttpStatus.CREATED)\n        .header(\"X-Resource-Id\", created.getId().toString())\n        .body(created);\n    // OR shorthand:\n    // return ResponseEntity.created(URI.create(\"/users/\" + created.getId())).body(created);\n}\n\n@GetMapping(\"/users/{id}\")\npublic ResponseEntity<User> getUser(@PathVariable Long id) {\n    Optional<User> user = userService.findById(id);\n    return user\n        .map(u -> ResponseEntity.ok(u))\n        .orElse(ResponseEntity.notFound().build());\n}\n\n@DeleteMapping(\"/users/{id}\")\npublic ResponseEntity<Void> deleteUser(@PathVariable Long id) {\n    userService.delete(id);\n    return ResponseEntity.noContent().build(); // 204 NO CONTENT\n}"
+                                                },
+                                                { name: "HTTP Headers: Set custom headers (Location, X-Custom-Header)" },
+                                                { name: "vs @ResponseStatus: ResponseEntity more flexible (status per execution path)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "HttpStatus Enum",
+                                            children: [
+                                                { name: "\"Pre-defined HTTP status codes\"" },
+                                                { name: "Common: OK, CREATED, NO_CONTENT, BAD_REQUEST, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, GONE, INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE" },
+                                                {
+                                                    name: "Ex:-\n\nreturn ResponseEntity.status(HttpStatus.CONFLICT).body(\"Resource already exists\");\nreturn ResponseEntity.status(418).body(\"I'm a teapot\"); // Custom numeric code"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@ExceptionHandler",
+                                            children: [
+                                                { name: "\"Handle exceptions in controller method\"" },
+                                                { name: "Catches specified exception type and returns response" },
+                                                { name: "Method-level or class-level (@ControllerAdvice)" },
+                                                {
+                                                    name: "Ex:-\n\n@RestController\n@RequestMapping(\"/api/users\")\npublic class UserController {\n    @GetMapping(\"/{id}\")\n    public User getUser(@PathVariable Long id) {\n        return userService.findById(id); // throws UserNotFoundException\n    }\n    \n    @ExceptionHandler(UserNotFoundException.class)\n    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {\n        ErrorResponse error = new ErrorResponse(\"User not found\", ex.getMessage(), 404);\n        return ResponseEntity.status(404).body(error);\n    }\n}"
+                                                },
+                                                { name: "Priority: More specific exceptions handled first" },
+                                                { name: "Inheritance: Handler catches exception and subclasses" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@ControllerAdvice",
+                                            children: [
+                                                { name: "\"Global exception handler for entire application\"" },
+                                                { name: "Centralized error handling across all controllers" },
+                                                { name: "Reduces code duplication (@ExceptionHandler in every controller)" },
+                                                {
+                                                    name: "Ex:-\n\n@ControllerAdvice\npublic class GlobalExceptionHandler {\n    @ExceptionHandler(UserNotFoundException.class)\n    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {\n        ErrorResponse error = new ErrorResponse(\"User not found\", ex.getMessage(), 404);\n        return ResponseEntity.status(404).body(error);\n    }\n    \n    @ExceptionHandler(InvalidRequestException.class)\n    public ResponseEntity<ErrorResponse> handleInvalidRequest(InvalidRequestException ex) {\n        ErrorResponse error = new ErrorResponse(\"Invalid request\", ex.getMessage(), 400);\n        return ResponseEntity.status(400).body(error);\n    }\n    \n    @ExceptionHandler(Exception.class) // Catch-all\n    public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {\n        ErrorResponse error = new ErrorResponse(\"Internal server error\", ex.getMessage(), 500);\n        return ResponseEntity.status(500).body(error);\n    }\n}"
+                                                },
+                                                { name: "Order: More specific handlers take precedence" },
+                                                { name: "BasePackages: @ControllerAdvice(basePackages=\"com.example.api\") to limit scope" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Error Response Best Practices",
+                                            children: [
+                                                { name: "Standard error structure: {\"error\": \"...\", \"message\": \"...\", \"status\": 400, \"timestamp\": \"...\"}" },
+                                                { name: "Consistent error codes: Use application-specific codes (USER_NOT_FOUND, INVALID_EMAIL)" },
+                                                { name: "Don't expose stack traces in production (log internally)" },
+                                                { name: "Provide actionable messages: \"User with ID 123 not found\" NOT \"NPE\"" },
+                                                { name: "HTTP status semantics: Use correct codes (not all errors are 500)" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Validation & Error Handling",
+                                    name: "Interceptors & Filters",
                                     children: [
-                                        { name: "Bean Validation (JSR-380)", details: "@Valid, @Validated, BindingResult, standard annotations (@NotNull, @NotEmpty, @Size, @Email, @Pattern, @Min, @Max, @Range, @Future, @Past)" },
-                                        { name: "Custom Validators", details: "@Constraint annotation, ConstraintValidator interface, message interpolation" },
-                                        { name: "Method-Level Validation", details: "@Validated on class, @Valid on method parameters" },
-                                        { name: "Exception Handling", details: "@ExceptionHandler, @ControllerAdvice, @RestControllerAdvice, exception hierarchy design" },
-                                        { name: "Global Error Responses", details: "StandardErrorAttributes, ErrorAttribute customization, /error endpoint" },
-                                        { name: "HTTP Status Exceptions", details: "HttpStatusCodeException, ResponseStatusException, why prefer ResponseStatusException" },
-                                        { name: "Validation Error Responses", details: "BindingResult serialization, custom error DTOs, field-level error messages" },
+                                        {
+                                            name: "Interceptors (Spring-aware)",
+                                            children: [
+                                                { name: "\"Spring-managed components that intercept HTTP requests/responses\"" },
+                                                { name: "Can access Spring beans and ApplicationContext" },
+                                                { name: "Implement HandlerInterceptor interface" },
+                                                {
+                                                    name: "Methods:-\n\npreHandle(): Before controller method (return false to stop)\npostHandle(): After controller, before response rendering\nafterCompletion(): After response sent to client"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class RequestLoggingInterceptor implements HandlerInterceptor {\n    private static final Logger logger = LoggerFactory.getLogger(RequestLoggingInterceptor.class);\n    \n    @Override\n    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {\n        long startTime = System.currentTimeMillis();\n        request.setAttribute(\"startTime\", startTime);\n        logger.info(\"Request: {} {}\", request.getMethod(), request.getRequestURI());\n        return true; // Continue\n    }\n    \n    @Override\n    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {\n        long startTime = (Long) request.getAttribute(\"startTime\");\n        long duration = System.currentTimeMillis() - startTime;\n        logger.info(\"Response: {} in {}ms\", response.getStatus(), duration);\n    }\n}\n\n@Configuration\npublic class WebConfig implements WebMvcConfigurer {\n    @Autowired\n    private RequestLoggingInterceptor loggingInterceptor;\n    \n    @Override\n    public void addInterceptors(InterceptorRegistry registry) {\n        registry.addInterceptor(loggingInterceptor);\n    }\n}"
+                                                },
+                                                { name: "Can throw exceptions (caught by @ExceptionHandler)" },
+                                                { name: "Access to Model and View" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Filters (Servlet-level)",
+                                            children: [
+                                                { name: "\"Lower-level than interceptors, execute at servlet level\"" },
+                                                { name: "Don't have access to Spring context (can't @Autowired)" },
+                                                { name: "Implement javax.servlet.Filter interface" },
+                                                {
+                                                    name: "Methods:-\n\ninit(): Initialize filter\ndoFilter(ServletRequest, ServletResponse, FilterChain): Main logic\ndestroy(): Cleanup"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n@Component\n@WebFilter(urlPatterns = \"/*\")\npublic class RequestIdFilter implements Filter {\n    @Override\n    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)\n            throws IOException, ServletException {\n        HttpServletRequest httpRequest = (HttpServletRequest) request;\n        String requestId = UUID.randomUUID().toString();\n        httpRequest.setAttribute(\"requestId\", requestId);\n        MDC.put(\"requestId\", requestId); // For logging\n        \n        try {\n            chain.doFilter(request, response);\n        } finally {\n            MDC.remove(\"requestId\");\n        }\n    }\n}"
+                                                },
+                                                { name: "Execution order: Filter → Interceptor preHandle → Controller → Interceptor postHandle → Interceptor afterCompletion → Filter" },
+                                                { name: "Use Cases: Security (CORS), compression, request ID generation, logging" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Execution Order",
+                                            children: [
+                                                { name: "1. Filter.doFilter() enters" },
+                                                { name: "2. Interceptor.preHandle()" },
+                                                { name: "3. Controller method executes" },
+                                                { name: "4. Interceptor.postHandle()" },
+                                                { name: "5. View rendering (if applicable)" },
+                                                { name: "6. Interceptor.afterCompletion()" },
+                                                { name: "7. Filter.doFilter() exits" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Practical Example: Authentication",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class AuthenticationInterceptor implements HandlerInterceptor {\n    @Autowired\n    private JwtTokenProvider tokenProvider;\n    \n    @Override\n    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) \n            throws ServletException {\n        String token = extractToken(request);\n        \n        if (token == null || !tokenProvider.validateToken(token)) {\n            response.setStatus(401);\n            response.getWriter().write(\"Unauthorized\");\n            return false; // Block request\n        }\n        \n        UserPrincipal user = tokenProvider.getUserFromToken(token);\n        request.setAttribute(\"user\", user);\n        SecurityContextHolder.getContext().setAuthentication(user);\n        return true; // Continue\n    }\n    \n    private String extractToken(HttpServletRequest request) {\n        String header = request.getHeader(\"Authorization\");\n        if (header != null && header.startsWith(\"Bearer \")) {\n            return header.substring(7);\n        }\n        return null;\n    }\n}"
+                                                }
+                                            ]
+                                        }
                                     ]
-                                },
-                                {
-                                    name: "Response Handling & Serialization",
-                                    children: [
-                                        { name: "Message Converters", details: "HttpMessageConverter hierarchy, MappingJackson2HttpMessageConverter, registration order" },
-                                        { name: "JSON Serialization (Jackson)", details: "@JsonProperty, @JsonInclude, @JsonIgnore, @JsonFormat, @JsonDeserialize, @JsonSerialize, custom ObjectMapper config" },
-                                        { name: "Content-Type & Accept Headers", details: "Default application/json, XML support, custom media types" },
-                                        { name: "ResponseEntity", details: "Generic response wrapper, status codes, headers, body customization" },
-                                        { name: "@ResponseBody & View Resolution", details: "When ViewResolver vs message converters are used" },
-                                        { name: "Streaming Responses", details: "StreamingResponseBody for large files, ResponseBodyEmitter for streaming" },
-                                    ]
-                                },
-                                {
-                                    name: "Content Type Handling",
-                                    children: [
-                                        { name: "JSON (Jackson)", details: "Default, automatic serialization, @JsonProperty, custom converters" },
-                                        { name: "XML (JAXB)", details: "Optional dependency, XmlMapper configuration" },
-                                        { name: "Custom Media Types", details: "Registering application/vnd.api+json, application/hal+json" },
-                                        { name: "Multipart File Upload", details: "MultipartFile, MultipartResolver, commons-fileupload, storage handling" },
-                                        { name: "Form Data Binding", details: "@ModelAttribute, form-urlencoded parsing, nested objects" },
-                                    ]
-                                },
+                                }
                             ]
                         },
-
-                        // =====================================================================
-                        // 3. DATA PERSISTENCE & DATABASE
-                        // =====================================================================
                         {
-                            name: "Data Persistence & Database",
+                            name: "Spring Data & Persistence",
                             children: [
                                 {
                                     name: "Spring Data JPA",
                                     children: [
-                                        { name: "JPA & Hibernate Basics", details: "ORM concepts, Entity lifecycle (transient, managed, detached, removed)" },
-                                        { name: "Entity Mapping", details: "@Entity, @Table, @Id, @GeneratedValue (IDENTITY, SEQUENCE, TABLE, UUID), @Column, @Transient" },
-                                        { name: "Relationships", details: "@OneToOne (mappedBy, orphanRemoval, cascade), @OneToMany, @ManyToOne, @ManyToMany (join tables), lazy vs eager loading (FetchType.LAZY/EAGER)" },
-                                        { name: "Repository Pattern", details: "CrudRepository, JpaRepository, PagingAndSortingRepository, custom repository implementations" },
-                                        { name: "Query Methods", details: "Method naming conventions (findBy, countBy, existsBy, deleteBy), derived queries, @Query annotation" },
-                                        { name: "@Query Annotations", details: "JPQL queries, native SQL (@Query(nativeQuery=true)), indexed parameters, named parameters" },
-                                        { name: "Pagination & Sorting", details: "Pageable interface, Page vs Slice, Sort objects, custom Sort implementation" },
-                                        { name: "Projections", details: "Interface-based projections, class-based projections, open/closed projections, @Query with projections" },
-                                        { name: "Specifications (QueryDSL)", details: "Specification interface, Predicate building, dynamic query construction, complex filtering" },
-                                        { name: "Auditing", details: "@Audited, @CreatedDate, @LastModifiedDate, @CreatedBy, @LastModifiedBy, AuditorAware, @EnableJpaAuditing" },
+                                        {
+                                            name: "JPA (Java Persistence API) Basics",
+                                            children: [
+                                                { name: "\"Specification for object-relational mapping (ORM)\"" },
+                                                { name: "Hibernate is most common implementation" },
+                                                { name: "Abstracts database details, works with SQL/NoSQL" },
+                                                { name: "Automatic CRUD operations, lazy/eager loading, transactions" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Entity Annotation",
+                                            children: [
+                                                { name: "\"Mark class as JPA entity (maps to database table)\"" },
+                                                { name: "Class name becomes table name (can override with @Table)" },
+                                                { name: "Must have no-arg constructor (public or protected)" },
+                                                { name: "Attributes become columns (can customize with @Column)" },
+                                                {
+                                                    name: "Ex:-\n\n@Entity\n@Table(name = \"users\") // Explicit table name\npublic class User {\n    @Id\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\n    private Long id;\n    \n    @Column(name = \"user_name\", nullable = false, length = 100)\n    private String name;\n    \n    @Column(unique = true, nullable = false)\n    private String email;\n    \n    @CreationTimestamp // Automatic\n    private LocalDateTime createdAt;\n    \n    @UpdateTimestamp\n    private LocalDateTime updatedAt;\n    \n    // Getters, setters, constructors\n}"
+                                                },
+                                                { name: "Naming: Table name convention (user_profile OR UserProfile)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Id Annotation",
+                                            children: [
+                                                { name: "\"Mark field as primary key\"" },
+                                                { name: "Every entity must have one @Id" },
+                                                { name: "Composite primary key: Use @EmbeddedId or @IdClass" },
+                                                {
+                                                    name: "Ex (composite):-\n\n@Embeddable\npublic class AuthorBookId {\n    private Long authorId;\n    private Long bookId;\n}\n\n@Entity\npublic class AuthorBook {\n    @EmbeddedId\n    private AuthorBookId id;\n    \n    private Integer rating;\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@GeneratedValue",
+                                            children: [
+                                                { name: "\"Auto-generate primary key values\"" },
+                                                { name: "Strategy types: IDENTITY, SEQUENCE, TABLE, AUTO" },
+                                                {
+                                                    name: "IDENTITY (Database auto-increment):-\n\n@Id\n@GeneratedValue(strategy = GenerationType.IDENTITY)\nprivate Long id;\n// Database generates: 1, 2, 3...\n// Good for: MySQL, PostgreSQL\n// Limitation: JPA may not know ID until insert completes"
+                                                },
+                                                {
+                                                    name: "SEQUENCE (Database sequence):-\n\n@Id\n@GeneratedValue(strategy = GenerationType.SEQUENCE, generator=\"user_seq\")\n@SequenceGenerator(name=\"user_seq\", sequenceName=\"seq_user\", allocationSize=1)\nprivate Long id;\n// Good for: Oracle, PostgreSQL\n// Benefit: ID available before insert (better for batch)"
+                                                },
+                                                {
+                                                    name: "UUID (Recommended for distributed systems):-\n\n@Id\n@GeneratedValue(generator=\"UUID\")\n@GenericGenerator(name=\"UUID\", strategy=\"org.hibernate.id.UUIDGenerator\")\nprivate String id;"
+                                                },
+                                                { name: "AUTO (Let JPA choose based on database)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Column Annotation",
+                                            children: [
+                                                { name: "\"Customize column properties\"" },
+                                                {
+                                                    name: "Parameters:-\n\nname: \"user_name\" (custom column name)\nnullable: false (NOT NULL constraint)\nlength: 100 (VARCHAR length)\nunique: true (UNIQUE constraint)\ncolumnDefinition: \"VARCHAR(200) NOT NULL\" (raw SQL)\nupdatable: false (cannot modify after creation)\ninsertable: false (cannot insert value)"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n@Column(name=\"email_address\", nullable=false, unique=true, length=255)\nprivate String email;\n\n@Column(updatable=false) // Created date never changes\nprivate LocalDateTime createdAt;"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@ManyToOne Relationship",
+                                            children: [
+                                                { name: "\"Multiple child entities to one parent entity (N:1)\"" },
+                                                { name: "Child table contains foreign key to parent" },
+                                                { name: "Always use FetchType.LAZY to prevent N+1 queries" },
+                                                {
+                                                    name: "Ex:-\n\n@Entity\npublic class Post {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    private String title;\n    \n    @ManyToOne(fetch=FetchType.LAZY) // LAZY: load only when accessed\n    @JoinColumn(name=\"user_id\", nullable=false)\n    private User author;\n}\n\n// Result: posts table has user_id column (FK)"
+                                                },
+                                                { name: "@JoinColumn: Specifies foreign key column name" },
+                                                { name: "Cascade: PERSIST (save parent → save child), REMOVE (delete parent → delete child)" },
+                                                { name: "WARNING: EAGER loading causes N+1 problem (join parent for each child)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@OneToMany Relationship",
+                                            children: [
+                                                { name: "\"One parent entity to multiple child entities (1:N)\"" },
+                                                { name: "Parent has collection of children (List, Set)" },
+                                                { name: "Inverse side of @ManyToOne (usually on parent)" },
+                                                {
+                                                    name: "Ex:-\n\n@Entity\npublic class User {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    private String name;\n    \n    @OneToMany(mappedBy=\"author\", fetch=FetchType.LAZY, cascade=CascadeType.ALL, orphanRemoval=true)\n    private List<Post> posts = new ArrayList<>();\n}\n\n// Result: No new column in database (FK in posts table)\n// mappedBy: Points to @ManyToOne field in child"
+                                                },
+                                                { name: "mappedBy: Which field in child entity owns the relationship" },
+                                                { name: "orphanRemoval=true: Delete child if removed from parent's collection" },
+                                                { name: "CascadeType: Define what operations propagate from parent to children" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@ManyToMany Relationship",
+                                            children: [
+                                                { name: "\"Multiple entities related to multiple entities (M:N)\"" },
+                                                { name: "Requires join/junction table to map both sides" },
+                                                { name: "Can be bidirectional or unidirectional" },
+                                                {
+                                                    name: "Ex (Student-Course):-\n\n@Entity\npublic class Student {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    private String name;\n    \n    @ManyToMany(fetch=FetchType.LAZY)\n    @JoinTable(\n        name=\"student_course\",\n        joinColumns=@JoinColumn(name=\"student_id\"),\n        inverseJoinColumns=@JoinColumn(name=\"course_id\")\n    )\n    private List<Course> courses = new ArrayList<>();\n}\n\n@Entity\npublic class Course {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    private String title;\n    \n    @ManyToMany(mappedBy=\"courses\", fetch=FetchType.LAZY)\n    private List<Student> students = new ArrayList<>();\n}\n\n// Result: Junction table (student_course) created automatically"
+                                                },
+                                                { name: "@JoinTable: Specifies junction table details" },
+                                                { name: "mappedBy: On inverse side (reduces redundancy)" },
+                                                { name: "Caveat: Adding extra columns to junction table requires separate @Entity" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@OneToOne Relationship",
+                                            children: [
+                                                { name: "\"One entity related to exactly one other entity (1:1)\"" },
+                                                { name: "Can be owning or inverse side" },
+                                                {
+                                                    name: "Ex (User-Profile):-\n\n@Entity\npublic class User {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    private String name;\n    \n    @OneToOne(fetch=FetchType.LAZY, cascade=CascadeType.ALL)\n    @JoinColumn(name=\"profile_id\")\n    private UserProfile profile;\n}\n\n@Entity\npublic class UserProfile {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    private String bio;\n    \n    @OneToOne(mappedBy=\"profile\")\n    private User user;\n}"
+                                                },
+                                                { name: "Owning side: Contains @JoinColumn (users table has profile_id)" },
+                                                { name: "Inverse side: Uses mappedBy" }
+                                            ]
+                                        },
+                                        {
+                                            name: "CascadeType Options",
+                                            children: [
+                                                { name: "PERSIST: Parent save → Child save" },
+                                                { name: "MERGE: Parent update → Child merge" },
+                                                { name: "REMOVE: Parent delete → Child delete" },
+                                                { name: "REFRESH: Parent refresh → Child refresh" },
+                                                { name: "DETACH: Parent detach → Child detach" },
+                                                { name: "ALL: All above operations" },
+                                                { name: "Use carefully: REMOVE can accidentally delete related data" },
+                                                {
+                                                    name: "Ex:-\n\n@OneToMany(cascade=CascadeType.ALL, orphanRemoval=true)\nprivate List<Comment> comments;\n// Deleting post → auto-delete all comments"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "FetchType (CRITICAL for Performance)",
+                                            children: [
+                                                {
+                                                    name: "EAGER (Default for @ManyToOne, @OneToOne)",
+                                                    "children": [
+                                                        { name: "Load related data immediately (INNER JOIN)" },
+                                                        { name: "Pros: Data available, no lazy loading exception" },
+                                                        { name: "Cons: Multiple queries or expensive JOIN, N+1 problem" },
+                                                        { name: "Causes N+1: SELECT users (1 query) + SELECT profile for each user (N queries)" }
+                                                    ]
+                                                },
+                                                {
+                                                    name: "LAZY (Default for @OneToMany, @ManyToMany)",
+                                                    "children": [
+                                                        { name: "Load related data only when accessed (PROXY)" },
+                                                        { name: "Pros: Faster initial query, only load needed data" },
+                                                        { name: "Cons: LazyInitializationException if accessed outside transaction, requires active session" },
+                                                        { name: "Best practice: Use LAZY for all relationships, join explicitly when needed" }
+                                                    ]
+                                                },
+                                                {
+                                                    name: "LazyInitializationException Prevention:-\n\n// Problem:\nUser user = userRepository.findById(1L);\nuser.getPosts(); // Session closed → LazyInitializationException\n\n// Solution 1: Eager fetch (bad - N+1)\n@ManyToOne(fetch=FetchType.EAGER)\n\n// Solution 2: @Transactional (keep session open)\n@Transactional\nUser user = userRepository.findById(1L);\nuser.getPosts(); // OK\n\n// Solution 3: JOIN FETCH\n@Query(\"SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts WHERE u.id = :id\")\nUser findByIdWithPosts(@Param(\"id\") Long id);\n\n// Solution 4: Entity Graph\n@EntityGraph(attributePaths = {\"posts\"})\nUser findById(Long id);"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Transaction Management",
+                                    name: "Repository Pattern",
                                     children: [
-                                        { name: "@Transactional Semantics", details: "Propagation (REQUIRED, REQUIRES_NEW, NESTED, SUPPORTS, NOT_SUPPORTED, NEVER, MANDATORY), Isolation (READ_UNCOMMITTED, READ_COMMITTED, REPEATABLE_READ, SERIALIZABLE)" },
-                                        { name: "Read-Only Transactions", details: "readOnly=true optimization, JDBC batch updates, query optimization" },
-                                        { name: "Transactional Proxies", details: "How proxying works, self-invocation problem (@Autowired self-injection), target vs proxy" },
-                                        { name: "Rollback Rules", details: "Default rollback for RuntimeException, checked exceptions, @Transactional(rollbackFor), noRollbackFor" },
-                                        { name: "Transaction Lifecycle Events", details: "@TransactionalEventListener, phase (BEFORE_COMMIT, AFTER_COMMIT, AFTER_ROLLBACK, AFTER_COMPLETION)" },
-                                        { name: "Programmatic Transactions", details: "TransactionTemplate, manual begin/commit/rollback, nested transactions" },
-                                        { name: "Multi-Database Transactions", details: "JTA (Java Transaction API), ChainedTransactionManager, XA transactions" },
+                                        {
+                                            name: "CrudRepository<T, ID>",
+                                            children: [
+                                                { name: "\"Basic CRUD operations interface\"" },
+                                                { name: "T: Entity type, ID: Primary key type" },
+                                                {
+                                                    name: "Methods:-\n\nsave(T): Save/update entity, returns saved entity\nsaveAll(Iterable<T>): Batch save\nfindById(ID): Get by PK (Optional<T>)\nfindAll(): Get all (Iterable<T>)\ncount(): Total records\nexists(ID): Check existence\ndelete(T): Delete entity\ndeleteById(ID): Delete by PK\ndeleteAll(): Delete all"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n@Repository\npublic interface UserRepository extends CrudRepository<User, Long> {\n}\n\n// Usage:\nUser user = new User(\"John\", \"john@example.com\");\nuserRepository.save(user); // Insert\n\nOptional<User> found = userRepository.findById(1L);\nfound.ifPresent(u -> System.out.println(u.getName()));\n\nuserRepository.deleteById(1L); // Delete"
+                                                },
+                                                { name: "Optional: Returned by findById (no null checks needed)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "PagingAndSortingRepository",
+                                            children: [
+                                                { name: "\"Extends CrudRepository with pagination and sorting\"" },
+                                                { name: "findAll(Pageable pageable): Page<T> with pagination info" },
+                                                { name: "Pageable: Encapsulates page number, size, sort" },
+                                                {
+                                                    name: "Ex:-\n\n@Repository\npublic interface UserRepository extends PagingAndSortingRepository<User, Long> {\n}\n\n// Usage:\nPageable pageable = PageRequest.of(0, 10, Sort.by(\"name\").ascending());\nPage<User> page = userRepository.findAll(pageable);\n\npage.getContent(); // List<User>\npage.getTotalElements(); // Total records\npage.getTotalPages(); // Total pages\npage.hasNext(); // More pages?\npage.getNumber(); // Current page (0-indexed)"
+                                                },
+                                                { name: "Sort: Sort.by(\"name\").ascending() or .descending()" },
+                                                { name: "Multiple sorts: Sort.by(Order.asc(\"name\"), Order.desc(\"createdAt\"))" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Query Annotation",
+                                            children: [
+                                                { name: "\"Write custom JPQL or SQL queries\"" },
+                                                { name: "Useful: Complex logic, aggregations, subqueries" },
+                                                {
+                                                    name: "JPQL (Object-oriented SQL):-\n\n@Query(\"SELECT u FROM User u WHERE u.name = :name\")\nUser findByName(@Param(\"name\") String name);\n\n@Query(\"SELECT u FROM User u WHERE u.age > :age AND u.city = :city\")\nList<User> findByAgeAndCity(@Param(\"age\") int age, @Param(\"city\") String city);\n\n@Query(\"SELECT new map(u.id as id, u.name as name, COUNT(p) as postCount) \" +\n       \"FROM User u LEFT JOIN u.posts p GROUP BY u.id\")\nList<Map<String, Object>> getUsersWithPostCount();"
+                                                },
+                                                {
+                                                    name: "Native SQL (Database-specific):-\n\n@Query(value=\"SELECT * FROM users WHERE age > ? ORDER BY name LIMIT ?\", nativeQuery=true)\nList<User> findOldestUsers(int age, int limit);\n\n@Query(value=\"SELECT * FROM users WHERE created_at > :date\", nativeQuery=true)\nList<User> findRecentUsers(@Param(\"date\") LocalDateTime date);"
+                                                },
+                                                { name: "@Param: Named parameter binding (prevents SQL injection)" },
+                                                { name: "Positional (?1, ?2): Legacy, less readable" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Query Method Naming Convention",
+                                            children: [
+                                                { name: "\"Auto-generate queries from method names\"" },
+                                                { name: "Spring parses method name and creates query" },
+                                                {
+                                                    name: "Patterns:-\n\nfindBy<Property>(...): SELECT * WHERE property = ?\nfindBy<Prop1>And<Prop2>(...): WHERE prop1 = ? AND prop2 = ?\nfindBy<Property>GreaterThan(...): WHERE property > ?\nfindBy<Property>LessThan(...): WHERE property < ?\nfindBy<Property>Between(...): WHERE property BETWEEN ? AND ?\nfindBy<Property>In(Collection): WHERE property IN (...)\nfindBy<Property>StartingWith(String): WHERE property LIKE 'prefix%'\nfindBy<Property>EndingWith(String): WHERE property LIKE '%suffix'\nfindBy<Property>Containing(String): WHERE property LIKE '%substr%'\nexistsBy<Property>(...): Check existence\ncountBy<Property>(...): Count records"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\npublic interface UserRepository extends CrudRepository<User, Long> {\n    User findByEmail(String email);\n    List<User> findByAge(int age);\n    List<User> findByAgeGreaterThan(int age);\n    List<User> findByAgeGreaterThanAndCityEquals(int age, String city);\n    List<User> findByAgeBetween(int minAge, int maxAge);\n    List<User> findByNameContaining(String substring);\n    boolean existsByEmail(String email);\n    long countByCity(String city);\n}"
+                                                },
+                                                { name: "Limitations: Complex queries → use @Query" },
+                                                { name: "Case-sensitive: Property names must match entity fields" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Update & Delete Queries",
+                                            children: [
+                                                { name: "@Modifying: Required for INSERT/UPDATE/DELETE queries" },
+                                                { name: "@Transactional: Required with @Modifying" },
+                                                {
+                                                    name: "Ex:-\n\n@Modifying\n@Transactional\n@Query(\"UPDATE User u SET u.status = 'ACTIVE' WHERE u.id = :id\")\nint activateUser(@Param(\"id\") Long id);\n\n@Modifying\n@Transactional\n@Query(\"DELETE FROM User u WHERE u.createdAt < :date\")\nint deleteOldUsers(@Param(\"date\") LocalDateTime date);"
+                                                },
+                                                { name: "Return value: Number of rows affected" },
+                                                { name: "Bulk operations: No lazy loading, direct DB update" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Advanced Persistence Patterns",
+                                    name: "Transactions",
                                     children: [
-                                        { name: "N+1 Query Problem", details: "Detection, solutions (JOIN FETCH, @EntityGraph, @Query with joins, batch loading strategies)" },
-                                        { name: "Lazy Loading & Proxy Issues", details: "LazyInitializationException, OpenSessionInViewFilter (anti-pattern), proper transaction boundaries" },
-                                        { name: "Hibernate Session & Persistence Context", details: "First-level cache, dirty checking, flush modes, session vs entity manager" },
-                                        { name: "Batch Processing", details: "JdbcBatchItemWriter, flush interval, clear session after batches, insert/update batching" },
-                                        { name: "Second-Level Caching", details: "Hibernate cache (Ehcache, Infinispan), @Cacheable, cache invalidation strategies, concurrency strategies" },
-                                        { name: "Query Result Caching", details: "@Cacheable on repositories, custom query caches, TTL configuration" },
-                                        { name: "Optimistic Locking", details: "@Version, OptimisticLockingFailureException, conflict handling, last-write-wins vs first-write-wins" },
-                                        { name: "Pessimistic Locking", details: "SELECT FOR UPDATE, LockModeType (PESSIMISTIC_READ, PESSIMISTIC_WRITE, PESSIMISTIC_FORCE_INCREMENT)" },
+                                        {
+                                            name: "@Transactional Annotation",
+                                            children: [
+                                                { name: "\"Mark method/class as transaction boundary\"" },
+                                                { name: "Spring creates transaction at method start, commits on success, rollbacks on exception" },
+                                                { name: "Can be applied to: service method (common), repository, controller (less common)" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Autowired\n    private EmailService emailService;\n    \n    @Transactional\n    public User registerUser(CreateUserRequest req) {\n        // All DB operations in single transaction\n        User user = new User(req.getName(), req.getEmail());\n        userRepository.save(user); // Queued (not executed yet)\n        \n        emailService.sendWelcomeEmail(user.getEmail()); // Throws exception\n        // Transaction rolls back → user NOT saved\n        \n        return user;\n    }\n}"
+                                                },
+                                                { name: "Automatic rollback: Any RuntimeException triggers rollback" },
+                                                { name: "Checked exceptions: Don't rollback by default (use rollbackFor)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "readOnly=true",
+                                            children: [
+                                                { name: "\"Optimize transaction for read-only operations\"" },
+                                                { name: "Database can apply optimizations (no write lock)" },
+                                                { name: "Prevents accidental modifications (some DBs enforce)" },
+                                                {
+                                                    name: "Ex:-\n\n@Transactional(readOnly=true)\npublic List<User> getAllUsers() {\n    return userRepository.findAll(); // Optimized for read\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Propagation Behavior",
+                                            children: [
+                                                {
+                                                    name: "REQUIRED (Default):-\n\nUse existing transaction if active, else create new\nMethod1 → Transaction A\nMethod2 (REQUIRED) → Reuse Transaction A"
+                                                },
+                                                {
+                                                    name: "REQUIRES_NEW:-\n\nAlways create new transaction (suspend existing)\nMethod1 → Transaction A\nMethod2 (REQUIRES_NEW) → New Transaction B (A suspended)\nIf B fails, A continues (independent)"
+                                                },
+                                                {
+                                                    name: "SUPPORTS:-\n\nUse existing transaction if active, else non-transactional\nUseful for optional transactions"
+                                                },
+                                                {
+                                                    name: "NOT_SUPPORTED:-\n\nExecute non-transactionally (suspend if active)\nFor operations that shouldn't be in transaction"
+                                                },
+                                                {
+                                                    name: "MANDATORY:-\n\nRequires active transaction (throw error if none)\nFor methods that MUST run in transaction"
+                                                },
+                                                { name: "Use case (REQUIRES_NEW): Logging should not rollback main transaction" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Isolation Levels",
+                                            children: [
+                                                { name: "DEFAULT: Use database default (usually READ_COMMITTED)" },
+                                                { name: "READ_UNCOMMITTED: Lowest isolation (dirty reads possible)" },
+                                                { name: "READ_COMMITTED: Only read committed data (most common)" },
+                                                { name: "REPEATABLE_READ: Consistent view throughout transaction" },
+                                                { name: "SERIALIZABLE: Highest isolation (slowest)" },
+                                                {
+                                                    name: "Ex:-\n\n@Transactional(isolation=Isolation.REPEATABLE_READ)\npublic Order placeOrder(OrderRequest req) {\n    // Ensures consistent read of inventory\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "rollbackFor & noRollbackFor",
+                                            children: [
+                                                { name: "\"Control which exceptions trigger rollback\"" },
+                                                { name: "By default: RuntimeException → rollback, Checked Exception → commit" },
+                                                {
+                                                    name: "Ex (Rollback on Checked Exception):-\n\n@Transactional(rollbackFor=PaymentException.class)\npublic void processPayment(Payment payment) throws PaymentException {\n    // If PaymentException thrown → rollback\n    paymentGateway.charge(payment);\n}"
+                                                },
+                                                {
+                                                    name: "Ex (Don't rollback on specific Exception):-\n\n@Transactional(noRollbackFor=DuplicateUserException.class)\npublic User registerUser(CreateUserRequest req) {\n    // If user exists → DuplicateUserException\n    // Transaction commits (user saved but with error)\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Transaction Pitfalls",
+                                            children: [
+                                                {
+                                                    name: "1. @Transactional on same class method call:-\n\n@Service\npublic class UserService {\n    public void methodA() {\n        methodB(); // Does NOT create transaction (internal call)\n    }\n    \n    @Transactional\n    public void methodB() {\n        // No transaction because called internally\n    }\n}\n\n// Solution: Call via injected repository or separate class"
+                                                },
+                                                {
+                                                    name: "2. Long-running transactions:-\n\n@Transactional\npublic void generateReport() {\n    // Query 1: 5 seconds\n    // Query 2: 10 seconds\n    // Lock held entire 15 seconds → Blocks other users\n}\n\n// Solution: Process in batches, keep transaction short"
+                                                },
+                                                {
+                                                    name: "3. N+1 Queries in transaction:-\n\n@Transactional\npublic List<User> getAllUsersWithPosts() {\n    List<User> users = userRepository.findAll(); // Query 1\n    users.forEach(u -> u.getPosts().size()); // N more queries!\n}\n\n// Solution: Use JOIN FETCH or Entity Graph"
+                                                }
+                                            ]
+                                        }
                                     ]
-                                },
-                                {
-                                    name: "Database Configuration & Connection Pooling",
-                                    children: [
-                                        { name: "DataSource Configuration", details: "HikariCP (default), Tomcat JDBC Pool, Commons DBCP, connection pool sizing" },
-                                        { name: "Connection Pool Tuning", details: "Maximum pool size, minimum idle connections, connection timeout, idle timeout, max lifetime" },
-                                        { name: "Database Drivers", details: "JDBC drivers, driver registration, url format, properties" },
-                                        { name: "Multiple Datasources", details: "@Configuration with @Bean DataSource, routing datasources, multi-tenancy" },
-                                        { name: "Database Migrations", details: "Flyway integration, Liquibase integration, migration versioning, schema versioning" },
-                                    ]
-                                },
-                                {
-                                    name: "Spring Data Alternatives",
-                                    children: [
-                                        { name: "Spring Data MongoDB", details: "@Document, MongoTemplate, MongoRepository, query methods, aggregation framework" },
-                                        { name: "Spring Data Redis", details: "StringRedisTemplate, RedisTemplate, @RedisHash, repository pattern for Redis" },
-                                        { name: "Spring Data Elasticsearch", details: "@Document (Elasticsearch), ElasticsearchRepository, query DSL" },
-                                        { name: "Spring Data JDBC", details: "Lightweight alternative to JPA, @AggregateRoot, @Id, no lazy loading, simple transaction model" },
-                                        { name: "Spring Data R2DBC", details: "Reactive relational database, R2dbcRepository, non-blocking I/O" },
-                                    ]
-                                },
+                                }
                             ]
                         },
-
-                        // =====================================================================
-                        // 4. INTER-SERVICE COMMUNICATION
-                        // =====================================================================
                         {
-                            name: "Inter-Service Communication (HTTP Clients)",
+                            name: "Spring Security",
                             children: [
                                 {
-                                    name: "RestTemplate (Spring 3-5 Legacy)",
+                                    name: "Authentication",
                                     children: [
-                                        { name: "Synchronous Blocking Client", details: "Thread blocks until response, SimpleClientHttpRequestFactory, BufferingClientHttpRequestFactory" },
-                                        { name: "Template Method Pattern", details: "getForObject, getForEntity, postForObject, postForEntity, put, delete, exchange, execute" },
-                                        { name: "Error Handling", details: "RestClientException, HttpClientErrorException (4xx), HttpServerErrorException (5xx), DefaultResponseErrorHandler" },
-                                        { name: "Message Converters", details: "Automatic content type handling, custom converters registration" },
-                                        { name: "Interceptors & Request Customization", details: "ClientHttpRequestInterceptor, adding headers, authentication, request/response logging" },
-                                        { name: "Connection Pooling", details: "HttpComponentsClientHttpRequestFactory, connection pool size, timeout configuration" },
-                                        { name: "Deprecation in Spring 6+", details: "Replaced by RestClient, EOL timeline, migration path" },
+                                        {
+                                            name: "PasswordEncoder",
+                                            children: [
+                                                { name: "\"Encode passwords for secure storage\"" },
+                                                { name: "Never store plaintext passwords" },
+                                                {
+                                                    name: "BCryptPasswordEncoder (Recommended):-\n\n@Bean\npublic PasswordEncoder passwordEncoder() {\n    return new BCryptPasswordEncoder(12); // Strength parameter (4-31, default 10)\n}\n\n// Usage:\nString plainPassword = \"myPassword123\";\nString encoded = passwordEncoder().encode(plainPassword);\n// Encoded: $2a$10$slYQmyNdGzin/eexlxAcCOYvFH7YLJqHN8/LewKgK2K6TtxMQnqAm\n\n// Verify:\nboolean matches = passwordEncoder().matches(plainPassword, encoded);\n// matches = true\n\n// Note: Each encoding produces different hash (due to random salt)"
+                                                },
+                                                {
+                                                    name: "Other Encoders:-\n\nArgon2PasswordEncoder: Modern, recommended, memory-hard\nPbkdf2PasswordEncoder: PBKDF2 (older, still acceptable)\nSCryptPasswordEncoder: Scrypt algorithm\nNoOpPasswordEncoder: No encoding (development only, NEVER production)"
+                                                },
+                                                { name: "Strength parameter: Higher = slower but more secure (12-15 recommended)" },
+                                                { name: "Salt: Automatically generated, prevents rainbow table attacks" }
+                                            ]
+                                        },
+                                        {
+                                            name: "UserDetailsService",
+                                            children: [
+                                                { name: "\"Load user authentication details from source (DB, LDAP, etc)\"" },
+                                                { name: "Implement loadUserByUsername(String username) → UserDetails" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class CustomUserDetailsService implements UserDetailsService {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Autowired\n    private PasswordEncoder passwordEncoder;\n    \n    @Override\n    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {\n        User user = userRepository.findByEmail(email)\n            .orElseThrow(() -> new UsernameNotFoundException(\"User not found: \" + email));\n        \n        return User.builder()\n            .username(user.getEmail())\n            .password(user.getPassword()) // Should be encoded\n            .authorities(getAuthorities(user))\n            .accountExpired(false)\n            .accountLocked(false)\n            .credentialsExpired(false)\n            .disabled(false)\n            .build();\n    }\n    \n    private Collection<? extends GrantedAuthority> getAuthorities(User user) {\n        return user.getRoles().stream()\n            .map(role -> new SimpleGrantedAuthority(\"ROLE_\" + role.getName()))\n            .collect(Collectors.toList());\n    }\n}"
+                                                },
+                                                { name: "Called by AuthenticationManager during login" },
+                                                { name: "UserDetails: Spring's interface containing user info + authorities" }
+                                            ]
+                                        },
+                                        {
+                                            name: "AuthenticationManager",
+                                            children: [
+                                                { name: "\"Main entry point for authentication\"" },
+                                                { name: "authenticate(Authentication) → Authenticated token or exception" },
+                                                { name: "Default: ProviderManager (delegates to AuthenticationProviders)" },
+                                                {
+                                                    name: "Ex (Manual Authentication):-\n\n@RestController\n@RequestMapping(\"/auth\")\npublic class AuthController {\n    @Autowired\n    private AuthenticationManager authenticationManager;\n    \n    @PostMapping(\"/login\")\n    public ResponseEntity<?> login(@RequestBody LoginRequest req) {\n        try {\n            Authentication auth = authenticationManager.authenticate(\n                new UsernamePasswordAuthenticationToken(req.getEmail(), req.getPassword())\n            );\n            SecurityContextHolder.getContext().setAuthentication(auth);\n            // Generate JWT token\n            return ResponseEntity.ok(new LoginResponse(token));\n        } catch (BadCredentialsException e) {\n            return ResponseEntity.status(401).body(\"Invalid email or password\");\n        }\n    }\n}"
+                                                },
+                                                { name: "SecurityContextHolder: Stores authenticated principal" },
+                                                { name: "Throws: BadCredentialsException, UsernameNotFoundException, DisabledException" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Authentication Interface",
+                                            children: [
+                                                { name: "\"Represents security principal (authenticated user)\"" },
+                                                { name: "Properties: principal (user), credentials (password, cleared after auth), authorities (roles/permissions), details (IP, session)" },
+                                                {
+                                                    name: "Ex:-\n\nAuthentication auth = SecurityContextHolder.getContext().getAuthentication();\nString username = auth.getName(); // Principal name\nCollection<? extends GrantedAuthority> authorities = auth.getAuthorities(); // Roles\nboolean isAuthenticated = auth.isAuthenticated();"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "RestClient (Spring 6+/Boot 3.2+)",
+                                    name: "Authorization",
                                     children: [
-                                        { name: "Fluent Builder API", details: "Method chaining, fluent configuration, more readable than RestTemplate" },
-                                        { name: "Synchronous Operations", details: "get(), post(), put(), delete(), patch() methods" },
-                                        { name: "Request Building", details: ".uri(), .header(), .body(), .contentType(), complex request composition" },
-                                        { name: "Response Handling", details: ".retrieve(), .toEntity(), .toBody(), .toBoolean(), custom response converters" },
-                                        { name: "Error Handling", details: "onStatus(), throwing specific exceptions based on status codes" },
-                                        { name: "Interceptors & Middleware", details: "requestInterceptor(), responseInterceptor(), centralized cross-cutting concerns" },
-                                        { name: "DefaultHttpClientBuilder", details: "ClientHttpRequestFactory configuration, connection pooling, SSL/TLS setup" },
-                                        { name: "Recommended for New Projects", details: "Default choice for synchronous HTTP clients in Spring 6+" },
+                                        {
+                                            name: "@Secured Annotation",
+                                            children: [
+                                                { name: "\"Method-level authorization by role\"" },
+                                                { name: "Requires @EnableGlobalMethodSecurity(securedEnabled=true)" },
+                                                { name: "Simple but limited (only role-based)" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\n@EnableGlobalMethodSecurity(securedEnabled=true)\npublic class SecurityConfig { }\n\n@Service\npublic class UserService {\n    @Secured(\"ROLE_ADMIN\")\n    public void deleteUser(Long id) {\n        // Only admins can call\n    }\n    \n    @Secured({\"ROLE_ADMIN\", \"ROLE_MODERATOR\"})\n    public void suspendUser(Long id) {\n        // Admins OR moderators\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PreAuthorize (Recommended)",
+                                            children: [
+                                                { name: "\"SpEL (Spring Expression Language) based authorization\"" },
+                                                { name: "Requires @EnableGlobalMethodSecurity(prePostEnabled=true)" },
+                                                { name: "Very flexible (roles, permissions, custom logic)" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\n@EnableGlobalMethodSecurity(prePostEnabled=true)\npublic class SecurityConfig { }\n\n@Service\npublic class UserService {\n    // Role-based\n    @PreAuthorize(\"hasRole('ADMIN')\")\n    public void deleteUser(Long id) { }\n    \n    // Multiple roles (OR)\n    @PreAuthorize(\"hasRole('ADMIN') or hasRole('MODERATOR')\")\n    public void suspendUser(Long id) { }\n    \n    // Custom expression\n    @PreAuthorize(\"@userService.isOwner(#id, authentication.principal.id)\")\n    public void updateProfile(Long id, ProfileRequest req) {\n        // Only owner can update own profile\n    }\n    \n    // Permission-based\n    @PreAuthorize(\"hasPermission(#id, 'User', 'DELETE')\")\n    public void deleteUserAdvanced(Long id) { }\n}"
+                                                },
+                                                {
+                                                    name: "Common SpEL Expressions:-\n\nhasRole('ADMIN'): User has specific role\nhasAnyRole('ADMIN','USER'): User has any of roles\nhasPermission(#id, 'User', 'DELETE'): Custom permission checker\nisAuthenticated(): User is authenticated\nisAnonymous(): User is anonymous\nprincipal: Current user object\nauthentication: Current authentication token\n#id, #req: Method parameters (use # prefix)"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@PostAuthorize",
+                                            children: [
+                                                { name: "\"Check authorization AFTER method execution\"" },
+                                                { name: "Can access method return value (returnValue)" },
+                                                { name: "Less common (usually preauthorize is sufficient)" },
+                                                {
+                                                    name: "Ex:-\n\n@PostAuthorize(\"returnValue.author.id == principal.id\")\npublic Post getPost(Long id) {\n    // Only return if current user is author\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "GrantedAuthority & Roles",
+                                            children: [
+                                                { name: "\"Represents permission or role\"" },
+                                                { name: "GrantedAuthority: Authority name (\"ROLE_ADMIN\", \"READ\", \"WRITE\")" },
+                                                { name: "SimpleGrantedAuthority: Simple implementation with single string" },
+                                                {
+                                                    name: "Roles vs Permissions:-\n\nRoles: \"ADMIN\", \"USER\", \"MODERATOR\" (coarse-grained)\nPermissions: \"USER_READ\", \"USER_WRITE\", \"USER_DELETE\" (fine-grained)\nBest Practice: Assign roles to users, roles grant permissions"
+                                                },
+                                                {
+                                                    name: "Ex:-\n\n// User has roles\nuser.setRoles([\"ADMIN\", \"MODERATOR\"]);\n\n// Roles have permissions\nROLE_ADMIN → [\"USER_READ\", \"USER_WRITE\", \"USER_DELETE\", \"USER_MANAGE\"]\nROLE_USER → [\"USER_READ\", \"POST_WRITE\", \"COMMENT_WRITE\"]"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "WebClient (Reactive - Spring 5+)",
+                                    name: "JWT Integration",
                                     children: [
-                                        { name: "Reactive Non-Blocking Client", details: "Mono/Flux return types, thread pool scalability, no thread per request" },
-                                        { name: "WebClient Configuration", details: "WebClient.builder(), baseUrl(), defaultHeader(), defaultCookie(), timeout(), ssl()" },
-                                        { name: "Request Methods", details: "get(), post(), put(), delete(), patch(), custom request methods" },
-                                        { name: "Mono & Flux Responses", details: "Mono<T> (single value), Flux<T> (stream), no blocking on response" },
-                                        { name: "Backpressure Support", details: "Demand signaling, subscription-based processing, handling of slow consumers" },
-                                        { name: "Error Handling", details: "onErrorResume(), onErrorReturn(), onErrorMap(), retryWhen(), error propagation" },
-                                        { name: "Timeout & Retry", details: "timeout(Duration), retryWhen(Retry.max(n)), exponential backoff, jitter" },
-                                        { name: "Spring WebFlux Integration", details: "Built for WebFlux controllers, streaming responses, SSE (Server-Sent Events)" },
-                                        { name: "Streaming Large Responses", details: "Flux for paginated/streaming data, memory efficiency vs RestTemplate/RestClient" },
-                                        { name: "Performance Characteristics", details: "Better for high-concurrency scenarios, fewer threads needed" },
+                                        {
+                                            name: "JwtTokenProvider",
+                                            children: [
+                                                { name: "\"Generate and validate JWT tokens\"" },
+                                                { name: "Create token with user info, sign with secret, validate on each request" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class JwtTokenProvider {\n    @Value(\"${app.jwtSecret}\")\n    private String jwtSecret;\n    \n    @Value(\"${app.jwtExpirationMs}\")\n    private long jwtExpirationMs;\n    \n    public String generateToken(UserDetails userDetails) {\n        Map<String, Object> claims = new HashMap<>();\n        claims.put(\"roles\", userDetails.getAuthorities());\n        \n        return Jwts.builder()\n            .setClaims(claims)\n            .setSubject(userDetails.getUsername())\n            .setIssuedAt(new Date())\n            .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))\n            .signWith(SignatureAlgorithm.HS512, jwtSecret)\n            .compact();\n    }\n    \n    public boolean validateToken(String token) {\n        try {\n            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);\n            return true;\n        } catch (JwtException | IllegalArgumentException e) {\n            return false;\n        }\n    }\n    \n    public String getUsernameFromToken(String token) {\n        return Jwts.parser().setSigningKey(jwtSecret)\n            .parseClaimsJws(token)\n            .getBody()\n            .getSubject();\n    }\n}"
+                                                },
+                                                { name: "Library: io.jsonwebtoken:jjwt for JWT handling" },
+                                                { name: "Payload: Can store user ID, roles, permissions, custom claims" }
+                                            ]
+                                        },
+                                        {
+                                            name: "JwtAuthenticationFilter",
+                                            children: [
+                                                { name: "\"Extract and validate JWT from request\"" },
+                                                { name: "Runs on every request before authentication" },
+                                                {
+                                                    name: "Ex:-\n\npublic class JwtAuthenticationFilter extends OncePerRequestFilter {\n    @Autowired\n    private JwtTokenProvider tokenProvider;\n    \n    @Autowired\n    private UserDetailsService userDetailsService;\n    \n    @Override\n    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)\n            throws ServletException, IOException {\n        try {\n            String jwt = extractTokenFromRequest(request);\n            \n            if (jwt != null && tokenProvider.validateToken(jwt)) {\n                String username = tokenProvider.getUsernameFromToken(jwt);\n                UserDetails userDetails = userDetailsService.loadUserByUsername(username);\n                \n                UsernamePasswordAuthenticationToken authentication = \n                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());\n                \n                SecurityContextHolder.getContext().setAuthentication(authentication);\n            }\n        } catch (Exception e) {\n            logger.error(\"Cannot set user authentication: {}\", e);\n        }\n        \n        filterChain.doFilter(request, response);\n    }\n    \n    private String extractTokenFromRequest(HttpServletRequest request) {\n        String bearerToken = request.getHeader(\"Authorization\");\n        if (bearerToken != null && bearerToken.startsWith(\"Bearer \")) {\n            return bearerToken.substring(7);\n        }\n        return null;\n    }\n}\n\n// Register filter in SecurityConfig\n@Configuration\npublic class SecurityConfig {\n    @Bean\n    public JwtAuthenticationFilter jwtAuthenticationFilter() {\n        return new JwtAuthenticationFilter();\n    }\n    \n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);\n        return http.build();\n    }\n}"
+                                                },
+                                                { name: "Runs on EVERY request (before Spring Security filters)" },
+                                                { name: "Sets SecurityContext if token valid" }
+                                            ]
+                                        },
+                                        {
+                                            name: "UserPrincipal",
+                                            children: [
+                                                { name: "\"Custom principal object containing user details + JWT claims\"" },
+                                                { name: "Extends or wraps UserDetails" },
+                                                {
+                                                    name: "Ex:-\n\npublic class UserPrincipal implements UserDetails {\n    private Long id;\n    private String email;\n    private String password;\n    private Collection<? extends GrantedAuthority> authorities;\n    \n    public static UserPrincipal create(User user) {\n        List<GrantedAuthority> authorities = user.getRoles().stream()\n            .map(role -> new SimpleGrantedAuthority(\"ROLE_\" + role.getName()))\n            .collect(Collectors.toList());\n        \n        return new UserPrincipal(\n            user.getId(),\n            user.getEmail(),\n            user.getPassword(),\n            authorities\n        );\n    }\n    \n    @Override\n    public String getUsername() { return email; }\n    \n    @Override\n    public Collection<? extends GrantedAuthority> getAuthorities() { return authorities; }\n    \n    // Other UserDetails methods...\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Token Refresh Mechanism",
+                                            children: [
+                                                { name: "\"Issue short-lived access token + long-lived refresh token\"" },
+                                                { name: "Access token: 15 minutes expiry (frequent requests)" },
+                                                { name: "Refresh token: 7 days expiry (stored in DB or httpOnly cookie)" },
+                                                {
+                                                    name: "Ex (Token Refresh Endpoint):-\n\n@PostMapping(\"/auth/refresh\")\npublic ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest req) {\n    String refreshToken = req.getRefreshToken();\n    \n    // Validate refresh token\n    if (!tokenProvider.validateRefreshToken(refreshToken)) {\n        return ResponseEntity.status(401).body(\"Invalid or expired refresh token\");\n    }\n    \n    String username = tokenProvider.getUsernameFromRefreshToken(refreshToken);\n    UserDetails userDetails = userDetailsService.loadUserByUsername(username);\n    \n    // Generate new access token\n    String newAccessToken = tokenProvider.generateToken(userDetails);\n    \n    return ResponseEntity.ok(new TokenResponse(newAccessToken, refreshToken));\n}\n\n// Store refresh token in DB for revocation\n@Entity\npublic class RefreshToken {\n    @Id\n    @GeneratedValue\n    private Long id;\n    \n    @ManyToOne\n    private User user;\n    \n    private String token; // Stored refresh token\n    \n    private LocalDateTime expiryDate;\n    \n    private LocalDateTime createdAt;\n}"
+                                                },
+                                                { name: "Security benefit: If access token leaked, can't create new tokens" },
+                                                { name: "Refresh token revocation: Delete from DB → access token no longer refreshable" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "FeignClient (Spring Cloud)",
+                                    name: "CORS & CSRF",
                                     children: [
-                                        { name: "Declarative HTTP Clients", details: "Interface-based definitions, @FeignClient, method signatures map to HTTP calls" },
-                                        { name: "@FeignClient Configuration", details: "name, url, configuration, fallback, fallbackFactory, dismiss404" },
-                                        { name: "Method Annotations", details: "@RequestLine, @RequestMapping, @PathVariable, @QueryMap, @Headers, @Body" },
-                                        { name: "Service Discovery Integration", details: "Eureka registration, service lookup by name instead of URL, load balancer aware" },
-                                        { name: "Load Balancing", details: "Ribbon (legacy), Spring Cloud LoadBalancer, round-robin, random, custom strategies" },
-                                        { name: "Retry Policies", details: "Feign Retryer, @Retry, exponential backoff, configuration" },
-                                        { name: "Fallback & Resilience", details: "@FeignClient fallback, HystrixFeign for circuit breakers, fallbackFactory for exception access" },
-                                        { name: "Error Decoding", details: "ErrorDecoder for exception mapping, feign.Logger for debugging" },
-                                        { name: "Request/Response Interceptors", details: "RequestInterceptor, adding headers, authentication token injection" },
-                                        { name: "Logging & Debugging", details: "feign.Logger level configuration, request/response logging" },
+                                        {
+                                            name: "@CrossOrigin",
+                                            children: [
+                                                { name: "\"Enable CORS (Cross-Origin Resource Sharing) for specific endpoints\"" },
+                                                { name: "Allows browser requests from different domains" },
+                                                {
+                                                    name: "Ex:-\n\n@RestController\n@RequestMapping(\"/api/users\")\npublic class UserController {\n    @GetMapping\n    @CrossOrigin(origins=\"http://localhost:3000\", methods=RequestMethod.GET)\n    public List<User> getUsers() {\n        return userService.findAll();\n    }\n    \n    @PostMapping\n    @CrossOrigin(origins={\"http://localhost:3000\", \"http://localhost:8080\"})\n    public User createUser(@RequestBody CreateUserRequest req) {\n        return userService.create(req);\n    }\n}"
+                                                },
+                                                { name: "origins: Which domains allowed (empty = all)" },
+                                                { name: "methods: Allowed HTTP methods (GET, POST, etc)" },
+                                                { name: "allowedHeaders: Which request headers allowed" },
+                                                { name: "exposedHeaders: Which response headers exposed to client" },
+                                                { name: "credentials: Allow cookies/credentials (default false)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Global CORS Configuration",
+                                            children: [
+                                                { name: "\"Configure CORS for entire application\"" },
+                                                { name: "Preferred over @CrossOrigin on every method" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\npublic class CorsConfig {\n    @Bean\n    public WebMvcConfigurer corsConfigurer() {\n        return new WebMvcConfigurer() {\n            @Override\n            public void addCorsMappings(CorsRegistry registry) {\n                registry.addMapping(\"/api/**\")\n                    .allowedOrigins(\"http://localhost:3000\", \"http://localhost:8080\")\n                    .allowedMethods(\"GET\", \"POST\", \"PUT\", \"DELETE\")\n                    .allowedHeaders(\"*\")\n                    .exposedHeaders(\"Authorization\")\n                    .allowCredentials(true)\n                    .maxAge(3600); // Preflight cache 1 hour\n            }\n        };\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "CSRF Protection",
+                                            children: [
+                                                { name: "\"Prevent Cross-Site Request Forgery attacks\"" },
+                                                { name: "Enabled by default in Spring Security" },
+                                                { name: "Validates CSRF token in POST/PUT/DELETE requests" },
+                                                { name: "Disable for stateless APIs: http.csrf().disable()" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\npublic class SecurityConfig {\n    @Bean\n    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {\n        http\n            .csrf().disable() // OK for REST APIs (stateless)\n            .authorizeRequests()\n                .antMatchers(\"/api/public/**\").permitAll()\n                .antMatchers(\"/api/admin/**\").hasRole(\"ADMIN\")\n                .anyRequest().authenticated()\n            .and()\n            .httpBasic();\n        return http.build();\n    }\n}"
+                                                },
+                                                { name: "For form-based apps: Keep CSRF enabled, token in forms" }
+                                            ]
+                                        }
                                     ]
-                                },
-                                {
-                                    name: "HTTP Client Comparison & Best Practices",
-                                    children: [
-                                        { name: "RestTemplate vs RestClient", details: "When to use each, migration guide from RestTemplate → RestClient" },
-                                        { name: "RestClient vs WebClient", details: "Sync vs reactive, when blocking is acceptable, scalability considerations" },
-                                        { name: "Feign vs RestClient", details: "Declarative vs imperative, service discovery needs, complexity trade-offs" },
-                                        { name: "Error Handling Strategies", details: "Retry logic, circuit breakers, timeout handling, exponential backoff with jitter" },
-                                        { name: "Authentication & Security", details: "Basic auth, bearer tokens, custom headers, interceptors for auth injection" },
-                                        { name: "Timeout Configuration", details: "Connection timeout vs read timeout, defaults, per-request overrides" },
-                                        { name: "Connection Pooling Best Practices", details: "Pool size tuning, idle timeout, max lifetime, keep-alive configuration" },
-                                    ]
-                                },
+                                }
                             ]
                         },
-
-                        // =====================================================================
-                        // 5. SECURITY
-                        // =====================================================================
                         {
-                            name: "Security",
+                            name: "Advanced Spring Features",
                             children: [
                                 {
-                                    name: "Spring Security Fundamentals",
+                                    name: "Aspect-Oriented Programming (AOP)",
                                     children: [
-                                        { name: "Authentication vs Authorization", details: "Who you are vs what you can do, authentication providers, roles vs authorities" },
-                                        { name: "Authentication Providers", details: "DaoAuthenticationProvider, LdapAuthenticationProvider, custom AuthenticationProvider" },
-                                        { name: "UserDetailsService", details: "Loading user by username, password encoding, authorities mapping, user not found handling" },
-                                        { name: "PasswordEncoder", details: "BCrypt, Argon2, PKCS5, delegation pattern, password history" },
-                                        { name: "Authorities & Roles", details: "GrantedAuthority, SimpleGrantedAuthority, role hierarchy, RoleHierarchy" },
-                                        { name: "SecurityContext", details: "ThreadLocal storage, Authentication object, principal, credentials, authorities" },
-                                        { name: "SecurityContextHolder", details: "MODE_THREADLOCAL, MODE_INHERITABLETHREADLOCAL, MODE_GLOBAL, async task handling" },
+                                        {
+                                            name: "@Aspect Annotation",
+                                            children: [
+                                                { name: "\"Mark class as aspect (cross-cutting concern)\"" },
+                                                { name: "Separates concerns: logging, security, transactions, caching" },
+                                                { name: "Advice executed before, after, or around join points" },
+                                                {
+                                                    name: "Key Concepts:-\n\nJoinPoint: Point in code (method execution, field access)\nPointcut: Expression selecting join points (WHERE to apply advice)\nAdvice: Action taken (WHAT to do at join points)\nWeaving: Combining aspects with target objects"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Pointcut",
+                                            children: [
+                                                { name: "\"Define where aspects apply (method/class matching)\"" },
+                                                { name: "Reusable pointcut expression" },
+                                                {
+                                                    name: "Ex:-\n\n@Aspect\n@Component\npublic class LoggingAspect {\n    @Pointcut(\"execution(public * com.example.service.*.*(..))\")\n    public void serviceLayer() { }\n    \n    @Pointcut(\"@annotation(org.springframework.web.bind.annotation.GetMapping)\")\n    public void getEndpoints() { }\n}"
+                                                },
+                                                {
+                                                    name: "Pointcut Syntax:-\n\nexecution(modifiers-pattern? return-type-pattern declaring-type-pattern? method-name-pattern(param-pattern) throws-pattern?)\n\nExamples:\nexecution(public * com.example.service.UserService.*(..)) - Any public method in UserService\nexecution(* com.example.service..*.*(..)) - Any method in any class in service package\n@annotation(Transactional) - Methods annotated with @Transactional\n@within(Component) - Classes annotated with @Component\nwithin(com.example.service..*) - Any method in service package"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Before",
+                                            children: [
+                                                { name: "\"Execute before method execution\"" },
+                                                { name: "Can't prevent method execution" },
+                                                { name: "Access to method parameters" },
+                                                {
+                                                    name: "Ex:-\n\n@Aspect\n@Component\npublic class ValidationAspect {\n    @Before(\"@annotation(Validated)\")\n    public void validateInput(JoinPoint joinPoint) {\n        Object[] args = joinPoint.getArgs();\n        for (Object arg : args) {\n            if (arg == null) {\n                throw new IllegalArgumentException(\"Null argument not allowed\");\n            }\n        }\n        System.out.println(\"Validating input for \" + joinPoint.getSignature());\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@After",
+                                            children: [
+                                                { name: "\"Execute after method (success or exception)\"" },
+                                                { name: "Always runs (finally block equivalent)" },
+                                                { name: "Limited access (no return value)" },
+                                                {
+                                                    name: "Ex:-\n\n@After(\"execution(* com.example.repository.*.save(..))\")\npublic void logSave(JoinPoint joinPoint) {\n    System.out.println(\"Entity saved: \" + joinPoint.getSignature());\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@AfterReturning",
+                                            children: [
+                                                { name: "\"Execute after successful method return\"" },
+                                                { name: "Access to return value" },
+                                                { name: "Doesn't execute if exception thrown" },
+                                                {
+                                                    name: "Ex:-\n\n@AfterReturning(pointcut=\"execution(* com.example.service.*.find*(..))\" , returning=\"result\")\npublic void logResult(JoinPoint joinPoint, Object result) {\n    System.out.println(joinPoint.getSignature() + \" returned: \" + result);\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@AfterThrowing",
+                                            children: [
+                                                { name: "\"Execute if exception thrown\"" },
+                                                { name: "Access to exception object" },
+                                                { name: "Perfect for error logging" },
+                                                {
+                                                    name: "Ex:-\n\n@AfterThrowing(pointcut=\"execution(* com.example.service.*.*(..))\" , throwing=\"ex\")\npublic void handleException(JoinPoint joinPoint, Exception ex) {\n    logger.error(\"Exception in \" + joinPoint.getSignature() + \": \" + ex.getMessage());\n    // Can re-throw, log, or trigger notification\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Around (Most Powerful)",
+                                            children: [
+                                                { name: "\"Wrap entire method execution\"" },
+                                                { name: "Can execute before, after, or skip method entirely" },
+                                                { name: "Full control over execution flow" },
+                                                { name: "Must call joinPoint.proceed() to execute actual method" },
+                                                {
+                                                    name: "Ex (Performance Monitoring):-\n\n@Around(\"@annotation(Timed)\")\npublic Object measurePerformance(ProceedingJoinPoint joinPoint) throws Throwable {\n    long startTime = System.currentTimeMillis();\n    \n    try {\n        Object result = joinPoint.proceed(); // Execute actual method\n        return result;\n    } finally {\n        long duration = System.currentTimeMillis() - startTime;\n        logger.info(joinPoint.getSignature() + \" took \" + duration + \"ms\");\n    }\n}\n\n// Usage:\n@Service\npublic class UserService {\n    @Timed\n    public User findById(Long id) {\n        // Execution time logged automatically\n    }\n}"
+                                                },
+                                                {
+                                                    name: "Ex (Caching):-\n\n@Around(\"@annotation(Cacheable)\")\npublic Object cacheResult(ProceedingJoinPoint joinPoint) throws Throwable {\n    String key = generateCacheKey(joinPoint);\n    Object cached = cache.get(key);\n    \n    if (cached != null) {\n        return cached; // Skip method, return cached value\n    }\n    \n    Object result = joinPoint.proceed(); // Execute method\n    cache.put(key, result); // Cache result\n    return result;\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Practical Example: Audit Trail",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\n@Aspect\n@Component\npublic class AuditAspect {\n    @Autowired\n    private AuditLogRepository auditLogRepository;\n    \n    @Around(\"@annotation(Auditable)\")\n    public Object auditOperation(ProceedingJoinPoint joinPoint) throws Throwable {\n        String methodName = joinPoint.getSignature().getName();\n        Object[] args = joinPoint.getArgs();\n        UserPrincipal user = getCurrentUser();\n        \n        long startTime = System.currentTimeMillis();\n        \n        try {\n            Object result = joinPoint.proceed();\n            \n            AuditLog log = new AuditLog();\n            log.setAction(methodName);\n            log.setUser(user);\n            log.setTimestamp(LocalDateTime.now());\n            log.setDuration(System.currentTimeMillis() - startTime);\n            log.setStatus(\"SUCCESS\");\n            \n            auditLogRepository.save(log);\n            \n            return result;\n        } catch (Exception e) {\n            AuditLog log = new AuditLog();\n            log.setAction(methodName);\n            log.setUser(user);\n            log.setTimestamp(LocalDateTime.now());\n            log.setStatus(\"FAILED\");\n            log.setError(e.getMessage());\n            \n            auditLogRepository.save(log);\n            throw e;\n        }\n    }\n}\n\n// Usage:\n@Service\npublic class UserService {\n    @Auditable\n    public void deleteUser(Long id) {\n        // Audit logged automatically\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "AOP Pitfalls",
+                                            children: [
+                                                { name: "1. Proxy limitation: AOP doesn't apply to internal method calls (same instance)" },
+                                                { name: "2. Performance: Every join point has overhead (proxy method invocation)" },
+                                                { name: "3. Debugging: Stack trace includes proxy classes (confusing)" },
+                                                { name: "4. Order: Multiple aspects order non-deterministic (use @Order)" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Filter Chain Architecture",
+                                    name: "Event Handling",
                                     children: [
-                                        { name: "Spring Security Filter Chain", details: "DelegatingFilterProxy, SecurityFilterChain, Order of filters, filter responsibilities" },
-                                        { name: "Core Filters", details: "SecurityContextPersistenceFilter, LogoutFilter, UsernamePasswordAuthenticationFilter, BasicAuthenticationFilter, ExceptionTranslationFilter, FilterSecurityInterceptor" },
-                                        { name: "Filter Ordering", details: "Why order matters, custom filter insertion points (addFilterBefore, addFilterAfter, addFilterAt)" },
-                                        { name: "Custom Filters", details: "Extending GenericFilterBean, OncePerRequestFilter, filter lifecycle, exception handling in filters" },
-                                        { name: "SecurityFilterChain Configuration", details: "@EnableWebSecurity, SecurityConfiguration bean, multiple chains, pattern matching" },
+                                        {
+                                            name: "@EventListener",
+                                            children: [
+                                                { name: "\"Listen for application events\"" },
+                                                { name: "Method called when specific event published" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class UserEventListener {\n                                    \n    @EventListener\n    public void onUserCreated(UserCreatedEvent event) {\n        User user = event.getUser();\n        System.out.println(\"User created: \" + user.getEmail());\n        // Send welcome email, update analytics, etc\n    }\n    \n    @EventListener\n    public void onUserDeleted(UserDeletedEvent event) {\n        System.out.println(\"User deleted: \" + event.getUserId());\n        // Cleanup, notifications, etc\n    }\n}"
+                                                },
+                                                { name: "Method parameter type determines event interest" }
+                                            ]
+                                        },
+                                        {
+                                            name: "ApplicationEventPublisher",
+                                            children: [
+                                                { name: "\"Publish custom events\"" },
+                                                { name: "Triggers all listeners for that event type" },
+                                                {
+                                                    name: "Ex:-\n\npublic class UserCreatedEvent extends ApplicationEvent {\n    private User user;\n    \n    public UserCreatedEvent(Object source, User user) {\n        super(source);\n        this.user = user;\n    }\n    \n    public User getUser() { return user; }\n}\n\n@Service\npublic class UserService {\n    @Autowired\n    private ApplicationEventPublisher eventPublisher;\n    \n    public User createUser(CreateUserRequest req) {\n        User user = new User(req.getName(), req.getEmail());\n        userRepository.save(user);\n        \n        // Publish event (triggers listeners)\n        eventPublisher.publishEvent(new UserCreatedEvent(this, user));\n        \n        return user;\n    }\n}"
+                                                },
+                                                { name: "Decoupling: Publisher doesn't know about listeners" },
+                                                { name: "Synchronous: Listeners execute in same thread by default" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@TransactionalEventListener",
+                                            children: [
+                                                { name: "\"Only publish event after transaction commits\"" },
+                                                { name: "Prevents race conditions (event listener sees uncommitted data)" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class UserEventListener {\n    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)\n    public void onUserCreated(UserCreatedEvent event) {\n        // Guaranteed: user is already saved to DB\n        String email = event.getUser().getEmail();\n        emailService.sendWelcomeEmail(email); // Safe to send\n    }\n}"
+                                                },
+                                                { name: "Phases: BEFORE_COMMIT, AFTER_COMMIT, AFTER_ROLLBACK, AFTER_COMPLETION" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Async Event Listeners",
+                                            children: [
+                                                { name: "\"Make listeners execute asynchronously\"" },
+                                                { name: "Doesn't block publisher (fire-and-forget)" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class EmailEventListener {\n    @EventListener\n    @Async\n    public void onUserCreated(UserCreatedEvent event) {\n        // Runs in thread pool (non-blocking)\n        Thread.sleep(5000); // Slow email sending\n        emailService.send(event.getUser().getEmail());\n    }\n}"
+                                                },
+                                                { name: "Requires @EnableAsync on @Configuration class" },
+                                                { name: "Use case: Email, notifications, analytics (don't block user)" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "HTTP Security Configuration",
+                                    name: "Scheduling",
                                     children: [
-                                        { name: "@EnableWebSecurity & HttpSecurity", details: "WebSecurityConfigurerAdapter vs SecurityFilterChain (6+), method chaining" },
-                                        { name: "Endpoint Protection", details: ".authorizeHttpRequests(), .anyRequest(), .authenticated(), permitAll(), hasRole(), hasAuthority()" },
-                                        { name: "Authentication Methods", details: "httpBasic(), formLogin(), oauth2Login(), saml2Login(), rememberMe()" },
-                                        { name: "CORS Configuration", details: "@CrossOrigin, WebMvcConfigurer.addCorsMappings(), CorsConfigurationSource" },
-                                        { name: "CSRF Protection", details: "CSRF tokens, SameSite cookies, when to disable, stateless APIs" },
-                                        { name: "Session Management", details: "sessionCreationPolicy (ALWAYS, IF_REQUIRED, NEVER, STATELESS), concurrent session control, fixation attack prevention" },
-                                        { name: "Exception Handling", details: "exceptionHandling().authenticationEntryPoint(), .accessDeniedHandler()" },
-                                        { name: "HTTP Headers", details: "X-Frame-Options, X-Content-Type-Options, X-XSS-Protection, Strict-Transport-Security, Content-Security-Policy" },
+                                        {
+                                            name: "@EnableScheduling",
+                                            children: [
+                                                { name: "\"Enable method scheduling in application\"" },
+                                                { name: "Added to @Configuration or @SpringBootApplication" },
+                                                {
+                                                    name: "Ex:-\n\n@SpringBootApplication\n@EnableScheduling\npublic class Application {\n    public static void main(String[] args) {\n        SpringApplication.run(Application.class, args);\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Scheduled Annotation",
+                                            children: [
+                                                { name: "\"Execute method on schedule\"" },
+                                                { name: "Multiple scheduling options" },
+                                                {
+                                                    name: "fixedDelay (milliseconds):-\n\n@Scheduled(fixedDelay = 5000) // 5 second delay between invocations\npublic void generateReport() {\n    System.out.println(\"Generating report...\");\n    // Takes 2 seconds to execute\n    // Next execution: 5 seconds after this one completes\n}"
+                                                },
+                                                {
+                                                    name: "fixedRate (milliseconds):-\n\n@Scheduled(fixedRate = 10000) // Execute every 10 seconds\npublic void checkHealth() {\n    System.out.println(\"Health check...\");\n    // Runs every 10 seconds regardless of how long it takes\n    // Concurrent executions possible if method takes >10 seconds\n}"
+                                                },
+                                                {
+                                                    name: "cron (Cron expression):-\n\n@Scheduled(cron = \"0 0 2 * * *\") // 2 AM daily\npublic void nightly_maintenance() {\n    System.out.println(\"Running nightly job...\");\n}\n\n// Common cron patterns:\n\"0 0 * * * *\" → Every hour at :00\n\"0 */15 * * * *\" → Every 15 minutes\n\"0 0 2 * * MON-FRI\" → 2 AM on weekdays\n\"0 0 1 1 * *\" → 1 AM on 1st of month"
+                                                },
+                                                {
+                                                    name: "initialDelay:-\n\n@Scheduled(initialDelay = 10000, fixedRate = 5000)\npublic void delayedTask() {\n    // First execution after 10 seconds, then every 5 seconds\n}"
+                                                },
+                                                { name: "Synchronous: Method blocks thread (use @Async for non-blocking)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "TaskScheduler Configuration",
+                                            children: [
+                                                { name: "\"Customize thread pool for scheduled tasks\"" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\npublic class SchedulingConfig {\n    @Bean\n    public TaskScheduler taskScheduler() {\n        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();\n        scheduler.setPoolSize(5);\n        scheduler.setThreadNamePrefix(\"scheduled-task-\");\n        scheduler.setAwaitTerminationSeconds(60);\n        scheduler.setWaitForTasksToCompleteOnShutdown(true);\n        scheduler.initialize();\n        return scheduler;\n    }\n}"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "JWT (JSON Web Tokens)",
+                                    name: "Async Processing",
                                     children: [
-                                        { name: "JWT Structure & Components", details: "Header (algorithm, type), Payload (claims), Signature (verification), encoding (Base64URL)" },
-                                        { name: "Claims & Custom Claims", details: "Standard claims (sub, iss, aud, exp, iat, nbf), custom claims, private claims" },
-                                        { name: "Token Generation", details: "Key generation (HS256 symmetric, RS256 asymmetric), expiration, signing" },
-                                        { name: "Token Validation", details: "Signature verification, expiration check, issuer/audience validation, key rotation" },
-                                        { name: "JWT Libraries", details: "jjwt (Nimbus), auth0-java-jwt, Spring Security OAuth2, which to choose" },
-                                        { name: "Stateless Authentication Flow", details: "No server-side session, token in Authorization header, refresh token patterns" },
-                                        { name: "Refresh Tokens", details: "Why needed (short-lived access tokens), rotation strategy, revocation" },
-                                        { name: "Token Revocation & Blacklist", details: "Logout handling (removing from client), blacklist implementation, cache invalidation" },
-                                        { name: "Key Rotation", details: "Rolling keys, key versioning, handling token validation during rotation" },
-                                        { name: "Security Considerations", details: "Token size impact, claim size limits, algorithm selection, key security" },
+                                        {
+                                            name: "@EnableAsync",
+                                            children: [
+                                                { name: "\"Enable async method execution\"" },
+                                                { name: "Methods run in thread pool (non-blocking)" },
+                                                {
+                                                    name: "Ex:-\n\n@SpringBootApplication\n@EnableAsync\npublic class Application { }\n\n// OR\n@Configuration\n@EnableAsync\npublic class AsyncConfig { }"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Async Annotation",
+                                            children: [
+                                                { name: "\"Execute method asynchronously\"" },
+                                                { name: "Return type: void (fire-forget) or CompletableFuture<T> (get result later)" },
+                                                {
+                                                    name: "Ex (Fire-and-forget):-\n\n@Service\npublic class EmailService {\n    @Async\n    public void sendEmail(String to, String subject, String body) {\n        // Executes in thread pool (doesn't block caller)\n        Thread.sleep(3000); // Simulated sending\n        System.out.println(\"Email sent to \" + to);\n    }\n}\n\n// Usage:\nemailService.sendEmail(\"user@example.com\", \"Welcome\", \"Welcome to our app\");\n// Returns immediately (email sent in background)"
+                                                },
+                                                {
+                                                    name: "Ex (Get result with CompletableFuture):-\n\n@Service\npublic class DataProcessingService {\n    @Async\n    public CompletableFuture<String> processData(String input) {\n        // Executes asynchronously\n        String result = heavyComputation(input);\n        return CompletableFuture.completedFuture(result);\n    }\n}\n\n// Usage:\nCompletableFuture<String> future = dataService.processData(\"large_dataset\");\n// Do other work while processing\nString result = future.get(); // Block and get result\n\n// Or with callback:\nfuture.thenAccept(result -> System.out.println(\"Done: \" + result));"
+                                                },
+                                                { name: "ExecutorService: Thread pool executes method" },
+                                                { name: "Exception handling: CompletableFuture.exceptionally(ex -> ...)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Executor Configuration",
+                                            children: [
+                                                { name: "\"Customize thread pool\"" },
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\n@EnableAsync\npublic class AsyncConfig implements AsyncConfigurer {\n    @Override\n    public Executor getAsyncExecutor() {\n        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();\n        executor.setCorePoolSize(10);\n        executor.setMaxPoolSize(50);\n        executor.setQueueCapacity(100);\n        executor.setThreadNamePrefix(\"async-task-\");\n        executor.setAwaitTerminationSeconds(60);\n        executor.setWaitForTasksToCompleteOnShutdown(true);\n        executor.initialize();\n        return executor;\n    }\n}"
+                                                },
+                                                { name: "CorePoolSize: Threads created initially" },
+                                                { name: "MaxPoolSize: Maximum threads created if queue full" },
+                                                { name: "QueueCapacity: Tasks wait in queue if all threads busy" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "OAuth 2.0 & OpenID Connect",
+                                    name: "Caching",
                                     children: [
-                                        { name: "OAuth 2.0 Fundamentals", details: "Authorization flows (Authorization Code, Implicit, Resource Owner Password, Client Credentials, Refresh Token)" },
-                                        { name: "Authorization Code Flow", details: "Most common, authorization endpoint, token endpoint, redirect URI, authorization code grant" },
-                                        { name: "OAuth 2.0 Roles", details: "Resource Owner, Client, Authorization Server, Resource Server, delegation of authority" },
-                                        { name: "Scopes & Permissions", details: "Fine-grained permissions, scope validation, scope downscoping" },
-                                        { name: "OpenID Connect", details: "ID token, UserInfo endpoint, discovery document (.well-known/openid-configuration)" },
-                                        { name: "Spring Security OAuth2 Support", details: "@EnableOAuth2Sso (legacy), spring-security-oauth2-client (modern), OAuth2User, OidcUser" },
-                                        { name: "OAuth2 Client Configuration", details: "spring.security.oauth2.client.registration.*, provider configuration" },
-                                        { name: "Token Management", details: "OAuth2AccessToken, OAuth2RefreshToken, TokenRepository, token persistence" },
-                                        { name: "PKCE (Proof Key for Code Exchange)", details: "Preventing authorization code interception, code_challenge, code_verifier" },
+                                        {
+                                            name: "@EnableCaching",
+                                            children: [
+                                                { name: "\"Enable caching annotations\"" },
+                                                { name: "Added to @Configuration or @SpringBootApplication" },
+                                                {
+                                                    name: "Ex:-\n\n@SpringBootApplication\n@EnableCaching\npublic class Application { }\n\n// Default cache manager: ConcurrentMapCacheManager\n// For production: Use Redis (import spring-boot-starter-data-redis)"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Cacheable",
+                                            children: [
+                                                { name: "\"Cache method result (if hit, skip execution)\"" },
+                                                { name: "Stores result using cache key" },
+                                                { name: "Subsequent calls with same arguments → return cached value" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    @Cacheable(value=\"users\", key=\"#id\")\n    public User findById(Long id) {\n        System.out.println(\"Fetching user from DB: \" + id);\n        return userRepository.findById(id).orElse(null);\n    }\n}\n\n// Usage:\nUser u1 = userService.findById(1L); // Hits DB, caches result\nUser u2 = userService.findById(1L); // Returns from cache (no DB query)\n\n// Key (default): method parameters\n@Cacheable(value=\"users\", key=\"'all_users'\")\npublic List<User> findAll() { }\n\n// Key (custom SpEL):\n@Cacheable(value=\"users\", key=\"#id + '_' + #format\")\npublic User findById(Long id, String format) { }"
+                                                },
+                                                { name: "value: Cache name (namespace)" },
+                                                { name: "key: Cache key (defaults to method params)" },
+                                                { name: "condition: Execute cache only if condition true" },
+                                                { name: "unless: Don't cache if condition true" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@CachePut",
+                                            children: [
+                                                { name: "\"Always execute method, update cache with result\"" },
+                                                { name: "Unlike @Cacheable, method always runs" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    @CachePut(value=\"users\", key=\"#user.id\")\n    public User updateUser(User user) {\n        userRepository.save(user);\n        return user; // Result cached\n    }\n}"
+                                                },
+                                                { name: "Use case: Update operations (always save + update cache)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@CacheEvict",
+                                            children: [
+                                                { name: "\"Remove entry from cache\"" },
+                                                { name: "Useful for invalidating stale data" },
+                                                {
+                                                    name: "Ex:-\n\n@Service\npublic class UserService {\n    @CacheEvict(value=\"users\", key=\"#id\")\n    public void deleteUser(Long id) {\n        userRepository.deleteById(id);\n    }\n    \n    @CacheEvict(value=\"users\", allEntries=true)\n    public void refreshCache() {\n        // Clear entire users cache\n    }\n}"
+                                                },
+                                                { name: "allEntries: Clear entire cache (not specific key)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Caching",
+                                            children: [
+                                                { name: "\"Multiple cache operations in one method\"" },
+                                                {
+                                                    name: "Ex:-\n\n@Caching(\n    put = @CachePut(value=\"users\", key=\"#user.id\"),\n    evict = @CacheEvict(value=\"usersList\", allEntries=true)\n)\npublic User updateUser(User user) {\n    userRepository.save(user);\n    return user;\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Cache Manager Configuration (Redis)",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\n@Configuration\npublic class CacheConfig {\n    @Bean\n    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {\n        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()\n            .entryTtl(Duration.ofMinutes(10)) // Expire after 10 minutes\n            .serializeValuesWith(RedisSerializationContext.SerializationPair\n                .fromSerializer(new GenericJackson2JsonRedisSerializer()));\n        \n        return RedisCacheManager.create(connectionFactory);\n    }\n}"
+                                                },
+                                                { name: "Spring Data Redis dependency required" },
+                                                { name: "TTL: Time-to-live for cache entries" }
+                                            ]
+                                        }
                                     ]
-                                },
-                                {
-                                    name: "API Security Patterns",
-                                    children: [
-                                        { name: "Bearer Token Authentication", details: "Authorization header format, token extraction, Bearer scheme" },
-                                        { name: "API Key Authentication", details: "X-API-Key header, URL parameter keys, key validation, rotation" },
-                                        { name: "Mutual TLS (mTLS)", details: "Client certificate validation, certificate chains, certificate pinning" },
-                                        { name: "Rate Limiting & Throttling", details: "Per-user, per-IP, global limits, sliding window, token bucket algorithms" },
-                                        { name: "Request Signing", details: "AWS Signature V4, HMAC-SHA256, timestamp validation, replay attack prevention" },
-                                        { name: "Input Validation & Sanitization", details: "@Valid, custom validators, XSS prevention, SQL injection prevention" },
-                                        { name: "Output Encoding", details: "JSON encoding, HTML entity encoding, URL encoding context-specific encoding" },
-                                    ]
-                                },
-                                {
-                                    name: "Advanced Security Topics",
-                                    children: [
-                                        { name: "Method-Level Security", details: "@Secured, @PreAuthorize, @PostAuthorize, @PreFilter, @PostFilter, SpEL expressions" },
-                                        { name: "Role-Based Access Control (RBAC)", details: "Roles vs permissions, role hierarchy, role mapping" },
-                                        { name: "Attribute-Based Access Control (ABAC)", details: "Fine-grained policies, decision rules, attribute evaluation" },
-                                        { name: "Auditing & Logging", details: "SecurityEventPublisher, authentication events, access denied events, compliance logging" },
-                                        { name: "Principal Resolver", details: "Getting authenticated user in controllers, @AuthenticationPrincipal, custom resolvers" },
-                                        { name: "Antlr-based SpEL Security Expressions", details: "hasRole(), hasAuthority(), isAnonymous(), isAuthenticated(), permitAll(), denyAll()" },
-                                        { name: "Custom Security Expressions", details: "Custom SpEL functions, complex authorization logic, reusable expressions" },
-                                    ]
-                                },
+                                }
                             ]
                         },
-
-                        // =====================================================================
-                        // 6. REACTIVE & ASYNC
-                        // =====================================================================
                         {
-                            name: "Reactive Programming & Async Patterns",
+                            name: "Spring Boot Autoconfiguration",
                             children: [
                                 {
-                                    name: "Spring WebFlux",
+                                    name: "application.properties / application.yml",
                                     children: [
-                                        { name: "Reactive Streams Specification", details: "Publisher, Subscriber, Subscription, backpressure protocol" },
-                                        { name: "Project Reactor", details: "Mono<T>, Flux<T>, hot vs cold streams, schedulers, operators" },
-                                        { name: "WebFlux Annotations", details: "@RestController, @RequestMapping work same as MVC, @GetExchange, @PostExchange (modern)" },
-                                        { name: "Functional Routing", details: "RouterFunction, HandlerFunction, RequestPredicate, route() DSL" },
-                                        { name: "Reactive Controllers", details: "Return Mono<T>, Flux<T>, ResponseEntity<Mono<T>>, streaming responses" },
-                                        { name: "Error Handling in WebFlux", details: "onErrorResume(), onErrorReturn(), onErrorMap(), Global WebExceptionHandler, @ExceptionHandler compatibility" },
-                                        { name: "Timeout & Backpressure", details: "timeout(), onBackpressureBuffer(), onBackpressureDrop(), handling slow subscribers" },
-                                        { name: "Testing WebFlux", details: "WebTestClient, StepVerifier, reactor test utilities" },
-                                    ]
-                                },
-                                {
-                                    name: "Async Controllers (Servlet-Based)",
-                                    children: [
-                                        { name: "CompletableFuture Return Types", details: "Non-blocking servlet async, thread pool configuration, timeout handling" },
-                                        { name: "DeferredResult", details: "Manually setting result in callback, timeout handler, exception handler" },
-                                        { name: "Callable Return Type", details: "Spring wraps in async task executor, result resolution happens in separate thread" },
-                                        { name: "AsyncWebUtils", details: "getAsyncDispatcher(), getAsyncManager() for advanced control" },
-                                        { name: "Thread Pool Configuration", details: "TaskExecutor bean naming (async, webMvcAsync), core pool size, queue capacity" },
-                                        { name: "Async Best Practices", details: "Exception propagation, timeout management, context propagation (MDC)" },
-                                    ]
-                                },
-                                {
-                                    name: "Reactive Operators",
-                                    children: [
-                                        { name: "Transformation Operators", details: "map(), flatMap(), concatMap(), switchMap(), transform(), cast()" },
-                                        { name: "Filtering Operators", details: "filter(), take(n), skip(n), distinct(), distinctUntilChanged()" },
-                                        { name: "Combining Operators", details: "merge(), concat(), zip(), combineLatest(), withLatestFrom()" },
-                                        { name: "Time-Based Operators", details: "delayElement(), timeout(), interval(), buffer(duration/count), window()" },
-                                        { name: "Error Handling Operators", details: "onErrorResume(), onErrorReturn(), onErrorMap(), retry(), retryWhen(), retry with backoff" },
-                                        { name: "Side Effect Operators", details: "doOnNext(), doOnError(), doOnComplete(), doFinally(), doOnCancel(), peek() (deprecated)" },
-                                        { name: "Buffering & Collection", details: "buffer(), bufferUntil(), collect(), toList(), reduce()" },
-                                        { name: "Subscription & Scheduling", details: "subscribeOn(), publishOn(), parallel(), sequential(), limitRate()" },
-                                    ]
-                                },
-                                {
-                                    name: "TaskExecutor & Scheduling",
-                                    children: [
-                                        { name: "@Async Methods", details: "@EnableAsync, method return types (void, Future, CompletableFuture, ListenableFuture)" },
-                                        { name: "TaskExecutor Configuration", details: "ThreadPoolTaskExecutor bean, core pool size, max pool size, queue capacity, rejection policy" },
-                                        { name: "TaskScheduler & Scheduling", details: "@Scheduled, @EnableScheduling, fixed delay, fixed rate, cron expressions" },
-                                        { name: "@Scheduled Configuration", details: "initialDelay, fixedDelay, fixedRate, cron, zone, different for concurrent tasks" },
-                                        { name: "Async Result Handling", details: "Future.get(), AsyncResult wrapper, timeout on get()" },
-                                        { name: "Exception Handling in Async", details: "AsyncUncaughtExceptionHandler, AsyncConfigurer, logging uncaught exceptions" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 7. OBSERVABILITY & MONITORING
-                        // =====================================================================
-                        {
-                            name: "Observability, Monitoring & Logging",
-                            children: [
-                                {
-                                    name: "Logging Framework & Configuration",
-                                    children: [
-                                        { name: "SLF4J (Simple Logging Facade for Java)", details: "Facade pattern, deferred binding, logging framework independence" },
-                                        { name: "Logback", details: "Default Spring Boot logger, appenders, encoders, loggers hierarchy, root logger" },
-                                        { name: "log4j2 Integration", details: "Alternative to Logback, exclusions, configuration" },
-                                        { name: "Logging Configuration", details: "application.yml logging setup, per-package levels, environment-specific configs" },
-                                        { name: "Pattern Configuration", details: "%d{}, %logger{}, %msg, %mdc{}, %X{} for MDC" },
-                                        { name: "Appenders", details: "ConsoleAppender, FileAppender, RollingFileAppender, SyslogAppender" },
-                                        { name: "Async Appenders", details: "Performance improvement, queue size, overflow policy, discard strategy" },
-                                        { name: "Structured Logging", details: "JSON logging, logstash-logback-encoder, structured fields, correlation IDs" },
-                                        { name: "MDC (Mapped Diagnostic Context)", details: "ThreadLocal storage, request ID tracking, %mdc placeholder, automatic cleanup" },
-                                        { name: "Custom Logger Configuration", details: "Custom converters, filters, appender chains" },
-                                    ]
-                                },
-                                {
-                                    name: "Spring Boot Actuator",
-                                    children: [
-                                        { name: "Actuator Basics", details: "spring-boot-starter-actuator, /actuator endpoints, sensitive=true defaults (Spring Boot 1.x)" },
-                                        { name: "Built-in Endpoints", details: "/health, /metrics, /info, /env, /configprops, /loggers, /threaddump, /heapdump, /mappings" },
-                                        { name: "Health Indicators", details: "ApplicationHealthIndicator, DataSourceHealthIndicator, DiskSpaceHealthIndicator, custom HealthIndicator" },
-                                        { name: "Health Groups", details: "management.endpoint.health.group.*, custom health groups, liveness, readiness probes" },
-                                        { name: "Metrics Collection", details: "MeterRegistry, Meter types (Counter, Gauge, Timer, DistributionSummary, LongTaskTimer)" },
-                                        { name: "Micrometer Integration", details: "Metrics export (Prometheus, CloudWatch, InfluxDB, Graphite, New Relic)" },
-                                        { name: "Custom Metrics", details: "@Timed annotation, MeterBinder, registry.counter(), registry.timer()" },
-                                        { name: "Performance Metrics", details: "JVM metrics (memory, GC), process metrics (CPU, file handles), HTTP metrics (requests, response time)" },
-                                        { name: "Endpoint Exposure", details: "management.endpoints.web.exposure.include/exclude, HTTP/JMX exposure" },
-                                        { name: "Custom Actuator Endpoints", details: "@Endpoint, @ReadOperation, @WriteOperation, @DeleteOperation, WebEndpoint" },
-                                        { name: "Audit Events", details: "AuditEventRepository, AuditEvent publishing, tracking configuration changes" },
-                                    ]
-                                },
-                                {
-                                    name: "Distributed Tracing",
-                                    children: [
-                                        { name: "Spring Cloud Sleuth", details: "Trace ID, Span ID, automatic trace context propagation, Brave instrumentation" },
-                                        { name: "Trace Context Propagation", details: "HTTP headers (b3, W3C), async task context, RestTemplate/WebClient/FeignClient integration" },
-                                        { name: "Zipkin Integration", details: "Zipkin exporter, span collection, distributed trace visualization" },
-                                        { name: "Jaeger Integration", details: "OpenTelemetry exporter, complex traces, service dependencies" },
-                                        { name: "Baggage (Propagated Context)", details: "Baggage fields, baggage correlation IDs, thread-local propagation, async context" },
-                                        { name: "Span Customization", details: "@NewSpan, @SpanTag, @ContinueSpan, custom span processors" },
-                                        { name: "Performance Impact", details: "Sampling strategies (AlwaysSampler, ProbabilityBasedSampler), span reporter async delivery" },
-                                    ]
-                                },
-                                {
-                                    name: "Metrics Monitoring",
-                                    children: [
-                                        { name: "Prometheus Integration", details: "/actuator/prometheus endpoint, Prometheus scraping, metric format" },
-                                        { name: "Common Metrics", details: "http_requests_total, http_request_duration_seconds, jvm_memory_used, process_cpu_usage" },
-                                        { name: "Tag-Based Metrics", details: "Dimensionality, cardinality explosion risks, tag naming conventions" },
-                                        { name: "Database Metrics", details: "Connection pool size, idle connections, hikaricp.connections.* metrics" },
-                                        { name: "Request Metrics", details: "Route-level, status code distribution, percentile latencies" },
-                                        { name: "Custom Gauge/Counter/Timer", details: "MeterRegistry.gauge(), .counter(), .timer(), function/callable argument" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 8. CONFIGURATION MANAGEMENT
-                        // =====================================================================
-                        {
-                            name: "Configuration Management",
-                            children: [
-                                {
-                                    name: "Externalized Configuration",
-                                    children: [
-                                        { name: "Configuration Hierarchy", details: "Command-line args > System properties > Environment variables > application.yml > application.properties" },
-                                        { name: "application.yml vs application.properties", details: "YAML hierarchy vs flat keys, Spring prefers YAML, .properties format with dots" },
-                                        { name: "Profile-Specific Configs", details: "application-{profile}.yml, multiple active profiles, profile activation (spring.profiles.active)" },
-                                        { name: "Environment Variables", details: "Uppercase with underscores, Spring Boot variable mapping (SPRING_APPLICATION_NAME → spring.application.name)" },
-                                        { name: "Command-Line Arguments", details: "--key=value format, priority over all other sources" },
-                                        { name: ".env File Support", details: "spring-dotenv or dotenv-java library, local development setup" },
+                                        { name: "\"External configuration files\"" },
+                                        { name: "YAML preferred (cleaner syntax)" },
+                                        { name: "Can have profiles: application-dev.yml, application-prod.yml" },
+                                        {
+                                            name: "Common Properties:-\n\nserver.port=8080: Server port\nserver.servlet.context-path=/api: Root path for all endpoints\n\nspring.datasource.url=jdbc:mysql://localhost:3306/mydb: DB connection\nspring.datasource.username=root\nspring.datasource.password=password\n\nspring.jpa.hibernate.ddl-auto=update: Create/update DB schema\nspring.jpa.show-sql=true: Log SQL queries\nspring.jpa.properties.hibernate.format_sql=true: Pretty SQL\n\nlogging.level.root=INFO: Root log level\nlogging.level.com.example=DEBUG: Package-specific log level\nlogging.file.name=logs/app.log: Log file location"
+                                        }
                                     ]
                                 },
                                 {
                                     name: "@ConfigurationProperties",
                                     children: [
-                                        { name: "@ConfigurationProperties Basics", details: "@ConfigurationProperties(prefix=\"app\"), field binding, camelCase to kebab-case conversion" },
-                                        { name: "Type Conversion", details: "String to int/boolean/Duration/List/Map automatic conversion" },
-                                        { name: "Validation", details: "@Validated, @NotNull, @Min, @Max on properties class, ConfigurationPropertiesValidator" },
-                                        { name: "Relaxed Binding", details: "app.name = APP_NAME = app-name support" },
-                                        { name: "Nested Properties", details: "Complex objects, @NestedConfigurationProperty (Spring Boot 2.2+), list of objects" },
-                                        { name: "@EnableConfigurationProperties", details: "Registering configuration class as bean, constructor injection in @Configuration" },
-                                        { name: "Metadata Hints", details: "spring-configuration-metadata.json for IDE autocompletion, @ConfigurationProperty deprecation" },
+                                        { name: "\"Bind external properties to POJO\"" },
+                                        { name: "Type-safe, validated property binding" },
+                                        {
+                                            name: "Ex:-\n\n// application.yml\napp:\n  jwt:\n    secret: \"my-secret-key\"\n    expiration-ms: 3600000\n  email:\n    from: \"noreply@example.com\"\n    smtp-server: \"smtp.gmail.com\"\n\n// Code\n@ConfigurationProperties(prefix=\"app.jwt\")\n@Data\npublic class JwtProperties {\n    private String secret;\n    private long expirationMs;\n}\n\n@ConfigurationProperties(prefix=\"app.email\")\n@Data\npublic class EmailProperties {\n    private String from;\n    private String smtpServer;\n}\n\n// Usage in @Configuration\n@Configuration\npublic class AppConfig {\n    @Bean\n    public JwtTokenProvider jwtTokenProvider(JwtProperties props) {\n        return new JwtTokenProvider(props.getSecret(), props.getExpirationMs());\n    }\n}"
+                                        },
+                                        { name: "@EnableConfigurationProperties: Enable binding explicitly" },
+                                        { name: "@Validated: Enable validation (@NotBlank, @Email, etc)" }
                                     ]
                                 },
                                 {
-                                    name: "@Value & Property Injection",
+                                    name: "Spring Boot Starters",
                                     children: [
-                                        { name: "@Value Basic Usage", details: "${property.name} placeholders, default values (@Value(\"${property:default}\"))" },
-                                        { name: "@Value with SpEL", details: "#{expression} syntax, method invocation, bean references" },
-                                        { name: "Limitations of @Value", details: "Only works on @Component/@Configuration, property with colon is fragile, no type conversion hints" },
-                                        { name: "Type Conversion", details: "String → int, boolean, Duration, List<String>, Map<String, String>" },
-                                        { name: "@Value vs @ConfigurationProperties", details: "Simple properties vs complex configs, type-safe vs string-based" },
+                                        { name: "\"Pre-configured dependency bundles\"" },
+                                        { name: "Auto-configure application based on classpath" },
+                                        {
+                                            name: "Common Starters:-\n\nspring-boot-starter-web: Web MVC, embedded Tomcat\nspring-boot-starter-data-jpa: Spring Data JPA, Hibernate\nspring-boot-starter-data-redis: Redis caching\nspring-boot-starter-security: Spring Security\nspring-boot-starter-validation: Bean Validation\nspring-boot-starter-logging: Logback logging\nspring-boot-starter-test: JUnit, Mockito, Spring Test"
+                                        },
+                                        { name: "Auto-configuration: Spring detects presence of libraries and configures beans" }
                                     ]
-                                },
-                                {
-                                    name: "Spring Cloud Config Server",
-                                    children: [
-                                        { name: "Centralized Configuration", details: "Remote git repo for configs, environment-specific overrides, Spring Cloud Config Server setup" },
-                                        { name: "@EnableConfigServer", details: "Config server endpoint /config/{application}/{profile}/{label}" },
-                                        { name: "Config Client", details: "spring-cloud-config-client dependency, bootstrap.yml for config server location" },
-                                        { name: "Refresh Configuration", details: "POST /actuator/refresh, @RefreshScope, ConfigurationPropertiesRebinder" },
-                                        { name: "Git Repository Setup", details: "Branch per environment, label/profile resolution" },
-                                        { name: "Fallback & Retry", details: "Offline support, retry template, fail-fast=false" },
-                                        { name: "Encryption", details: "Encrypted values in config, key management, symmetric/asymmetric encryption" },
-                                    ]
-                                },
-                                {
-                                    name: "Secrets Management",
-                                    children: [
-                                        { name: "Environment Variable Secrets", details: "Storing in CI/CD environment, never in git" },
-                                        { name: "HashiCorp Vault Integration", details: "spring-cloud-vault dependency, secret path resolution, dynamic secrets" },
-                                        { name: "AWS Secrets Manager", details: "spring-cloud-aws-starter-secrets-manager, automatic rotation" },
-                                        { name: "Azure Key Vault", details: "spring-cloud-azure-starter-keyvault-secrets, Java Key Store integration" },
-                                        { name: "Google Cloud Secret Manager", details: "spring-cloud-gcp-starter-secretmanager" },
-                                    ]
-                                },
+                                }
                             ]
                         },
-
-                        // =====================================================================
-                        // 9. TESTING
-                        // =====================================================================
                         {
-                            name: "Testing",
+                            name: "Testing in Spring Boot",
                             children: [
                                 {
-                                    name: "Unit Testing with JUnit & Mockito",
+                                    name: "@SpringBootTest",
                                     children: [
-                                        { name: "JUnit 5 (Jupiter)", details: "@Test, @ParameterizedTest, @DisplayName, @Nested, @BeforeEach, @AfterEach, assertions" },
-                                        { name: "Mockito Basics", details: "@Mock, @InjectMocks, when().thenReturn(), verify(), ArgumentCaptor" },
-                                        { name: "Mock vs Stub", details: "Spies (partial mocks), MockedStatic for static methods, ArgumentMatchers" },
-                                        { name: "Behavior Verification", details: "verify() call count, argument verification, never(), times(), atLeast(), atMost()" },
-                                        { name: "Test Fixtures & Setup", details: "@BeforeEach, @BeforeAll, Test Factory pattern for complex setups" },
-                                        { name: "Exception Testing", details: "assertThrows(), assertThrowsExactly(), exception message verification" },
+                                        {
+                                            name: "Full Application Context Test",
+                                            children: [
+                                                { name: "\"Loads entire Spring context for integration testing\"" },
+                                                { name: "Starts embedded server (Tomcat/Jetty)" },
+                                                { name: "Slow but comprehensive (tests entire stack)" },
+                                                { name: "Best for: End-to-end scenarios, database interactions, configuration" },
+                                                {
+                                                    name: "webEnvironment Options:-\n\nMOCK (default): Mock DispatcherServlet, no real HTTP server\nRANDOM_PORT: Embedded server starts on random port\nDEFINED_PORT: Server starts on configured port (server.port)\nNONE: No web environment"
+                                                },
+                                                {
+                                                    name: "Ex (Random Port):-\n\n@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)\npublic class UserControllerIntegrationTest {\n    @LocalServerPort\n    private int port; // Injected random port\n    \n    @Autowired\n    private TestRestTemplate restTemplate; // Client for HTTP calls\n    \n    @Test\n    public void testGetUser() {\n        ResponseEntity<User> response = restTemplate.getForEntity(\n            \"http://localhost:\" + port + \"/api/users/1\",\n            User.class\n        );\n        \n        assertEquals(HttpStatus.OK, response.getStatusCode());\n        assertNotNull(response.getBody());\n        assertEquals(\"John\", response.getBody().getName());\n    }\n    \n    @Test\n    public void testCreateUser() {\n        CreateUserRequest request = new CreateUserRequest(\"Jane\", \"jane@example.com\");\n        \n        ResponseEntity<User> response = restTemplate.postForEntity(\n            \"http://localhost:\" + port + \"/api/users\",\n            request,\n            User.class\n        );\n        \n        assertEquals(HttpStatus.CREATED, response.getStatusCode());\n        assertNotNull(response.getBody().getId());\n    }\n}"
+                                                },
+                                                {
+                                                    name: "Ex (Mock Environment):-\n\n@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)\npublic class UserControllerMockTest {\n    @Autowired\n    private MockMvc mockMvc; // No real HTTP, mocked servlet\n    \n    @MockBean\n    private UserService userService; // Mock service layer\n    \n    @Test\n    public void testGetUserMock() throws Exception {\n        User mockUser = new User(1L, \"John\", \"john@example.com\");\n        when(userService.findById(1L)).thenReturn(mockUser);\n        \n        mockMvc.perform(get(\"/api/users/1\"))\n            .andExpect(status().isOk())\n            .andExpect(jsonPath(\"$.name\").value(\"John\"));\n    }\n}"
+                                                },
+                                                { name: "TestRestTemplate: Client to test REST endpoints with real HTTP" },
+                                                { name: "MockMvc: Test servlet layer without real HTTP" },
+                                                { name: "@LocalServerPort: Inject actual port when using RANDOM_PORT" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Database Testing",
+                                            children: [
+                                                {
+                                                    name: "H2 In-Memory Database:-\n\n// application-test.yml\nspring:\n  datasource:\n    url: jdbc:h2:mem:testdb\n    driver-class-name: org.h2.Driver\n    username: sa\n  jpa:\n    database-platform: org.hibernate.dialect.H2Dialect\n\n// Test class\n@SpringBootTest\n@ActiveProfiles(\"test\") // Uses application-test.yml\npublic class UserRepositoryTest {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Test\n    public void testSaveUser() {\n        User user = new User(\"John\", \"john@example.com\");\n        User saved = userRepository.save(user);\n        \n        assertNotNull(saved.getId());\n    }\n}"
+                                                },
+                                                {
+                                                    name: "Database Cleanup Between Tests:-\n\n@SpringBootTest\npublic class UserRepositoryCleanupTest {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @BeforeEach\n    public void setup() {\n        userRepository.deleteAll(); // Clear before each test\n    }\n    \n    @Test\n    public void testFindByEmail() {\n        User user = userRepository.save(new User(\"John\", \"john@example.com\"));\n        Optional<User> found = userRepository.findByEmail(\"john@example.com\");\n        assertTrue(found.isPresent());\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Context Loading Performance",
+                                            children: [
+                                                { name: "Full context loading: 3-10 seconds (slow)" },
+                                                { name: "Reused across test methods (only loaded once per class)" },
+                                                { name: "Tip: Use slice tests (@WebMvcTest, @DataJpaTest) when possible" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Spring Test Framework",
+                                    name: "@WebMvcTest (Slice Test)",
                                     children: [
-                                        { name: "@SpringBootTest", details: "Full application context loading, integration testing, webEnvironment modes (MOCK, RANDOM_PORT, DEFINED_PORT)" },
-                                        { name: "@WebMvcTest", details: "Only web layer, no business logic beans, MockMvc injection, controller testing" },
-                                        { name: "@DataJpaTest", details: "Only persistence layer, test transactions, TestEntityManager, in-memory database" },
-                                        { name: "@RestClientTest", details: "RestTemplate/RestClient testing, MockRestServiceServer" },
-                                        { name: "@MockMvcTest", details: "MockMvc instance for servlet testing" },
-                                        { name: "TestRestTemplate", details: "Alternative to RestTemplate for testing, @SpringBootTest + TestRestTemplate" },
-                                        { name: "@DirtiesContext", details: "Resets context after test, avoiding test pollution, performance implications" },
-                                        { name: "@Transactional on Tests", details: "Auto-rollback, avoiding test pollution, isolation issues" },
+                                        {
+                                            name: "Controller Layer Testing",
+                                            children: [
+                                                { name: "\"Test controller without loading entire context\"" },
+                                                { name: "Loads: DispatcherServlet, @Controller beans, @ControllerAdvice" },
+                                                { name: "Mocks: @Service, @Repository beans" },
+                                                { name: "Fast: Only relevant components loaded" },
+                                                {
+                                                    name: "Ex:-\n\n@WebMvcTest(UserController.class) // Load only UserController\npublic class UserControllerTest {\n    @Autowired\n    private MockMvc mockMvc; // Mock servlet layer\n    \n    @MockBean\n    private UserService userService; // Mock service\n    \n    @Test\n    public void testGetUser() throws Exception {\n        User mockUser = new User(1L, \"John\", \"john@example.com\");\n        when(userService.findById(1L)).thenReturn(mockUser);\n        \n        mockMvc.perform(get(\"/api/users/1\")\n                .contentType(MediaType.APPLICATION_JSON))\n            .andExpect(status().isOk())\n            .andExpect(jsonPath(\"$.name\").value(\"John\"))\n            .andExpect(jsonPath(\"$.email\").value(\"john@example.com\"));\n        \n        verify(userService, times(1)).findById(1L);\n    }\n    \n    @Test\n    public void testCreateUser() throws Exception {\n        CreateUserRequest request = new CreateUserRequest(\"Jane\", \"jane@example.com\");\n        User created = new User(2L, \"Jane\", \"jane@example.com\");\n        \n        when(userService.create(any(CreateUserRequest.class))).thenReturn(created);\n        \n        mockMvc.perform(post(\"/api/users\")\n                .contentType(MediaType.APPLICATION_JSON)\n                .content(asJsonString(request)))\n            .andExpect(status().isCreated())\n            .andExpect(jsonPath(\"$.id\").value(2));\n    }\n    \n    @Test\n    public void testDeleteUser() throws Exception {\n        mockMvc.perform(delete(\"/api/users/1\"))\n            .andExpect(status().isNoContent());\n        \n        verify(userService).delete(1L);\n    }\n    \n    // Helper\n    private static String asJsonString(Object obj) throws JsonProcessingException {\n        return new ObjectMapper().writeValueAsString(obj);\n    }\n}"
+                                                },
+                                                { name: "@MockBean: Mock service dependencies" },
+                                                { name: "MockMvc: Perform HTTP requests without real server" },
+                                                { name: "Fast: ~1 second (vs 3-10 for full context)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "MockMvc Methods",
+                                            children: [
+                                                {
+                                                    name: "HTTP Request Methods:-\n\nmockMvc.perform(get(\"/api/users\")) → GET request\nmockMvc.perform(post(\"/api/users\")) → POST request\nmockMvc.perform(put(\"/api/users/1\")) → PUT request\nmockMvc.perform(delete(\"/api/users/1\")) → DELETE request\nmockMvc.perform(patch(\"/api/users/1\")) → PATCH request"
+                                                },
+                                                {
+                                                    name: "Request Configuration:-\n\n.contentType(MediaType.APPLICATION_JSON) → Set Content-Type header\n.content(jsonBody) → Set request body\n.header(\"Authorization\", \"Bearer token\") → Add custom header\n.param(\"page\", \"1\") → Add query parameter\n.accept(MediaType.APPLICATION_JSON) → Set Accept header"
+                                                },
+                                                {
+                                                    name: "Response Assertions (andExpect):-\n\n.andExpect(status().isOk()) → Verify 200 status\n.andExpect(status().isCreated()) → Verify 201 status\n.andExpect(status().isNotFound()) → Verify 404 status\n.andExpect(jsonPath(\"$.name\").value(\"John\")) → Verify JSON field\n.andExpect(jsonPath(\"$.length()\").value(3)) → Verify array length\n.andExpect(header().exists(\"Location\")) → Verify header exists\n.andExpect(content().string(\"Expected content\")) → Verify response body"
+                                                },
+                                                {
+                                                    name: "Output & Debugging (andDo):-\n\n.andDo(print()) → Print request/response details\n.andDo(print(System.err)) → Print to stderr"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Testing Error Handling",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\n@WebMvcTest(UserController.class)\npublic class UserControllerErrorTest {\n    @Autowired\n    private MockMvc mockMvc;\n    \n    @MockBean\n    private UserService userService;\n    \n    @Test\n    public void testUserNotFound() throws Exception {\n        when(userService.findById(999L))\n            .thenThrow(new UserNotFoundException(\"User not found\"));\n        \n        mockMvc.perform(get(\"/api/users/999\"))\n            .andExpect(status().isNotFound())\n            .andExpect(jsonPath(\"$.error\").value(\"User not found\"));\n    }\n    \n    @Test\n    public void testInvalidInput() throws Exception {\n        mockMvc.perform(post(\"/api/users\")\n                .contentType(MediaType.APPLICATION_JSON)\n                .content(\"{\\\"name\\\": \\\"\\\"}\")) // Empty name\n            .andExpect(status().isBadRequest())\n            .andExpect(jsonPath(\"$.fieldErrors.name\").exists());\n    }\n}"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "MockMvc for REST Testing",
+                                    name: "@DataJpaTest (Slice Test)",
                                     children: [
-                                        { name: "MockMvc Basics", details: "perform(), andExpect(), andReturn(), andDo(), status(), jsonPath()" },
-                                        { name: "Request Building", details: "MockMvcRequestBuilders.get/post/put/delete/patch(), headers, body, contentType" },
-                                        { name: "Response Assertions", details: "status().isOk(), content().json(), content().string(), jsonPath() matchers" },
-                                        { name: "JSON Path Testing", details: "$.fieldName, $.array[0], $.array[*].field, complex JSON navigation" },
-                                        { name: "Mock Beans", details: "@MockBean for replacing beans, behaviors with when().thenReturn()" },
-                                        { name: "Performance Testing", details: "print() for debugging, request/response logging" },
+                                        {
+                                            name: "Repository Layer Testing",
+                                            children: [
+                                                { name: "\"Test JPA repositories without loading entire context\"" },
+                                                { name: "Loads: @Entity classes, @Repository beans, Spring Data infrastructure" },
+                                                { name: "Mocks: @Service, @Controller beans" },
+                                                { name: "Database: Uses H2 in-memory by default (if in classpath)" },
+                                                { name: "Transactional: Auto-rollback after each test (data isolation)" },
+                                                {
+                                                    name: "Ex:-\n\n@DataJpaTest\npublic class UserRepositoryTest {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Autowired\n    private TestEntityManager entityManager; // Query DB directly\n    \n    @Test\n    public void testSaveUser() {\n        User user = new User(\"John\", \"john@example.com\");\n        User saved = userRepository.save(user);\n        \n        assertNotNull(saved.getId());\n        assertEquals(\"John\", saved.getName());\n    }\n    \n    @Test\n    public void testFindByEmail() {\n        // Setup\n        User user = new User(\"John\", \"john@example.com\");\n        entityManager.persistAndFlush(user);\n        entityManager.clear(); // Clear persistence context\n        \n        // Execute\n        Optional<User> found = userRepository.findByEmail(\"john@example.com\");\n        \n        // Verify\n        assertTrue(found.isPresent());\n        assertEquals(\"john@example.com\", found.get().getEmail());\n    }\n    \n    @Test\n    public void testFindByAgeGreaterThan() {\n        entityManager.persistAndFlush(new User(\"John\", \"john@example.com\", 30));\n        entityManager.persistAndFlush(new User(\"Jane\", \"jane@example.com\", 25));\n        entityManager.persistAndFlush(new User(\"Bob\", \"bob@example.com\", 35));\n        entityManager.clear();\n        \n        List<User> users = userRepository.findByAgeGreaterThan(28);\n        \n        assertEquals(2, users.size());\n        assertTrue(users.stream().allMatch(u -> u.getAge() > 28));\n    }\n}"
+                                                },
+                                                { name: "TestEntityManager: Persist/flush entities directly" },
+                                                { name: "Auto-rollback: Each test starts with clean data" },
+                                                { name: "Fast: Only JPA infrastructure loaded" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Testing Lazy Loading & Relationships",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\n@DataJpaTest\npublic class UserPostRepositoryTest {\n    @Autowired\n    private UserRepository userRepository;\n    \n    @Autowired\n    private PostRepository postRepository;\n    \n    @Autowired\n    private TestEntityManager entityManager;\n    \n    @Test\n    public void testFindUserWithPosts() {\n        User user = new User(\"John\", \"john@example.com\");\n        user.addPost(new Post(\"Title 1\", \"Content 1\"));\n        user.addPost(new Post(\"Title 2\", \"Content 2\"));\n        \n        entityManager.persistAndFlush(user);\n        entityManager.clear();\n        \n        // Fetching user\n        User found = userRepository.findById(user.getId()).get();\n        \n        // Accessing lazy-loaded posts (LAZY by default for @OneToMany)\n        assertThat(found.getPosts()).hasSize(2);\n    }\n}"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Testcontainers Integration",
+                                    name: "Mocking with Mockito",
                                     children: [
-                                        { name: "Container-Based Testing", details: "Docker containers for databases, message queues, external services in tests" },
-                                        { name: "Supported Containers", details: "PostgreSQL, MySQL, MongoDB, Redis, RabbitMQ, Kafka, Elasticsearch, S3 (LocalStack)" },
-                                        { name: "Spring Boot Integration", details: "@Testcontainers, @Container, static vs instance containers, lifecycle management" },
-                                        { name: "Database Testing", details: "JDBC URL from container, automatic schema creation, test data loading" },
-                                        { name: "Custom Containers", details: "GenericContainer for custom images, environment variables, port mapping" },
-                                        { name: "Network Modes", details: "Container networking, service discovery between containers" },
+                                        {
+                                            name: "@MockBean Annotation",
+                                            children: [
+                                                { name: "\"Mock Spring bean in application context\"" },
+                                                { name: "Replaces actual bean with Mockito mock" },
+                                                { name: "Used in @WebMvcTest, @SpringBootTest" },
+                                                {
+                                                    name: "Ex:-\n\n@SpringBootTest\npublic class UserServiceTest {\n    @MockBean // Mock the repository\n    private UserRepository userRepository;\n    \n    @Autowired\n    private UserService userService; // Real service using mocked repo\n    \n    @Test\n    public void testCreateUser() {\n        CreateUserRequest req = new CreateUserRequest(\"John\", \"john@example.com\");\n        User expected = new User(1L, \"John\", \"john@example.com\");\n        \n        when(userRepository.save(any(User.class))).thenReturn(expected);\n        \n        User result = userService.create(req);\n        \n        assertEquals(expected.getId(), result.getId());\n        verify(userRepository, times(1)).save(any(User.class));\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@SpyBean Annotation",
+                                            children: [
+                                                { name: "\"Partial mock: Real implementation + override some methods\"" },
+                                                { name: "Calls real method by default, can override specific calls" },
+                                                { name: "Useful for testing real logic with some dependencies mocked" },
+                                                {
+                                                    name: "Ex:-\n\n@SpringBootTest\npublic class UserServiceSpyTest {\n    @SpyBean // Real service with some methods mocked\n    private UserService userService;\n    \n    @MockBean\n    private EmailService emailService;\n    \n    @Test\n    public void testRegisterUserWithEmailSpy() {\n        // Call real createUser, mock sendWelcomeEmail\n        doNothing().when(emailService).sendWelcomeEmail(anyString());\n        \n        User user = userService.registerUser(\n            new CreateUserRequest(\"John\", \"john@example.com\")\n        );\n        \n        assertNotNull(user.getId()); // Real user created\n        verify(emailService).sendWelcomeEmail(\"john@example.com\"); // Email sent\n    }\n}"
+                                                },
+                                                { name: "Use sparingly: Harder to reason about, prefer @MockBean" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Mockito Stubbing",
+                                            children: [
+                                                {
+                                                    name: "Basic Stubbing:-\n\nwhen(mock.method(arg)).thenReturn(value);\nwhen(mock.method(arg)).thenThrow(exception);\n\n// Multiple calls\nwhen(mock.method()).thenReturn(1).thenReturn(2).thenReturn(3);\n\n// Argument matchers\nwhen(mock.findById(anyLong())).thenReturn(user);\nwhen(mock.save(any(User.class))).thenReturn(user);\nwhen(mock.findByName(startsWith(\"J\"))).thenReturn(list);"
+                                                },
+                                                {
+                                                    name: "Verification:-\n\nverify(mock).method(arg); // Called at least once\nverify(mock, times(2)).method(arg); // Called exactly 2 times\nverify(mock, never()).method(arg); // Never called\nverify(mock, atLeastOnce()).method(arg);\nverify(mock, atMostOnce()).method(arg);\nverify(mock, inOrder(mock1, mock2)).method(); // Call order"
+                                                },
+                                                {
+                                                    name: "Real Usage Example:-\n\n@Test\npublic void testUpdateUserEmail() {\n    // Setup\n    User user = new User(1L, \"John\", \"john@example.com\");\n    when(userRepository.findById(1L)).thenReturn(Optional.of(user));\n    when(userRepository.save(any(User.class))).thenAnswer(invocation -> {\n        User u = invocation.getArgument(0);\n        u.setId(1L);\n        return u;\n    });\n    \n    // Execute\n    User updated = userService.updateEmail(1L, \"newemail@example.com\");\n    \n    // Verify\n    assertEquals(\"newemail@example.com\", updated.getEmail());\n    verify(userRepository).findById(1L);\n    verify(userRepository).save(any(User.class));\n}"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Test Data Management",
+                                    name: "Test Fixtures & Setup",
                                     children: [
-                                        { name: "Builders & Factories", details: "TestDataBuilder pattern, Factory pattern for test fixtures" },
-                                        { name: "Faker Libraries", details: "java-faker for random test data, reproducible seeds" },
-                                        { name: "Database Fixtures", details: "SQL scripts (data.sql, schema.sql), DBUnit, FlyWay test migrations" },
-                                        { name: "Reset & Cleanup", details: "Truncate all tables between tests, database state management" },
+                                        {
+                                            name: "@BeforeEach & @AfterEach",
+                                            children: [
+                                                { name: "\"Setup/cleanup before/after each test\"" },
+                                                { name: "Replaces JUnit 3 setUp() and tearDown()" },
+                                                {
+                                                    name: "Ex:-\n\n@SpringBootTest\npublic class UserServiceSetupTest {\n    @Autowired\n    private UserService userService;\n    \n    @Autowired\n    private UserRepository userRepository;\n    \n    private User testUser;\n    \n    @BeforeEach\n    public void setUp() {\n        // Create test data before each test\n        testUser = userRepository.save(new User(\"John\", \"john@example.com\"));\n    }\n    \n    @AfterEach\n    public void tearDown() {\n        // Clean up after each test\n        userRepository.deleteAll();\n    }\n    \n    @Test\n    public void testUpdateUser() {\n        User updated = userService.updateName(testUser.getId(), \"Jane\");\n        assertEquals(\"Jane\", updated.getName());\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@BeforeClass & @AfterClass (Static)",
+                                            children: [
+                                                { name: "\"Setup/cleanup once per class (before all tests)\"" },
+                                                { name: "Must be static methods" },
+                                                { name: "Use for expensive operations (database setup, file creation)" },
+                                                {
+                                                    name: "Ex:-\n\npublic class ExpensiveSetupTest {\n    private static DataSource dataSource;\n    \n    @BeforeClass\n    public static void setUpClass() throws Exception {\n        // Expensive one-time setup\n        dataSource = createDataSource();\n    }\n    \n    @AfterClass\n    public static void tearDownClass() throws Exception {\n        dataSource.close();\n    }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Test Data Builders",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\npublic class UserBuilder {\n    private Long id = 1L;\n    private String name = \"John\";\n    private String email = \"john@example.com\";\n    private int age = 25;\n    \n    public UserBuilder withName(String name) {\n        this.name = name;\n        return this;\n    }\n    \n    public UserBuilder withEmail(String email) {\n        this.email = email;\n        return this;\n    }\n    \n    public User build() {\n        return new User(id, name, email, age);\n    }\n}\n\n// Usage in tests:\n@Test\npublic void testWithDifferentUsers() {\n    User user1 = new UserBuilder().withName(\"Alice\").build();\n    User user2 = new UserBuilder().withName(\"Bob\").withAge(30).build();\n    \n    // Test with different users\n}"
+                                                },
+                                                { name: "Fluent API for creating test objects" },
+                                                { name: "Improves test readability" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Testing Best Practices",
+                                    name: "Parameterized Tests",
                                     children: [
-                                        { name: "Test Naming Conventions", details: "Given-When-Then, descriptive names (@DisplayName)" },
-                                        { name: "Test Independence", details: "No shared state, @DirtiesContext, transaction rollback, test ordering" },
-                                        { name: "Avoid Test Pollution", details: "Cleanup after tests, independent setup per test" },
-                                        { name: "Performance Considerations", details: "Context caching, avoiding unnecessary full app context loads, parallel test execution" },
-                                        { name: "Mocking External Dependencies", details: "@MockBean for beans, WireMock for HTTP endpoints, testcontainers for data services" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 10. CACHING
-                        // =====================================================================
-                        {
-                            name: "Caching",
-                            children: [
-                                {
-                                    name: "Spring Cache Abstraction",
-                                    children: [
-                                        { name: "@Cacheable", details: "Cache hit → return cached result, cache miss → execute method, store result, condition & unless" },
-                                        { name: "@CachePut", details: "Always execute method, always update cache, use after write operations" },
-                                        { name: "@CacheEvict", details: "Remove cache entry, allEntries=true for clearing entire cache, beforeInvocation" },
-                                        { name: "@Caching", details: "Combining multiple cache annotations, complex caching scenarios" },
-                                        { name: "Cache Key Generation", details: "SimpleKeyGenerator, custom KeyGenerator, SpEL expressions in @Cacheable(\"#id\")" },
-                                        { name: "Conditional Caching", details: "condition (before method), unless (after method), SpEL conditions" },
-                                        { name: "@EnableCaching", details: "Enabling cache support, proxy-based AOP, aspect configuration" },
+                                        {
+                                            name: "@ParameterizedTest with @ValueSource",
+                                            children: [
+                                                { name: "\"Run same test with multiple input values\"" },
+                                                { name: "Reduces code duplication" },
+                                                {
+                                                    name: "Ex:-\n\n@ParameterizedTest\n@ValueSource(ints = {1, 2, 3, 4, 5})\npublic void testValidIds(int id) {\n    assertTrue(userService.existsById((long) id));\n}\n\n@ParameterizedTest\n@ValueSource(strings = {\"john@example.com\", \"jane@example.com\"})\npublic void testValidEmails(String email) {\n    assertTrue(isValidEmail(email));\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "@ParameterizedTest with @CsvSource",
+                                            children: [
+                                                { name: "\"Test with CSV data\"" },
+                                                {
+                                                    name: "Ex:-\n\n@ParameterizedTest\n@CsvSource({\n    \"John, john@example.com, 25\",\n    \"Jane, jane@example.com, 30\",\n    \"Bob, bob@example.com, 35\"\n})\npublic void testCreateUserWithParams(String name, String email, int age) {\n    User user = userService.create(new CreateUserRequest(name, email, age));\n    \n    assertEquals(name, user.getName());\n    assertEquals(email, user.getEmail());\n}"
+                                                }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Cache Providers & Configuration",
+                                    name: "Test Best Practices",
                                     children: [
-                                        { name: "ConcurrentHashMap Cache", details: "Default, in-memory, no TTL or eviction" },
-                                        { name: "Ehcache Integration", details: "spring-boot-starter-cache + ehcache dependency, ehcache.xml configuration, eviction policies" },
-                                        { name: "Caffeine Cache", details: "Modern alternative to Guava, expireAfterWrite, expireAfterAccess, maximumSize, weak references" },
-                                        { name: "Redis Cache", details: "Distributed cache, serialization, TTL configuration, RedisTemplate setup" },
-                                        { name: "Memcached", details: "spring-boot-starter-cache + memcached client, client configuration" },
-                                        { name: "Spring Session with Cache", details: "Session storage in Redis/Memcached, distributed session management" },
+                                        {
+                                            name: "AAA Pattern (Arrange-Act-Assert)",
+                                            children: [
+                                                {
+                                                    name: "Ex:-\n\n@Test\npublic void testUserRegistration() {\n    // Arrange: Setup test data\n    CreateUserRequest request = new CreateUserRequest(\"John\", \"john@example.com\");\n    \n    // Act: Execute the method being tested\n    User result = userService.register(request);\n    \n    // Assert: Verify the outcome\n    assertNotNull(result.getId());\n    assertEquals(\"John\", result.getName());\n    assertEquals(\"john@example.com\", result.getEmail());\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "One Assertion per Test",
+                                            children: [
+                                                { name: "\"Test one behavior per test method\"" },
+                                                { name: "Easier to identify failure cause" },
+                                                { name: "Exception: Related assertions (e.g., id, name, email of same object)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Descriptive Test Names",
+                                            children: [
+                                                { name: "✅ Good: testUserNotFoundThrowsException()" },
+                                                { name: "❌ Bad: test1()" },
+                                                { name: "Format: test<Method><Condition><Expected>" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Avoid Test Interdependencies",
+                                            children: [
+                                                { name: "Tests must be independent (any order, parallel execution)" },
+                                                { name: "Don't share state between tests" },
+                                                { name: "Use @BeforeEach for setup, not class-level fields" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Mock External Dependencies",
+                                            children: [
+                                                { name: "Mock: Database, APIs, email services, file systems" },
+                                                { name: "Don't: Mock objects under test or Spring framework" },
+                                                { name: "Reduces flakiness, speeds up tests" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Test Coverage Goals",
+                                            children: [
+                                                { name: "Happy path: Main success scenario" },
+                                                { name: "Error paths: Exceptions, validation failures" },
+                                                { name: "Edge cases: Null, empty, boundary values" },
+                                                { name: "Target: 70-80% code coverage (not 100% - diminishing returns)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Performance Considerations",
+                                            children: [
+                                                { name: "@WebMvcTest: ~1 second (fast)" },
+                                                { name: "@DataJpaTest: ~2-3 seconds (medium)" },
+                                                { name: "@SpringBootTest: ~5-10 seconds (slow)" },
+                                                { name: "Strategy: Use slice tests when possible, full tests only for integration scenarios" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Redis Caching Details",
+                                    name: "Spring Boot Actuator & Monitoring",
                                     children: [
-                                        { name: "RedisTemplate & StringRedisTemplate", details: "Serialization (JDK, JSON), operations, template method pattern" },
-                                        { name: "Cache Configuration", details: "RedisConnectionFactory, RedisTemplate bean setup, serialization strategy" },
-                                        { name: "TTL & Expiration", details: "EXPIRE, expireAt commands, automatic cleanup, redis eviction policies" },
-                                        { name: "Cache Invalidation", details: "Manual invalidation (DEL), pattern-based invalidation (KEYS pattern), @CacheEvict" },
-                                        { name: "Distributed Locking", details: "Redis SETEX/SETNX for pessimistic locking, lua scripts for atomic operations" },
-                                        { name: "Pub/Sub for Cache Events", details: "Notification on cache updates, listening to Redis events" },
+                                        {
+                                            name: "Actuator Endpoints",
+                                            children: [
+                                                {
+                                                    name: "Common Endpoints:-\n\nGET /actuator/health: Application health status\nGET /actuator/metrics: Performance and resource metrics\nGET /actuator/env: Environment variables & properties\nGET /actuator/beans: Registered beans in context\nGET /actuator/threaddump: Current thread dump\nGET /actuator/loggers: Logger configuration\nGET /actuator/prometheus: Metrics in Prometheus format"
+                                                },
+                                                {
+                                                    name: "Ex (Health Check):-\n\n// GET /actuator/health\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"db\": {\n      \"status\": \"UP\",\n      \"details\": {\n        \"database\": \"PostgreSQL\"\n      }\n    },\n    \"redis\": {\n      \"status\": \"DOWN\",\n      \"details\": {\n        \"error\": \"Connection refused\"\n      }\n    }\n  }\n}"
+                                                },
+                                                {
+                                                    name: "Configuration (application.yml):-\n\nmanagement:\n  endpoints:\n    web:\n      exposure:\n        include: health,metrics,env,loggers\n      base-path: /actuator\n  endpoint:\n    health:\n      show-details: when-authorized # Show details only when authorized\n      show-components: when-authorized"
+                                                },
+                                                { name: "Security: Actuator endpoints should be secured (not public)" },
+                                                { name: "Production: Show minimal details (health, metrics) to prevent info leakage" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Health Indicators",
+                                            children: [
+                                                { name: "\"Custom health checks\"" },
+                                                {
+                                                    name: "Ex:-\n\n@Component\npublic class DatabaseHealthIndicator implements HealthIndicator {\n    @Autowired\n    private DataSource dataSource;\n    \n    @Override\n    public Health health() {\n        try (Connection conn = dataSource.getConnection()) {\n            return Health.up()\n                .withDetail(\"database\", \"PostgreSQL\")\n                .withDetail(\"version\", getVersion(conn))\n                .build();\n        } catch (SQLException e) {\n            return Health.down()\n                .withDetail(\"error\", e.getMessage())\n                .build();\n        }\n    }\n}\n\n// Result at /actuator/health:\n{\n  \"status\": \"UP\",\n  \"components\": {\n    \"database\": {\n      \"status\": \"UP\",\n      \"details\": {\n        \"database\": \"PostgreSQL\",\n        \"version\": \"13.5\"\n      }\n    }\n  }\n}"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Metrics Collection",
+                                            children: [
+                                                {
+                                                    name: "Micrometer Integration:-\n\nspring-boot-starter-actuator includes Micrometer\nSupports: Prometheus, CloudWatch, New Relic, etc\n\n// Dependency\nspring-boot-starter-micrometer-registry-prometheus"
+                                                },
+                                                {
+                                                    name: "Custom Metrics:-\n\n@Component\npublic class UserMetrics {\n    private final MeterRegistry meterRegistry;\n    private final AtomicInteger activeUsers;\n    \n    public UserMetrics(MeterRegistry meterRegistry) {\n        this.meterRegistry = meterRegistry;\n        this.activeUsers = meterRegistry.gauge(\n            \"users.active\",\n            new AtomicInteger(0)\n        );\n    }\n    \n    public void recordUserLogin() {\n        activeUsers.incrementAndGet();\n        meterRegistry.counter(\"users.login.total\").increment();\n    }\n    \n    public void recordUserLogout() {\n        activeUsers.decrementAndGet();\n    }\n}"
+                                                },
+                                                { name: "Prometheus Scraping: Metrics at /actuator/prometheus" }
+                                            ]
+                                        }
                                     ]
                                 },
                                 {
-                                    name: "Advanced Caching Patterns",
+                                    name: "Common Pitfalls & Best Practices",
                                     children: [
-                                        { name: "Write-Through Cache", details: "Write to cache first, then database, consistency guarantee, slower writes" },
-                                        { name: "Write-Behind Cache", details: "Write to cache immediately, async flush to database, risk of data loss" },
-                                        { name: "Read-Through Cache", details: "Cache-aside vs cache-as-aside, logic in cache or application" },
-                                        { name: "Cache Stampede", details: "Problem definition, locks for cache miss, probabilistic early refresh" },
-                                        { name: "Cache Invalidation Strategies", details: "TTL, manual invalidation, event-based invalidation, versioning" },
-                                        { name: "Two-Level Caching", details: "L1 (in-memory), L2 (Redis), consistency challenges" },
+                                        {
+                                            name: "Circular Dependencies",
+                                            children: [
+                                                { name: "\"Bean A depends on B, Bean B depends on A\"" },
+                                                { name: "Constructor injection: Detected at startup (FAIL FAST)" },
+                                                { name: "Field injection: Detected at runtime (FAIL LATE)" },
+                                                { name: "Solution: Refactor to extract common dependency into third bean" }
+                                            ]
+                                        },
+                                        {
+                                            name: "@Transactional Misuse",
+                                            children: [
+                                                {
+                                                    name: "Problem 1: Internal method call doesn't trigger transaction:-\n\n@Service\npublic class UserService {\n    public void methodA() {\n        methodB(); // Doesn't create transaction\n    }\n    \n    @Transactional\n    public void methodB() {\n        // No transaction (internal call bypasses proxy)\n    }\n}\n\nSolution: Call via injected dependency or self-inject"
+                                                },
+                                                {
+                                                    name: "Problem 2: Long-running transactions hold locks:-\n\n@Transactional\npublic void generateReport() {\n    // Query 1: 5 seconds\n    // Query 2: 10 seconds\n    // Lock held entire 15 seconds\n}\n\nSolution: Process in batches, keep transaction short"
+                                                },
+                                                {
+                                                    name: "Problem 3: Checked exceptions don't rollback:-\n\n@Transactional\npublic void processPayment() throws PaymentException {\n    paymentGateway.charge(); // If throws PaymentException\n    // Transaction commits (doesn't rollback by default)\n}\n\nSolution: Use rollbackFor parameter\n@Transactional(rollbackFor = PaymentException.class)"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Lazy Loading Issues",
+                                            children: [
+                                                {
+                                                    name: "LazyInitializationException:-\n\n@Transactional\nUser user = userRepository.findById(1L);\n\nuser.getPosts(); // OK (transaction still active)\n\n// Outside transaction:\nUser user = userRepository.findById(1L); // Session closed\nuser.getPosts(); // LazyInitializationException!"
+                                                },
+                                                { name: "Solutions: Use EAGER, JOIN FETCH, Entity Graph, or @Transactional" }
+                                            ]
+                                        },
+                                        {
+                                            name: "N+1 Query Problem",
+                                            children: [
+                                                {
+                                                    name: "Problem:-\n\nList<User> users = userRepository.findAll(); // Query 1\nusers.forEach(u -> u.getPosts().size()); // N more queries\n\nTotal: 1 + N queries"
+                                                },
+                                                {
+                                                    name: "Solutions:-\n\n1. JOIN FETCH:\n@Query(\"SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.posts\")\nList<User> findAllWithPosts();\n\n2. Entity Graph:\n@EntityGraph(attributePaths = {\"posts\"})\nList<User> findAll();\n\n3. Batch Loading:\n@BatchSize(size = 10)\nprivate List<Post> posts;"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            name: "Security Best Practices",
+                                            children: [
+                                                { name: "Never hardcode credentials: Use environment variables or vault" },
+                                                { name: "Use HTTPS in production (never HTTP)" },
+                                                { name: "Enable CSRF for form apps, disable for stateless APIs" },
+                                                { name: "Hash passwords with BCrypt/Argon2, never plaintext" },
+                                                { name: "Validate & sanitize input (SQL injection, XSS)" },
+                                                { name: "Use short-lived tokens (JWT: 15 min access, 7 day refresh)" },
+                                                { name: "Implement rate limiting (prevent brute force)" },
+                                                { name: "Log authentication failures, monitor for attacks" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Performance Best Practices",
+                                            children: [
+                                                { name: "Use LAZY loading for relationships (avoid N+1)" },
+                                                { name: "Index frequently searched columns" },
+                                                { name: "Cache read-heavy data (Redis)" },
+                                                { name: "Use connection pooling (HikariCP)" },
+                                                { name: "Async for slow operations (email, notifications)" },
+                                                { name: "Pagination for large result sets" },
+                                                { name: "Use CDN for static files" },
+                                                { name: "Monitor: logs, metrics, traces (Actuator, ELK, Prometheus)" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Configuration Management",
+                                            children: [
+                                                { name: "Use application.yml (YAML cleaner than properties)" },
+                                                { name: "Profiles: application-dev.yml, application-prod.yml" },
+                                                { name: "Environment variables: Override via ENV" },
+                                                { name: "Secrets: Never in code, use vault or AWS Secrets Manager" },
+                                                { name: "@ConfigurationProperties: Type-safe config binding" }
+                                            ]
+                                        },
+                                        {
+                                            name: "Testing Best Practices",
+                                            children: [
+                                                { name: "Use @WebMvcTest for controllers (fast, isolated)" },
+                                                { name: "Use @DataJpaTest for repositories (fast, isolated)" },
+                                                { name: "Use @SpringBootTest for integration scenarios (slow, comprehensive)" },
+                                                { name: "Mock external dependencies (APIs, email, file systems)" },
+                                                { name: "One assertion per test (or related assertions)" },
+                                                { name: "Descriptive test names (what is being tested)" },
+                                                { name: "Independent tests (can run in any order)" },
+                                                { name: "Test happy path + error paths + edge cases" }
+                                            ]
+                                        },
+                                        {
+                                            name: "API Design Best Practices",
+                                            children: [
+                                                { name: "Use nouns for resources: /users NOT /getUsers" },
+                                                { name: "Use HTTP methods semantically: GET (read), POST (create), PUT (replace), DELETE (remove)" },
+                                                { name: "Use correct status codes: 200 (OK), 201 (Created), 400 (Bad Request), 404 (Not Found)" },
+                                                { name: "Consistent naming: camelCase OR snake_case (not mixed)" },
+                                                { name: "Version your APIs: /api/v1/users OR Accept header versioning" },
+                                                { name: "Pagination for large datasets: page, size, sort parameters" },
+                                                { name: "Error responses: Consistent structure with error codes & messages" },
+                                                { name: "HATEOAS: Include links to related resources (optional, nice to have)" }
+                                            ]
+                                        }
                                     ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 11. MESSAGE QUEUES & ASYNCHRONOUS MESSAGING
-                        // =====================================================================
-                        {
-                            name: "Message Queues & Asynchronous Messaging",
-                            children: [
-                                {
-                                    name: "Spring Cloud Stream",
-                                    children: [
-                                        { name: "Message-Driven Architecture", details: "Event streaming, loose coupling, publish-subscribe vs point-to-point" },
-                                        { name: "@EnableBinding", details: "Binding interfaces to message brokers, Source/Sink/Processor (deprecated in 3.0)" },
-                                        { name: "Functional Programming Model", details: "Function<>, Consumer<>, Supplier<> beans, declarative bindings (Spring Cloud Stream 3.0+)" },
-                                        { name: "Channel Binding", details: "input, output channel configuration, multiple bindings" },
-                                        { name: "@StreamListener", details: "Message handling (deprecated in 3.0), consumer routing, header mapping" },
-                                        { name: "Message Headers", details: "Custom headers, contentType header, standard headers (correlationId, sequenceSize)" },
-                                        { name: "Error Handling", details: "ErrorChannel binding, error handler configuration, Dead Letter Queue (DLQ)" },
-                                        { name: "Partitioning", details: "partitionKeyExpression, partitionCount, ordered message processing" },
-                                    ]
-                                },
-                                {
-                                    name: "Kafka Integration",
-                                    children: [
-                                        { name: "Kafka Basics", details: "Topics, partitions, consumer groups, offsets, replication factor" },
-                                        { name: "spring-cloud-stream-kafka", details: "Kafka binder configuration, producer/consumer properties" },
-                                        { name: "KafkaTemplate", details: "Sending messages, callbacks, transactions, serialization" },
-                                        { name: "@KafkaListener", details: "Message consumption, topic/partition subscription, group id" },
-                                        { name: "Consumer Groups", details: "Automatic load balancing, offset management, group rebalancing" },
-                                        { name: "Exactly-Once Semantics", details: "Idempotent producers, transactional consumers, offset management" },
-                                        { name: "Error Handling in Kafka", details: "DefaultErrorHandler, retry template, DLT (Dead Letter Topic)" },
-                                        { name: "Monitoring & Metrics", details: "Consumer lag monitoring, offset lag metrics" },
-                                    ]
-                                },
-                                {
-                                    name: "RabbitMQ Integration",
-                                    children: [
-                                        { name: "RabbitMQ Concepts", details: "Exchanges (direct, fanout, topic, headers), queues, bindings, routing keys" },
-                                        { name: "spring-cloud-stream-rabbit", details: "RabbitMQ binder, producer/consumer configuration" },
-                                        { name: "RabbitTemplate", details: "Sending messages, routing key, exchange setup, reply-to patterns" },
-                                        { name: "@RabbitListener", details: "Message consumption, queue binding, handler selection" },
-                                        { name: "Dead Letter Exchange (DLX)", details: "Automatic DLQ setup, requeue strategy, ttl + dlx pattern" },
-                                        { name: "Acknowledgement Modes", details: "AUTO, MANUAL, NONE, channel-back on error" },
-                                        { name: "Prefetch & QoS", details: "consumer.prefetch configuration, fair dispatch" },
-                                    ]
-                                },
-                                {
-                                    name: "Event Sourcing & CQRS",
-                                    children: [
-                                        { name: "Event Sourcing Concept", details: "Append-only log, state reconstruction, time travel debugging" },
-                                        { name: "Event Store Implementation", details: "Database table per event type vs single event store, event versioning" },
-                                        { name: "Event Publishing", details: "ApplicationEventPublisher, @EventListener, async event handling (@Async)" },
-                                        { name: "Saga Pattern", details: "Distributed transactions, orchestration vs choreography, Spring Cloud Stream implementation" },
-                                        { name: "CQRS (Command Query Responsibility Segregation)", details: "Separate models for write/read, read replicas, eventual consistency" },
-                                        { name: "Eventual Consistency", details: "Reconciliation, conflict resolution, out-of-order event handling" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 12. MICROSERVICES & DISTRIBUTED SYSTEMS
-                        // =====================================================================
-                        {
-                            name: "Microservices & Distributed Systems",
-                            children: [
-                                {
-                                    name: "Spring Cloud Core Concepts",
-                                    children: [
-                                        { name: "Service Discovery", details: "Client-side discovery, server-side discovery, service registry (Eureka, Consul, Zookeeper)" },
-                                        { name: "Service Registration", details: "@EnableEurekaClient, @EnableDiscoveryClient (platform-agnostic), automatic registration/deregistration" },
-                                        { name: "Load Balancing", details: "Ribbon (legacy), Spring Cloud LoadBalancer, round-robin, random, weighted strategies" },
-                                        { name: "@LoadBalanced RestTemplate", details: "Automatic service lookup, service name as host" },
-                                        { name: "API Gateway", details: "Spring Cloud Gateway, route predicates, filters, service routing" },
-                                        { name: "Service Mesh Concepts", details: "Istio, Linkerd, sidecar proxies, traffic management without framework changes" },
-                                    ]
-                                },
-                                {
-                                    name: "Resilience Patterns",
-                                    children: [
-                                        { name: "Circuit Breaker Pattern", details: "Failure detection, circuit states (CLOSED, OPEN, HALF_OPEN), state transitions, timeout" },
-                                        { name: "Spring Cloud Circuit Breaker", details: "@CircuitBreaker annotation, Resilience4j/Hystrix implementation, fallback methods" },
-                                        { name: "Retry Logic", details: "RetryTemplate, @Retry annotation, max attempts, backoff strategy, exponential backoff with jitter" },
-                                        { name: "Bulkhead Pattern", details: "Thread pool isolation, ThreadPoolBulkhead vs SemaphoreBulkhead, failure isolation" },
-                                        { name: "Rate Limiting", details: "RateLimiter, token bucket algorithm, permit reservation" },
-                                        { name: "Timeout Handling", details: "Timeout configuration, timeout vs CircuitBreaker, cascading failures" },
-                                        { name: "Fallback Strategies", details: "Default values, cached values, degraded service mode, fallback method design" },
-                                    ]
-                                },
-                                {
-                                    name: "Distributed Tracing with Spring Cloud Sleuth",
-                                    children: [
-                                        { name: "Trace Context", details: "Trace ID, Span ID, parent span tracking across services" },
-                                        { name: "Automatic Instrumentation", details: "HTTP clients (RestTemplate, WebClient, FeignClient), messaging (Kafka, RabbitMQ)" },
-                                        { name: "Zipkin Integration", details: "Distributed trace visualization, latency analysis, service dependency graph" },
-                                        { name: "Sampler Configuration", details: "Always, never, probability-based sampling, adaptive sampling" },
-                                    ]
-                                },
-                                {
-                                    name: "API Gateway Patterns",
-                                    children: [
-                                        { name: "Spring Cloud Gateway", details: "@EnableGatewayConfiguration, RouteLocator bean, routes with predicates/filters" },
-                                        { name: "Route Predicates", details: "Path, Host, Method, Query, Headers, Cookie, Before/After/Between time predicates" },
-                                        { name: "Gateway Filters", details: "AddRequestHeader, AddResponseHeader, RewritePath, RateLimiter, CircuitBreaker" },
-                                        { name: "Load Balancing", details: "LB:// prefix for service discovery, load balancer strategy" },
-                                        { name: "CORS in Gateway", details: "Global CORS configuration, CorsWebFilter" },
-                                        { name: "Request/Response Transformation", details: "Modifying headers, body rewriting, content-type transformation" },
-                                    ]
-                                },
-                                {
-                                    name: "Distributed Configuration Management",
-                                    children: [
-                                        { name: "Spring Cloud Config", details: "Centralized config server, git backend, environment-specific configs, client-side resolution" },
-                                        { name: "Config Server Setup", details: "@EnableConfigServer, git repository structure, label/profile/application mapping" },
-                                        { name: "Config Client", details: "bootstrap.yml configuration, actuator refresh endpoint, @RefreshScope" },
-                                        { name: "Encryption", details: "Spring Cloud Config encryption, key management, encrypted property values" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 13. BUILD & DEPLOYMENT
-                        // =====================================================================
-                        {
-                            name: "Build, Deployment & DevOps",
-                            children: [
-                                {
-                                    name: "Build Tools & Maven",
-                                    children: [
-                                        { name: "Maven Project Structure", details: "src/main/java, src/test/java, pom.xml, multimodule projects" },
-                                        { name: "pom.xml Essentials", details: "Parent POM, dependencyManagement, version management, Spring Boot parent" },
-                                        { name: "Dependency Management", details: "Transitive dependencies, exclusions, scope (compile, provided, runtime, test)" },
-                                        { name: "Maven Plugins", details: "spring-boot-maven-plugin, maven-compiler-plugin, maven-surefire-plugin" },
-                                        { name: "Maven Profiles", details: "Environment-specific builds, profile activation, property overrides" },
-                                        { name: "Build Lifecycle", details: "clean, compile, test, package, install, deploy phases" },
-                                        { name: "Plugin Management", details: "pluginManagement, version consistency, plugin configuration" },
-                                    ]
-                                },
-                                {
-                                    name: "Gradle (Alternative)",
-                                    children: [
-                                        { name: "Gradle Basics", details: "build.gradle file, tasks, configurations, plugins" },
-                                        { name: "Gradle Plugins", details: "org.springframework.boot plugin, dependency management plugin" },
-                                        { name: "Multi-project Builds", details: "settings.gradle, subproject configuration, shared build logic" },
-                                        { name: "Task Customization", details: "Custom tasks, task dependencies, lifecycle hooks" },
-                                    ]
-                                },
-                                {
-                                    name: "Docker & Containerization",
-                                    children: [
-                                        { name: "Docker Basics", details: "Images, containers, layers, Dockerfile best practices" },
-                                        { name: "Multi-Stage Docker Builds", details: "Reducing image size, build stage → runtime stage, distroless images" },
-                                        { name: "Spring Boot Docker", details: "spring-boot-docker-compose support, layered jars, OCI image build support" },
-                                        { name: "Spring Boot Maven/Gradle Plugin", details: "build-image goal/task, Docker daemon config, registry authentication" },
-                                        { name: "Spring Boot Layered JARs", details: "Faster layer caching, dependencies → application layers, OCI image build" },
-                                        { name: ".dockerignore", details: "Excluding files from build context, .git, /target, optimization" },
-                                        { name: "Runtime Security", details: "Non-root user, read-only filesystem, resource limits, health checks" },
-                                    ]
-                                },
-                                {
-                                    name: "Kubernetes Deployment",
-                                    children: [
-                                        { name: "Kubernetes Concepts", details: "Pods, Services, Deployments, ConfigMaps, Secrets, Ingress, StatefulSets" },
-                                        { name: "Spring Cloud Kubernetes", details: "spring-cloud-starter-kubernetes, ConfigMap/Secret loading, auto-configuration" },
-                                        { name: "Health Checks", details: "Liveness probes (/actuator/health/liveness), Readiness probes (/actuator/health/readiness)" },
-                                        { name: "Resource Limits", details: "Memory requests/limits, CPU requests/limits, QoS classes" },
-                                        { name: "ConfigMaps & Secrets", details: "Mounting as environment variables, volume mounts, Spring Cloud Config alternative" },
-                                        { name: "Graceful Shutdown", details: "preStop hooks, termination grace period, connection draining" },
-                                    ]
-                                },
-                                {
-                                    name: "CI/CD Integration",
-                                    children: [
-                                        { name: "GitHub Actions", details: "Workflows, triggers, matrix builds, action marketplace" },
-                                        { name: "GitLab CI", details: ".gitlab-ci.yml, pipelines, stages, runners" },
-                                        { name: "Jenkins", details: "Declarative pipelines, Groovy scripting, integration with Maven/Gradle" },
-                                        { name: "Build Pipeline Stages", details: "Build, test, package, push to registry, deploy" },
-                                        { name: "Automated Testing in CI", details: "Unit tests, integration tests, container testing" },
-                                        { name: "Artifact Repository", details: "Nexus, Artifactory, ECR (Elastic Container Registry), Harbor" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 14. PERFORMANCE OPTIMIZATION
-                        // =====================================================================
-                        {
-                            name: "Performance Optimization",
-                            children: [
-                                {
-                                    name: "JVM Performance Tuning",
-                                    children: [
-                                        { name: "Heap Size Configuration", details: "-Xms (initial), -Xmx (maximum), sizing rules, monitoring" },
-                                        { name: "Garbage Collection", details: "G1GC vs ZGC vs Shenandoah, GC logging, young/old gen sizing" },
-                                        { name: "GC Tuning", details: "Pause time vs throughput, GC overhead target, NewRatio, SurvivorRatio" },
-                                        { name: "Memory Profiling", details: "Heap dump analysis, memory leaks, object retention, profiler tools (JProfiler, YourKit)" },
-                                        { name: "Thread Pool Tuning", details: "Core vs max threads, queue size, rejection policy, monitoring" },
-                                        { name: "JFR (Java Flight Recorder)", details: "Low-overhead profiling, event streaming, analysis" },
-                                    ]
-                                },
-                                {
-                                    name: "Database Performance",
-                                    children: [
-                                        { name: "Query Optimization", details: "Execution plans, index usage, EXPLAIN analysis, query rewriting" },
-                                        { name: "Index Strategy", details: "Primary key, unique indexes, composite indexes, covering indexes" },
-                                        { name: "N+1 Problem Solutions", details: "JOIN FETCH in JPQL, @EntityGraph, batch loading" },
-                                        { name: "Connection Pool Optimization", details: "Pool sizing, idle connection timeout, connection validation" },
-                                        { name: "Batch Operations", details: "Batch inserts/updates, JdbcBatchItemWriter, entity manager flushing" },
-                                        { name: "Database Caching", details: "Query result caching, read replicas, materialized views" },
-                                    ]
-                                },
-                                {
-                                    name: "HTTP & Network Optimization",
-                                    children: [
-                                        { name: "Compression", details: "gzip compression, Content-Encoding: gzip, compression threshold" },
-                                        { name: "Connection Reuse", details: "Keep-Alive headers, connection pooling in HTTP clients, multiplexing" },
-                                        { name: "Caching Headers", details: "Cache-Control, ETag, Last-Modified, 304 Not Modified responses" },
-                                        { name: "CDN & Static Assets", details: "Serving assets from CDN, cache-busting with file hashing" },
-                                        { name: "HTTP/2 & HTTP/3", details: "Server push, multiplexing, header compression, QUIC protocol" },
-                                    ]
-                                },
-                                {
-                                    name: "Application-Level Optimization",
-                                    children: [
-                                        { name: "Lazy Initialization", details: "@Lazy on @Bean, deferred bean creation, startup time reduction" },
-                                        { name: "Startup Time Reduction", details: "Conditional auto-configuration, exclude unnecessary starters, profiling startup" },
-                                        { name: "Response Time Optimization", details: "Async processing, reactive streams, parallel stream processing" },
-                                        { name: "Memory Optimization", details: "Object pooling, stream processing vs loading all in memory, data structure selection" },
-                                    ]
-                                },
-                                {
-                                    name: "Monitoring Performance Metrics",
-                                    children: [
-                                        { name: "Request Latency Tracking", details: "Response time percentiles (p50, p95, p99), distribution analysis" },
-                                        { name: "Throughput Metrics", details: "Requests per second, error rate, success rate" },
-                                        { name: "Resource Utilization", details: "CPU usage, memory usage, disk I/O, network bandwidth" },
-                                        { name: "Database Performance Metrics", details: "Query execution time, slow query log, connection pool utilization" },
-                                        { name: "GC Metrics", details: "GC frequency, pause time, full GC occurrences" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 15. ADVANCED TOPICS
-                        // =====================================================================
-                        {
-                            name: "Advanced Topics",
-                            children: [
-                                {
-                                    name: "Spring Data Advanced",
-                                    children: [
-                                        { name: "Custom Repository Methods", details: "Implementing repository fragments, custom behavior, @Query limitations" },
-                                        { name: "Dynamic Queries", details: "Specifications, Criteria API, QueryDSL, MongoDB Criteria" },
-                                        { name: "Reactive Data", details: "R2DBC, ReactiveCrudRepository, reactive transactions, backpressure" },
-                                        { name: "Graph Databases", details: "Spring Data Neo4j, @Node, @Relationship, pattern-based queries" },
-                                        { name: "Time Series Databases", details: "Spring Data InfluxDB, TimescaleDB integration" },
-                                    ]
-                                },
-                                {
-                                    name: "Spring Batch Processing",
-                                    children: [
-                                        { name: "Batch Architecture", details: "JobLauncher, Job, Step, ItemReader/Processor/Writer" },
-                                        { name: "Item Processing", details: "ItemProcessor for transformations, filtering, validation" },
-                                        { name: "Chunked Processing", details: "chunk-oriented processing, commit interval, fault tolerance" },
-                                        { name: "Tasklet Processing", details: "Simple single-operation steps, custom logic" },
-                                        { name: "Error Handling & Retry", details: "Skip policies, Retry policy, exception classification" },
-                                        { name: "Scaling Batch Jobs", details: "Partitioning, parallel steps, remote chunking" },
-                                        { name: "Job Scheduling", details: "Scheduled job execution, trigger after previous completion" },
-                                    ]
-                                },
-                                {
-                                    name: "Spring Integration (EAI)",
-                                    children: [
-                                        { name: "Message-Driven Architecture", details: "MessageChannel, Message<?>, messaging DSL" },
-                                        { name: "Adapters & Channels", details: "InboundChannelAdapter, OutboundChannelAdapter, DirectChannel, QueueChannel" },
-                                        { name: "Error Handling", details: "ErrorChannel, ExpressionEvaluatingErrorMessageHandler, error routing" },
-                                        { name: "Transformers & Filters", details: "@Transformer, @Filter, content-based routing" },
-                                        { name: "Aggregators & Splitters", details: "Message aggregation, splitting composite messages" },
-                                        { name: "File & FTP Integration", details: "Reading/writing files, polling directories, FTP adapter" },
-                                    ]
-                                },
-                                {
-                                    name: "Scheduled & Batch Operations",
-                                    children: [
-                                        { name: "@Scheduled Methods", details: "Fixed rate, fixed delay, cron expressions, timezone support" },
-                                        { name: "TaskScheduler Customization", details: "ScheduledThreadPoolTaskScheduler configuration, thread pool sizing" },
-                                        { name: "Distributed Scheduling", details: "Shedlock for distributed locking, preventing concurrent execution" },
-                                        { name: "Batch Processing", details: "Spring Batch framework, Job/Step architecture, fault tolerance" },
-                                    ]
-                                },
-                                {
-                                    name: "Web Technologies",
-                                    children: [
-                                        { name: "WebSocket Support", details: "@EnableWebSocket, WebSocketHandler, STOMP protocol" },
-                                        { name: "Server-Sent Events (SSE)", details: "SseEmitter, push notifications, automatic reconnection" },
-                                        { name: "GraphQL", details: "Spring GraphQL, @QueryMapping, @MutationMapping, type definitions" },
-                                        { name: "HATEOAS", details: "Spring HATEOAS, Link generation, ResourceAssembler, Link relations" },
-                                    ]
-                                },
-                                {
-                                    name: "Code Quality & Maintainability",
-                                    children: [
-                                        { name: "Code Coverage", details: "JaCoCo plugin, line/branch coverage, coverage thresholds" },
-                                        { name: "Static Analysis", details: "SonarQube, Spotbugs, Checkstyle, PMD, code smell detection" },
-                                        { name: "Architectural Testing", details: "ArchUnit for architecture enforcement, layer separation, cyclic dependency detection" },
-                                        { name: "Documentation", details: "Javadoc, API documentation, Spring REST Docs, OpenAPI/Swagger" },
-                                    ]
-                                },
-                            ]
-                        },
-
-                        // =====================================================================
-                        // 16. TROUBLESHOOTING & COMMON ISSUES
-                        // =====================================================================
-                        {
-                            name: "Troubleshooting & Common Issues",
-                            children: [
-                                {
-                                    name: "Dependency & Conflict Resolution",
-                                    children: [
-                                        { name: "Dependency Tree Analysis", details: "mvn dependency:tree, gradle dependencies, finding conflicting versions" },
-                                        { name: "Version Conflicts", details: "Transitive dependency resolution, exclusions, bill of materials (BOM)" },
-                                        { name: "Circular Dependencies", details: "Detecting cycles, design refactoring, lazy initialization" },
-                                        { name: "Spring Boot Version Compatibility", details: "Spring Framework version, Java version requirements, deprecated features" },
-                                    ]
-                                },
-                                {
-                                    name: "Common Errors & Solutions",
-                                    children: [
-                                        { name: "BeanCreationException", details: "Missing dependency, circular bean references, @Autowired on final field" },
-                                        { name: "LazyInitializationException", details: "Accessing lazy-loaded entity outside transaction, solution with OpenSessionInView (anti-pattern)" },
-                                        { name: "DataIntegrityViolationException", details: "Constraint violations, cascade delete issues, transaction rollback" },
-                                        { name: "RequestMethodNotSupportedException", details: "Wrong HTTP method, missing @GetMapping/@PostMapping on endpoint" },
-                                        { name: "HttpMessageNotWritableException", details: "Circular JSON references, serialization issue, custom JsonSerializer needed" },
-                                        { name: "Timeout Exceptions", details: "Connection timeout, read timeout, database query timeout" },
-                                    ]
-                                },
-                                {
-                                    name: "Debugging Techniques",
-                                    children: [
-                                        { name: "Debug Logging", details: "DEBUG level for Spring framework, logging specific packages" },
-                                        { name: "IDE Debugging", details: "Breakpoints, conditional breakpoints, watches, step over/into" },
-                                        { name: "Remote Debugging", details: "-agentlib:jdwp configuration, remote JVM debugging" },
-                                        { name: "Thread Dumps", details: "jstack tool, deadlock detection, thread state analysis" },
-                                        { name: "Heap Dump Analysis", details: "jmap tool, heap dump file analysis, memory leak detection" },
-                                    ]
-                                },
-                                {
-                                    name: "Performance Issues",
-                                    children: [
-                                        { name: "Slow Startup", details: "Component scanning optimization, class path scanning exclusion" },
-                                        { name: "High Memory Usage", details: "Heap size tuning, memory leak detection, caching strategy review" },
-                                        { name: "Slow Queries", details: "Query plan analysis, missing indexes, N+1 detection" },
-                                        { name: "Connection Pool Exhaustion", details: "Pool size configuration, connection timeout, long-running transactions" },
-                                    ]
-                                },
+                                }
                             ]
                         }
-                    ],
+                    ]
                 },
                 {
                     name: "Build Tools",
@@ -6752,7 +7734,7 @@ export const javaBackendTree = {
         },
 
         {
-            "name": "Data & Persistence",
+            "name": "DBMS",
             "children": [
                 {
                     "name": "DBMS Foundations",
@@ -7043,44 +8025,173 @@ export const javaBackendTree = {
                         {
                             "name": "Data Anomalies",
                             "children": [
-                                { "name": "Insertion Anomaly → Cannot insert data without all required attributes (Ex: Cannot add Course without Professor)" },
-                                { "name": "Deletion Anomaly → Deleting one record loses unrelated data (Ex: Remove student → lose course info)" },
-                                { "name": "Update Anomaly → Updating one value requires updating multiple places (Ex: Change professor's dept in all course records)" }
+                                {
+                                    "name": "Insertion Anomaly",
+                                    "children": [
+                                        {
+                                            "name": "Definition: You cannot add a new entity because required, unrelated data is missing"
+                                        },
+                                        {
+                                            "name": "Scenario: The university creates a new course: Chemistry (CH40)"
+                                        },
+                                        {
+                                            "name": "The Problem: No students have enrolled yet.\nBecause student details and course details\nare locked in the same table, you cannot\nsave this course unless you insert fake\nor NULL student information"
+                                        },
+                                        {
+                                            "name": "+------------+--------------+-----------+-------------+------------+\n| Student_ID | Student_Name | Course_ID | Course_Name | Professor  |\n+------------+--------------+-----------+-------------+------------+\n| NULL       | NULL         | CH40      | Chemistry   | Dr. Smith  | <-- Can't insert\n+------------+--------------+-----------+-------------+------------+ without primary"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Deletion Anomaly",
+                                    "children": [
+                                        {
+                                            "name": "Definition: Losing a specific record unintentionally destroys completely different, critical data"
+                                        },
+                                        {
+                                            "name": "Scenario: Charlie (103) cancels his enrollment and must be deleted from the system"
+                                        },
+                                        {
+                                            "name": "The Problem: Charlie is the only student registered for Calculus (MA20). Deleting his student record completely wipes out all existence of the Calculus course and its professor information from your database"
+                                        },
+                                        {
+                                            "name": "+------------+--------------+-----------+-------------+------------+\n| Student_ID | Student_Name | Course_ID | Course_Name | Professor     |\n+------------+--------------+-----------+-------------+------------+\n| 103        | Charlie      | MA20      | Calculus    | Dr. Johnson   |  <-- Loses\n+------------+--------------+-----------+-------------+------------+ course & professor data!"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Update Anomaly",
+                                    "children": [
+                                        {
+                                            "name": "Definition: Changing a single piece of data requires editing multiple rows, risking data contradiction"
+                                        },
+                                        {
+                                            "name": "Scenario: Professor for Computer Sci (CS10) changes from Dr. Anderson to Dr. Williams"
+                                        },
+                                        {
+                                            "name": "The Problem: The course data is duplicated. If you update the professor for Alice but miss Bob's row, your database contradicts itself on who actually teaches the course"
+                                        },
+                                        {
+                                            "name": "+------------+--------------+-----------+-------------+---------------+\n| Student_ID | Student_Name | Course_ID | Course_Name | Professor     |\n+------------+--------------+-----------+-------------+---------------+\n| 101        | Alice        | CS10      | Computer Sci| Dr. Williams  |  <-- Updated\n| 102        | Bob          | CS10      | Computer Sci| Dr. Anderson  |  <-- Missed!\n+------------+--------------+-----------+-------------+---------------+ (Data Conflict)"
+                                        }
+                                    ]
+                                }
                             ]
                         },
                         {
-                            "name": "First Normal Form (1NF)",
+                            "name": "Database Normalization Forms",
                             "children": [
-                                { "name": "All attributes contain atomic (indivisible) values" },
-                                { "name": "No composite or multi-valued attributes in single column" },
-                                { "name": "NOT 1NF: Student(sid, name, hobbies=['Reading','Gaming'])" },
-                                { "name": "IS 1NF: Student(sid, name) + Hobby(sid, hobby) separate table" }
-                            ]
-                        },
-                        {
-                            "name": "Second Normal Form (2NF)",
-                            "children": [
-                                { "name": "Must be in 1NF + no partial dependencies" },
-                                { "name": "Every non-key attribute must depend on ENTIRE primary key" },
-                                { "name": "NOT 2NF: CourseEnrollment(sid, course_id, prof_name) → prof_name depends on course_id only" },
-                                { "name": "IS 2NF: Enrollment(sid, course_id) + Course(course_id, prof_name) separate" }
-                            ]
-                        },
-                        {
-                            "name": "Third Normal Form (3NF)",
-                            "children": [
-                                { "name": "Must be in 2NF + no transitive dependencies" },
-                                { "name": "No non-key attribute depends on another non-key attribute" },
-                                { "name": "NOT 3NF: Student(sid, name, dept_id, dept_name) → sid→dept_id→dept_name (transitive)" },
-                                { "name": "IS 3NF: Student(sid, name, dept_id) + Department(dept_id, dept_name) separate" }
-                            ]
-                        },
-                        {
-                            "name": "Boyce-Codd Normal Form (BCNF)",
-                            "children": [
-                                { "name": "More strict than 3NF" },
-                                { "name": "For every functional dependency X→Y, X must be candidate key" },
-                                { "name": "Rarely needed in practice; 3NF sufficient for most cases" }
+                                {
+                                    "name": "First Normal Form (1NF)",
+                                    "children": [
+                                        {
+                                            "name": "Definition: All attributes contain atomic (indivisible) values"
+                                        },
+                                        {
+                                            "name": "Rule: No composite or multi-valued attributes in single column"
+                                        },
+                                        {
+                                            "name": "NOT 1NF Example - Student Table with Multi-valued Attribute (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "| StudentID | StudentName | Courses              |\n|-----------|-------------|----------------------|\n| 101       | Alice       | CS10, MA20           |\n| 102       | Bob         | CS10, EN15           |\n| 103       | Charlie     | MA20, PH12           |\n\nProblems:\n1. Searching fails: Cannot easily find all students taking CS10 - must do string pattern matching\n2. Updates are complex: To change 'CS10' to 'CS11', must parse and edit the entire Courses cell\n3. Deletions are problematic: To remove 'CS10' from Alice's record, must manually edit the string\n4. Database queries fail: SQL WHERE clauses like 'Courses = CS10' won't work properly\n5. Inconsistent data format: Some students might have 'CS10,MA20' and others 'CS10 / MA20' - different delimiters"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "IS 1NF Example - Separated into Two Tables (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "Student Table:\n| StudentID | StudentName |\n|-----------|-------------|\n| 101       | Alice       |\n| 102       | Bob         |\n| 103       | Charlie     |\n\nEnrollment Table:\n| StudentID | CourseID |\n|-----------|----------|\n| 101       | CS10     |\n| 101       | MA20     |\n| 102       | CS10     |\n| 102       | EN15     |\n| 103       | MA20     |\n| 103       | PH12     |\n\nBenefit: Each value is atomic, easy to search for students in CS10, update or delete individual course enrollments"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Second Normal Form (2NF)",
+                                    "children": [
+                                        {
+                                            "name": "Definition: Must be in 1NF + no partial dependencies"
+                                        },
+                                        {
+                                            "name": "Rule: Every non-key attribute must depend on ENTIRE primary key, not just part of it"
+                                        },
+                                        {
+                                            "name": "NOT 2NF Example - Enrollment Table with Partial Dependency (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "| StudentID | CourseID | Course_Name       | Professor_Name |\n|-----------|----------|-------------------|----------------|\n| 101       | CS10     | Computer Science  | Dr. Anderson   |\n| 101       | MA20     | Calculus          | Dr. White      |\n| 102       | CS10     | Computer Science  | Dr. Anderson   |\n| 103       | MA20     | Calculus          | Dr. White      |\n\nProblems:\n1. Update Anomaly: If Dr. Anderson stops teaching CS10, must update EVERY row where CS10 appears - miss one row = data inconsistency\n2. Redundancy: Course information (name, professor) repeated for every student enrolled - wastes storage space\n3. Insertion Anomaly: Cannot add a new course (EN15, English, Dr. Jones) without enrolling a student first\n4. Deletion Anomaly: If Charlie is the only student in EN15, deleting his record removes the English course information entirely\n5. Query complexity: To find all professors, must search through student enrollment records instead of a dedicated table"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "IS 2NF Example - Separated into Multiple Tables (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "Enrollment Table:\n| StudentID | CourseID |\n|-----------|----------|\n| 101       | CS10     |\n| 101       | MA20     |\n| 102       | CS10     |\n| 103       | MA20     |\n\nCourse Table:\n| CourseID | Course_Name       | Professor_Name |\n|----------|-------------------|----------------|\n| CS10     | Computer Science  | Dr. Anderson   |\n| MA20     | Calculus          | Dr. White      |\n| EN15     | English           | Dr. Jones      |\n\nBenefit: Course information stored once, can add courses without students, updates affect only one row"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Third Normal Form (3NF)",
+                                    "children": [
+                                        {
+                                            "name": "Definition: Must be in 2NF + no transitive dependencies"
+                                        },
+                                        {
+                                            "name": "Rule: No non-key attribute depends on another non-key attribute"
+                                        },
+                                        {
+                                            "name": "NOT 3NF Example - Student Table with Transitive Dependency (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "| StudentID | StudentName | DepartmentID | DepartmentName | DepartmentLocation  |\n|-----------|-------------|--------------|----------------|---------------------|\n| 101       | Alice       | D1           | Engineering    | Building A, Floor 3 |\n| 102       | Bob         | D1           | Engineering    | Building A, Floor 3 |\n| 103       | Charlie     | D2           | Science        | Building B, Floor 2 |\n\nProblems:\n1. Update Anomaly: If Engineering department moves to Building C Floor 1, must update EVERY student record in Engineering - miss one row = inconsistency\n2. Data Redundancy: Department information (name, location) repeated for every student in that department - massive wasted storage\n3. Deletion Anomaly: If Bob is the last student in Engineering, deleting his record loses the department location information\n4. Insertion Anomaly: Cannot add a new department (Math, Building D) without first adding a student to it\n5. Inconsistency Risk: Department location might be stored differently (e.g., 'Building A, Floor 3' vs 'Bldg A-Fl 3')"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "IS 3NF Example - Separated into Multiple Tables (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "Student Table:\n| StudentID | StudentName | DepartmentID |\n|-----------|-------------|---------------|\n| 101       | Alice       | D1            |\n| 102       | Bob         | D1            |\n| 103       | Charlie     | D2            |\n\nDepartment Table:\n| DepartmentID | DepartmentName | DepartmentLocation  |\n|--------------|----------------|---------------------|\n| D1           | Engineering    | Building A, Floor 3 |\n| D2           | Science        | Building B, Floor 2 |\n\nBenefit: Department data stored once, no transitive dependencies, single update fixes all students in that department"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Boyce-Codd Normal Form (BCNF)",
+                                    "children": [
+                                        {
+                                            "name": "Definition: More strict than 3NF"
+                                        },
+                                        {
+                                            "name": "Rule: For every functional dependency X→Y, X must be a candidate key"
+                                        },
+                                        {
+                                            "name": "NOT BCNF Example - Course-Professor Assignment Table (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "| CourseID | ProfessorID | Professor_Name | Room |\n|----------|-------------|----------------|------|\n| CS10     | P1          | Dr. Anderson   | 101  |\n| CS10     | P2          | Dr. Brown      | 102  |\n| MA20     | P3          | Dr. White      | 201  |\n| MA20     | P1          | Dr. Anderson   | 101  |\n\nStatus: This table IS in 3NF but VIOLATES BCNF\nReason: ProfessorID → Professor_Name, Room is a functional dependency (each professor has one name and one room assignment)\nBCNF requires: For every functional dependency X→Y, X must be a candidate key\nHere: ProfessorID is not a candidate key (the primary key is CourseID + ProfessorID)\n\nProblems:\n1. Update Anomaly: If Professor P1 (Dr. Anderson) moves from Room 101 to Room 103, every row containing P1 must be updated. Missing one update causes inconsistent data.\n2. Insertion Anomaly: Cannot add a new professor (P4, Dr. Green, Room 301) unless they are first assigned to a course.\n3. Deletion Anomaly: If all course assignments for P1 are deleted, information about Dr. Anderson and Room 101 is lost.\n4. Data Redundancy: If P1 teaches multiple courses, both the professor's name and room number are repeated in every row.\n5. Query Inefficiency: To find a professor's details (name and room), the CourseAssignment table must be searched instead of a dedicated Professor table."
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "IS BCNF Example - Separated into Multiple Tables (click to view)",
+                                            "children": [
+                                                {
+                                                    "name": "CourseAssignment Table:\n| CourseID | ProfessorID |\n|----------|-------------|\n| CS10     | P1          |\n| CS10     | P2          |\n| MA20     | P3          |\n| MA20     | P1          |\n\nProfessor Table:\n| ProfessorID | Professor_Name | Room |\n|-------------|----------------|------|\n| P1          | Dr. Anderson   | 101  |\n| P2          | Dr. Brown      | 102  |\n| P3          | Dr. White      | 201  |\n\nBenefit: Room attribute moved to Professor table where ProfessorID IS a candidate key, all functional dependencies now have candidate keys on left side, can add professors independently, single update to professor's room"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Note: Rarely needed in practice, 3NF sufficient for most cases"
+                                        }
+                                    ]
+                                }
                             ]
                         },
                         {
