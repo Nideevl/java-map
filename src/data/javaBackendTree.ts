@@ -2114,814 +2114,651 @@ export const javaBackendTree = {
                                     ]
                                 },
                                 {
-                                    "name": "java.lang.Object (ROOT OF ALL CLASSES)",
+                                    "name": "Java Core Classes & Interfaces Complete Hierarchy",
                                     "children": [
-
                                         {
-                                            "name": "Methods of Object (inherited by ALL classes)",
+                                            "name": "The Language & Object Bedrock (java.lang)",
                                             "children": [
                                                 {
-                                                    "name": ".equals(Object obj)",
+                                                    "name": "Object",
                                                     "children": [
-                                                        { "name": "compares objects for equality" },
-                                                        { "name": "default implementation compares references (==)" },
-                                                        { "name": "commonly overridden with hashCode()" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".hashCode()",
-                                                    "children": [
-                                                        { "name": "returns integer hash value" },
-                                                        { "name": "used in HashMap, HashSet, Hashtable" },
-                                                        { "name": "equal objects must return same hashCode" },
-                                                        { "name": "different objects may share same hashCode (collision)" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".toString()",
-                                                    "children": [
-                                                        { "name": "returns string representation of object" },
-                                                        { "name": "default format: ClassName@hexHashCode" },
-                                                        { "name": "commonly overridden for readable output" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".getClass()",
-                                                    "children": [
-                                                        { "name": "returns runtime Class object" },
-                                                        { "name": "used for reflection" },
-                                                        { "name": "final method (cannot override)" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".clone()",
-                                                    "children": [
-                                                        { "name": "creates shallow copy of object" },
-                                                        { "name": "protected in Object class" },
-                                                        { "name": "requires Cloneable interface" },
-                                                        { "name": "throws CloneNotSupportedException otherwise" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".notify()",
-                                                    "children": [
-                                                        { "name": "wakes one waiting thread" },
-                                                        { "name": "must be called inside synchronized block" },
-                                                        { "name": "used with wait()" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".notifyAll()",
-                                                    "children": [
-                                                        { "name": "wakes all waiting threads" },
-                                                        { "name": "must be called inside synchronized block" },
-                                                        { "name": "threads compete to acquire monitor" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".wait()",
-                                                    "children": [
-                                                        { "name": "releases monitor and pauses thread" },
-                                                        { "name": "must be called inside synchronized block" },
-                                                        { "name": "thread resumes after notify/notifyAll" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".wait(long timeout)",
-                                                    "children": [
-                                                        { "name": "waits for specified milliseconds" },
-                                                        { "name": "wakes automatically after timeout" },
-                                                        { "name": "may wake earlier using notify()" }
-                                                    ]
-                                                },
-
-                                                {
-                                                    "name": ".finalize()",
-                                                    "children": [
-                                                        { "name": "called before object cleanup (historically)" },
-                                                        { "name": "execution not guaranteed" },
-                                                        { "name": "deprecated and should not be used" }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "String",
-                                            "children": [
-                                                { "name": "final class - immutable" },
-                                                { "name": "Represents sequence of characters" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Wrapper Classes",
-                                            "children": [
-                                                {
-                                                    "name": "Boolean",
-                                                    "children": [
-                                                        { "name": "Wraps primitive: boolean" },
-                                                        { "name": "Constants: TRUE, FALSE" },
-                                                        { "name": "Ex:- Boolean flag = true;" }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Character",
-                                                    "children": [
-                                                        { "name": "Wraps primitive: char" },
-                                                        { "name": "Ex:- Character ch = 'A';" }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Number (abstract class)",
-                                                    "children": [
+                                                        { "name": "Root class of all Java classes" },
+                                                        { "name": "Every class directly or indirectly extends Object" },
+                                                        { "name": "Provides fundamental methods that all objects inherit" },
+                                                        { "name": "Located in java.lang package (automatically imported)" }
+                                                        ,
                                                         {
-                                                            "name": "Byte",
+                                                            "name": "Methods",
                                                             "children": [
-                                                                { "name": "Wraps primitive: byte" },
-                                                                { "name": "Constants: MIN_VALUE = -128, MAX_VALUE = 127" },
                                                                 {
-                                                                    "name": "Methods of Byte",
+                                                                    "name": ".equals(Object obj)",
                                                                     "children": [
-                                                                        { "name": ".parseByte(String s) → converts String to primitive byte" },
-                                                                        { "name": ".valueOf(byte b) → returns Byte object" },
-                                                                        { "name": ".toString() → converts Byte to String" },
-                                                                        { "name": ".compareTo(Byte b) → compares two Byte objects" },
-                                                                        { "name": ".byteValue() → converts Byte object to primitive byte" }
+                                                                        { "name": "compares objects for equality" },
+                                                                        { "name": "default implementation compares references (==)" },
+                                                                        { "name": "commonly overridden with hashCode()" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- Byte b = 25;" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Short",
-                                                            "children": [
-                                                                { "name": "Wraps primitive: short" },
-                                                                { "name": "Constants: MIN_VALUE = -32,768, MAX_VALUE = 32,767" },
                                                                 {
-                                                                    "name": "Methods of Short",
+                                                                    "name": ".hashCode()",
                                                                     "children": [
-                                                                        { "name": ".parseShort(String s) → converts String to primitive short" },
-                                                                        { "name": ".valueOf(short s) → returns Short object" },
-                                                                        { "name": ".toString() → converts Short to String" },
-                                                                        { "name": ".compareTo(Short s) → compares two Short objects" },
-                                                                        { "name": ".shortValue() → converts Short object to primitive short" }
+                                                                        {
+                                                                            "name": "Core Language Contract",
+                                                                            "children": [
+                                                                                { "name": "Returns a 32-bit signed integer representation of the object state" },
+                                                                                { "name": "Consistency: Must return the same value within the same execution if object data doesn't change" },
+                                                                                { "name": "Strict Rule: If two objects are equal via .equals(), they MUST return identical hash codes" },
+                                                                                { "name": "Collision Rule: If two objects have the same hash code, they are NOT inherently equal" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "HashMap Bucket Routing Engine",
+                                                                            "children": [
+                                                                                { "name": "Initial capacity defaults to 16 buckets (always a power of 2)" },
+                                                                                { "name": "Index formula: index = hashCode & (capacity - 1) to force bounds between 0 and 15" },
+                                                                                { "name": "Bitwise Shift Optimization: HashMap applies an internal secondary hash function to spread out bad hashes" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "Collision Resolution Lifecycle",
+                                                                            "children": [
+                                                                                { "name": "Phase 1: Singly Linked List used for basic overlapping buckets [O(n) worst case lookup]" },
+                                                                                { "name": "Phase 2: Treeification triggered when a single bucket exceeds 8 nodes and total capacity is at least 64" },
+                                                                                { "name": "Structural Shift: Converts the linked list to a self-balancing Red-Black Tree [O(log n) lookup protection]" },
+                                                                                { "name": "Phase 3: Untreeification drops the tree back down to a linked list if count falls below 6 nodes during removal" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "Dynamic Resizing Mechanics",
+                                                                            "children": [
+                                                                                { "name": "Load Factor defaults to 0.75 (determines map fullness threshold before expanding)" },
+                                                                                { "name": "Capacity doubles automatically once element count reaches 12 items (16 * 0.75)" },
+                                                                                { "name": "The Rehash Costly Step: Every single node is re-evaluated with the new capacity bitwise mask" }
+                                                                            ]
+                                                                        },
+                                                                        {
+                                                                            "name": "Severe Production Risks",
+                                                                            "children": [
+                                                                                { "name": "Identity Crisis: Overriding .equals() without overriding .hashCode() completely breaks data retrieval" },
+                                                                                { "name": "Memory Leak Hazard: Modifying fields used inside a key's hashCode calculation makes that key permanently un-retrievable" },
+                                                                                { "name": "Hash Flooding DoS Threat: Malicious inputs sharing identical hash codes can trigger widespread treeification, exhausting CPU resource cycles" }
+                                                                            ]
+                                                                        }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- Short s = 30000;" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Integer",
-                                                            "children": [
-                                                                { "name": "Wraps primitive: int" },
-                                                                { "name": "Constants: MIN_VALUE, MAX_VALUE, SIZE = 32" },
                                                                 {
-                                                                    "name": "Methods of Integer",
+                                                                    "name": ".toString()",
                                                                     "children": [
-                                                                        { "name": ".parseInt(String s) → converts String to primitive int" },
-                                                                        { "name": ".valueOf(int i) → returns Integer object" },
-                                                                        { "name": ".toBinaryString(int i) → converts int to binary String" },
-                                                                        { "name": ".toHexString(int i) → converts int to hexadecimal String" },
-                                                                        { "name": ".compare(int x, int y) → compares two ints" },
-                                                                        { "name": ".max(int a, int b) → returns larger value" },
-                                                                        { "name": ".min(int a, int b) → returns smaller value" },
-                                                                        { "name": ".sum(int a, int b) → adds two ints" },
-                                                                        { "name": ".intValue() → converts Integer object to primitive int" }
+                                                                        { "name": "returns string representation of object" },
+                                                                        { "name": "default format: ClassName@hexHashCode" },
+                                                                        { "name": "commonly overridden for readable output" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- Integer num = 95;" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Long",
-                                                            "children": [
-                                                                { "name": "Wraps primitive: long" },
-                                                                { "name": "Constants: MIN_VALUE, MAX_VALUE, SIZE = 64" },
                                                                 {
-                                                                    "name": "Methods of Long",
+                                                                    "name": ".getClass()",
                                                                     "children": [
-                                                                        { "name": ".parseLong(String s) → converts String to primitive long" },
-                                                                        { "name": ".valueOf(long l) → returns Long object" },
-                                                                        { "name": ".compare(long x, long y) → compares two longs" },
-                                                                        { "name": ".max(long a, long b) → returns larger value" },
-                                                                        { "name": ".min(long a, long b) → returns smaller value" },
-                                                                        { "name": ".sum(long a, long b) → adds two longs" },
-                                                                        { "name": ".longValue() → converts Long object to primitive long" }
+                                                                        { "name": "returns runtime Class object" },
+                                                                        { "name": "used for reflection" },
+                                                                        { "name": "final method (cannot override)" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- Long pop = 7800000000L;" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Float",
-                                                            "children": [
-                                                                { "name": "Wraps primitive: float" },
-                                                                { "name": "Constants: MIN_VALUE, MAX_VALUE, NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY" },
                                                                 {
-                                                                    "name": "Methods of Float",
+                                                                    "name": ".clone()",
                                                                     "children": [
-                                                                        { "name": ".parseFloat(String s) → converts String to primitive float" },
-                                                                        { "name": ".valueOf(float f) → returns Float object" },
-                                                                        { "name": ".isNaN(float v) → checks if value is NaN" },
-                                                                        { "name": ".isInfinite(float v) → checks if value is infinite" },
-                                                                        { "name": ".compare(float x, float y) → compares two floats" },
-                                                                        { "name": ".floatValue() → converts Float object to primitive float" }
+                                                                        { "name": "creates shallow copy of object" },
+                                                                        { "name": "protected in Object class" },
+                                                                        { "name": "requires Cloneable interface" },
+                                                                        { "name": "throws CloneNotSupportedException otherwise" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- Float price = 99.5f;" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Double",
-                                                            "children": [
-                                                                { "name": "Wraps primitive: double" },
-                                                                { "name": "Constants: MIN_VALUE, MAX_VALUE, NaN, POSITIVE_INFINITY, NEGATIVE_INFINITY" },
                                                                 {
-                                                                    "name": "Methods of Double",
+                                                                    "name": ".notify()",
                                                                     "children": [
-                                                                        { "name": ".parseDouble(String s) → converts String to primitive double" },
-                                                                        { "name": ".valueOf(double d) → returns Double object" },
-                                                                        { "name": ".isNaN(double v) → checks if value is NaN" },
-                                                                        { "name": ".isInfinite(double v) → checks if value is infinite" },
-                                                                        { "name": ".compare(double x, double y) → compares two doubles" },
-                                                                        { "name": ".doubleValue() → converts Double object to primitive double" }
+                                                                        { "name": "wakes one waiting thread" },
+                                                                        { "name": "must be called inside synchronized block" },
+                                                                        { "name": "used with wait()" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- Double pi = 3.1415926535;" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "BigInteger",
-                                                            "children": [
-                                                                { "name": "Immutable arbitrary-precision integers" },
-                                                                { "name": "No limit on size" },
                                                                 {
-                                                                    "name": "Methods of BigInteger",
+                                                                    "name": ".notifyAll()",
                                                                     "children": [
-                                                                        { "name": ".add(BigInteger val) → adds two BigInteger values" },
-                                                                        { "name": ".subtract(BigInteger val) → subtracts BigInteger values" },
-                                                                        { "name": ".multiply(BigInteger val) → multiplies BigInteger values" },
-                                                                        { "name": ".divide(BigInteger val) → divides BigInteger values" },
-                                                                        { "name": ".mod(BigInteger val) → returns remainder" },
-                                                                        { "name": ".pow(int exponent) → raises value to power" },
-                                                                        { "name": ".gcd(BigInteger val) → finds greatest common divisor" },
-                                                                        { "name": ".compareTo(BigInteger val) → compares two BigInteger values" }
+                                                                        { "name": "wakes all waiting threads" },
+                                                                        { "name": "must be called inside synchronized block" },
+                                                                        { "name": "threads compete to acquire monitor" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- BigInteger big = new BigInteger(\"123456789012345678901234567890\");" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "BigDecimal",
-                                                            "children": [
-                                                                { "name": "Immutable arbitrary-precision decimal numbers" },
-                                                                { "name": "Used for precise monetary/financial calculations" },
                                                                 {
-                                                                    "name": "Methods of BigDecimal",
+                                                                    "name": ".wait()",
                                                                     "children": [
-                                                                        { "name": ".add(BigDecimal val) → adds two BigDecimal values" },
-                                                                        { "name": ".subtract(BigDecimal val) → subtracts BigDecimal values" },
-                                                                        { "name": ".multiply(BigDecimal val) → multiplies BigDecimal values" },
-                                                                        { "name": ".divide(BigDecimal val) → divides BigDecimal values" },
-                                                                        { "name": ".setScale(int scale) → sets decimal precision/rounding scale" },
-                                                                        { "name": ".compareTo(BigDecimal val) → compares two BigDecimal values" },
-                                                                        { "name": ".round(MathContext mc) → rounds value using MathContext" }
+                                                                        { "name": "releases monitor and pauses thread" },
+                                                                        { "name": "must be called inside synchronized block" },
+                                                                        { "name": "thread resumes after notify/notifyAll" }
                                                                     ]
                                                                 },
-                                                                { "name": "Ex:- BigDecimal price = new BigDecimal(\"19.99\");" }
-                                                            ]
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Throwable",
-                                            "children": [
-                                                {
-                                                    "name": "Error vs Exception",
-                                                    "children": [
-                                                        { "name": "Error → Serious JVM/system-level problem" },
-                                                        { "name": "Exception → Application-level problem that can often be handled" },
-                                                        { "name": "Errors are usually unrecoverable" },
-                                                        { "name": "Exceptions are usually recoverable" },
-                                                        { "name": "Errors occur due to JVM/resource failures" },
-                                                        { "name": "Exceptions usually occur due to programmer/input/runtime issues" },
-                                                        { "name": "Errors should generally NOT be caught" },
-                                                        { "name": "Exceptions are expected to be caught or handled" }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Error",
-                                                    "children": [
-                                                        { "name": "Serious problem caused by JVM/system" },
-                                                        {
-                                                            "name": "Common Errors",
-                                                            "children": [
-                                                                { "name": "OutOfMemoryError → JVM runs out of heap memory" },
-                                                                { "name": "StackOverflowError → infinite/deep recursion exhausts stack" },
-                                                                { "name": "VirtualMachineError → JVM internal failure" }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Note",
-                                                            "children": [
-                                                                { "name": "Should generally NOT be caught" },
-                                                                { "name": "Application usually cannot recover safely" }
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Exception",
-                                                    "children": [
-                                                        { "name": "Problems that application may recover from" },
-                                                        {
-                                                            "name": "Checked Exceptions (Compiletime Exception)",
-                                                            "children": [
-                                                                { "name": "Checked at compile-time" },
-                                                                { "name": "Must be caught or declared using throws" },
                                                                 {
-                                                                    "name": "Common Checked Exceptions",
+                                                                    "name": ".wait(long timeout)",
                                                                     "children": [
-                                                                        { "name": "IOException → file/input-output operation failure" },
-                                                                        { "name": "SQLException → database access failure" },
-                                                                        { "name": "ClassNotFoundException → class loader cannot find class" },
-                                                                        { "name": "FileNotFoundException → requested file does not exist" }
+                                                                        { "name": "waits for specified milliseconds" },
+                                                                        { "name": "wakes automatically after timeout" },
+                                                                        { "name": "may wake earlier using notify()" }
                                                                     ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Unchecked Exceptions (RuntimeException)",
-                                                            "children": [
-                                                                { "name": "Occurs during program execution" },
-                                                                { "name": "Optional to catch" },
-                                                                { "name": "Usually caused by programming mistakes" },
+                                                                },
                                                                 {
-                                                                    "name": "Common Runtime Exceptions",
+                                                                    "name": ".finalize()",
                                                                     "children": [
-                                                                        { "name": "NullPointerException → accessing member on null reference" },
-                                                                        { "name": "IllegalArgumentException → invalid argument passed to method" },
-                                                                        { "name": "ArithmeticException → illegal arithmetic operation (ex: divide by zero)" },
-                                                                        { "name": "IndexOutOfBoundsException → invalid index access" },
-                                                                        { "name": "ArrayIndexOutOfBoundsException → invalid array index" },
-                                                                        { "name": "StringIndexOutOfBoundsException → invalid String index" },
-                                                                        { "name": "ClassCastException → invalid object type casting" },
-                                                                        { "name": "IllegalStateException → method called at wrong object state" },
-                                                                        { "name": "UnsupportedOperationException → operation not supported" }
+                                                                        { "name": "called before object cleanup (historically)" },
+                                                                        { "name": "execution not guaranteed" },
+                                                                        { "name": "deprecated and should not be used" }
                                                                     ]
                                                                 }
                                                             ]
                                                         }
                                                     ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Class",
-                                            "children": [
-                                                { "name": "Represents a class/interface at runtime" },
-                                                { "name": "Methods: getName(), getMethods(), getFields(), forName()" },
-                                                { "name": "Used in reflection" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Enum",
-                                            "children": [
-                                                { "name": "Base class for all enumerations" },
-                                                { "name": "Methods: values(), valueOf(), ordinal()" },
-                                                { "name": "Ex:- enum Color { RED, GREEN, BLUE }" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "System",
-                                            "children": [
-                                                { "name": "Final class - cannot be instantiated" },
-                                                { "name": "Methods: exit(), currentTimeMillis(), arraycopy(), gc()" },
-                                                { "name": "Properties: out, err, in" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Thread",
-                                            "children": [
-                                                { "name": "Represents a thread of execution" },
-                                                { "name": "Methods: start(), run(), sleep(), join(), interrupt()" },
-                                                { "name": "Implements: Runnable" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Math",
-                                            "children": [
-                                                { "name": "Final class - utility methods" },
-                                                { "name": "Methods: abs(), sqrt(), pow(), sin(), cos(), min(), max(), random()" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Collections",
-                                            "children": [
-                                                { "name": "Final class - utility methods for collections" },
-                                                { "name": "All methods are static" },
+                                                },
                                                 {
-                                                    "name": "Methods of Collections",
+                                                    "name": "Class",
                                                     "children": [
-                                                        { "name": ".sort(List<T> list) → sorts list in ascending order" },
-                                                        { "name": ".sort(List<T> list, Comparator<T> c) → sorts with custom comparator" },
-                                                        { "name": ".shuffle(List<?> list) → randomly shuffles list" },
-                                                        { "name": ".reverse(List<?> list) → reverses list order" },
-                                                        { "name": ".binarySearch(List<T> list, T key) → binary search in sorted list" },
-                                                        { "name": ".max(Collection<T> coll) → returns maximum element" },
-                                                        { "name": ".min(Collection<T> coll) → returns minimum element" },
-                                                        { "name": ".frequency(Collection<?> c, Object o) → counts occurrences" },
-                                                        { "name": ".disjoint(Collection<?> c1, Collection<?> c2) → checks if no common elements" },
-                                                        { "name": ".unmodifiableList(List<T> list) → returns immutable list view" },
-                                                        { "name": ".unmodifiableSet(Set<T> set) → returns immutable set view" },
-                                                        { "name": ".unmodifiableMap(Map<K,V> m) → returns immutable map view" },
-                                                        { "name": ".synchronizedList(List<T> list) → returns thread-safe list" },
-                                                        { "name": ".synchronizedSet(Set<T> set) → returns thread-safe set" },
-                                                        { "name": ".synchronizedMap(Map<K,V> m) → returns thread-safe map" },
-                                                        { "name": ".emptyList() → returns immutable empty list" },
-                                                        { "name": ".emptySet() → returns immutable empty set" },
-                                                        { "name": ".emptyMap() → returns immutable empty map" },
-                                                        { "name": ".singletonList(T o) → returns immutable list with single element" },
-                                                        { "name": ".singleton(T o) → returns immutable set with single element" },
-                                                        { "name": ".singletonMap(K key, V value) → returns immutable map with single entry" },
-                                                        { "name": ".copy(List<T> dest, List<S> src) → copies all elements from src to dest" },
-                                                        { "name": ".fill(List<T> list, T obj) → replaces all elements with obj" },
-                                                        { "name": ".rotate(List<?> list, int distance) → rotates list by distance" },
-                                                        { "name": ".swap(List<?> list, int i, int j) → swaps elements at indices i and j" },
-                                                        { "name": ".addAll(Collection<T> c, T... elements) → adds all elements to collection" }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "name": "StringBuilder",
-                                            "children": [
-                                                { "name": "Mutable sequence of characters" },
-                                                { "name": "Not thread-safe (faster)" },
-                                                { "name": "Methods: append(), insert(), delete(), reverse(), toString()" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "StringBuffer",
-                                            "children": [
-                                                { "name": "Mutable sequence of characters" },
-                                                { "name": "Thread-safe (synchronized)" },
-                                                { "name": "Methods: append(), insert(), delete(), reverse(), toString()" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Runtime",
-                                            "children": [
-                                                { "name": "Singleton class" },
-                                                { "name": "Methods: getRuntime(), exec(), availableProcessors(), totalMemory()" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Process",
-                                            "children": [
-                                                { "name": "Represents an external process" },
-                                                { "name": "Obtained from Runtime.exec()" }
-                                            ]
-                                        },
-                                        {
-                                            "name": "Iterable (interface)",
-                                            "children": [
-                                                { "name": "Root interface for objects that can be iterated using loop" },
-                                                { "name": "Enables enhanced for-each loop" },
-                                                { "name": "Defines iterator() method" },
-                                                {
-                                                    "name": "Methods of Iterable",
-                                                    "children": [
-                                                        { "name": ".iterator() → returns Iterator object" },
-                                                        { "name": ".forEach() → performs action for each element" },
-                                                        { "name": ".spliterator() → used for parallel traversal/streams" }
+                                                        { "name": "Represents a class or interface at runtime" },
+                                                        { "name": "Provides reflection capabilities" },
+                                                        { "name": "Used to inspect class metadata" },
+                                                        { "name": "Cannot be instantiated directly" }
+                                                        ,
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".getName()",
+                                                                    "children": [
+                                                                        { "name": "returns fully qualified class name" },
+                                                                        { "name": "e.g., 'java.lang.String'" },
+                                                                        { "name": "includes package name" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".forName(String className)",
+                                                                    "children": [
+                                                                        { "name": "loads class dynamically by name" },
+                                                                        { "name": "throws ClassNotFoundException" },
+                                                                        { "name": "initializes the class" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getMethods()",
+                                                                    "children": [
+                                                                        { "name": "returns all public methods" },
+                                                                        { "name": "includes inherited methods" },
+                                                                        { "name": "returns array of Method objects" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getFields()",
+                                                                    "children": [
+                                                                        { "name": "returns all public fields" },
+                                                                        { "name": "includes inherited fields" },
+                                                                        { "name": "returns array of Field objects" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getConstructors()",
+                                                                    "children": [
+                                                                        { "name": "returns all public constructors" },
+                                                                        { "name": "returns array of Constructor objects" },
+                                                                        { "name": "use for reflection instantiation" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
                                                     ]
                                                 },
-                                                { "name": "Ex:- for(String s : list) { System.out.println(s); }" },
                                                 {
-                                                    "name": "Collection (interface)",
+                                                    "name": "Enum",
                                                     "children": [
-                                                        { "name": "Base interface for Java Collection Framework" },
-                                                        { "name": "Represents group of objects/elements" },
+
+                                                        { "name": "Base class for all enumerations" },
+                                                        { "name": "Provides type-safe constants" },
+                                                        { "name": "Extends Enum automatically" },
+                                                        { "name": "Cannot be extended manually" },
                                                         {
-                                                            "name": "Methods of Collection",
+                                                            "name": "Methods",
                                                             "children": [
-                                                                { "name": ".add(E e) → adds element" },
-                                                                { "name": ".remove(Object o) → removes element" },
-                                                                { "name": ".contains(Object o) → checks existence" },
-                                                                { "name": ".size() → returns number of elements" },
-                                                                { "name": ".isEmpty() → checks if empty" },
-                                                                { "name": ".clear() → removes all elements" }
+                                                                {
+                                                                    "name": ".values()",
+                                                                    "children": [
+                                                                        { "name": "returns array of all enum constants" },
+                                                                        { "name": "generated automatically by compiler" },
+                                                                        { "name": "preserves declaration order" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".valueOf(String name)",
+                                                                    "children": [
+                                                                        { "name": "returns enum constant by name" },
+                                                                        { "name": "throws IllegalArgumentException if not found" },
+                                                                        { "name": "case-sensitive" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ordinal()",
+                                                                    "children": [
+                                                                        { "name": "returns position of constant" },
+                                                                        { "name": "0-based index" },
+                                                                        { "name": "depends on declaration order" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".name()",
+                                                                    "children": [
+                                                                        { "name": "returns constant name as String" },
+                                                                        { "name": "exact name declared" },
+                                                                        { "name": "prefer over toString() for identity" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "String",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Immutable sequence of characters" },
+                                                                { "name": "Most commonly used class in Java" },
+                                                                { "name": "Stored in String Pool (interned)" },
+                                                                { "name": "Implements CharSequence, Serializable, Comparable" }
                                                             ]
                                                         },
                                                         {
-                                                            "name": "List (interface - ordered, allows duplicates)",
+                                                            "name": "Methods",
                                                             "children": [
-                                                                { "name": "Maintains insertion order" },
-                                                                { "name": "Allows duplicate elements" },
-                                                                { "name": "Supports index-based access" },
                                                                 {
-                                                                    "name": "Methods of List",
+                                                                    "name": ".length()",
                                                                     "children": [
-                                                                        { "name": ".get(int index) → retrieves element by index" },
-                                                                        { "name": ".set(int index, E element) → replaces element" },
-                                                                        { "name": ".add(int index, E element) → inserts at index" },
-                                                                        { "name": ".remove(int index) → removes by index" },
-                                                                        { "name": ".indexOf(Object o) → returns first matching index" }
+                                                                        { "name": "returns number of characters" },
+                                                                        { "name": "returns int" },
+                                                                        { "name": "O(1) operation" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "ArrayList",
+                                                                    "name": ".charAt(int index)",
                                                                     "children": [
-                                                                        { "name": "Resizable array implementation" },
-                                                                        { "name": "Random access: O(1)" },
-                                                                        { "name": "Add/Remove at end: O(1) amortized" },
-                                                                        { "name": "Add/Remove at middle: O(n)" },
-                                                                        {
-                                                                            "name": "Methods of ArrayList",
-                                                                            "children": [
-                                                                                { "name": ".add(E e) → appends element" },
-                                                                                { "name": ".get(int index) → fast random access" },
-                                                                                { "name": ".remove(int index) → removes by index" },
-                                                                                { "name": ".contains(Object o) → checks existence" },
-                                                                                { "name": ".trimToSize() → reduces capacity to current size" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "returns character at position" },
+                                                                        { "name": "0-based index" },
+                                                                        { "name": "throws IndexOutOfBoundsException" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "LinkedList",
+                                                                    "name": ".substring(int begin, int end)",
                                                                     "children": [
-                                                                        { "name": "Doubly linked list implementation" },
-                                                                        { "name": "Sequential access: O(n)" },
-                                                                        { "name": "Add/Remove at ends: O(1)" },
-                                                                        { "name": "Implements: List, Deque, Queue" },
-                                                                        {
-                                                                            "name": "Methods of LinkedList",
-                                                                            "children": [
-                                                                                { "name": ".addFirst(E e) → inserts at beginning" },
-                                                                                { "name": ".addLast(E e) → inserts at end" },
-                                                                                { "name": ".removeFirst() → removes first element" },
-                                                                                { "name": ".removeLast() → removes last element" },
-                                                                                { "name": ".peek() → retrieves first element without removal" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "extracts portion of string" },
+                                                                        { "name": "end index exclusive" },
+                                                                        { "name": "creates new String" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "Vector",
+                                                                    "name": ".indexOf(String str)",
                                                                     "children": [
-                                                                        { "name": "Legacy resizable array (like ArrayList)" },
-                                                                        { "name": "Thread-safe (synchronized)" },
-                                                                        { "name": "Deprecated in favor of ArrayList" },
-                                                                        {
-                                                                            "name": "Methods of Vector",
-                                                                            "children": [
-                                                                                { "name": ".addElement(E obj) → adds element" },
-                                                                                { "name": ".elementAt(int index) → retrieves by index" },
-                                                                                { "name": ".capacity() → returns current capacity" },
-                                                                                { "name": ".removeElement(Object obj) → removes element" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "finds first occurrence of substring" },
+                                                                        { "name": "returns -1 if not found" },
+                                                                        { "name": "case-sensitive" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "CopyOnWriteArrayList",
+                                                                    "name": ".replace(char old, char new)",
                                                                     "children": [
-                                                                        { "name": "Thread-safe for concurrent reads" },
-                                                                        { "name": "Creates copy on modification" },
-                                                                        { "name": "Good for read-heavy operations" },
-                                                                        {
-                                                                            "name": "Methods of CopyOnWriteArrayList",
-                                                                            "children": [
-                                                                                { "name": ".add(E e) → adds element with internal copy" },
-                                                                                { "name": ".remove(Object o) → removes safely during concurrency" },
-                                                                                { "name": ".iterator() → returns snapshot iterator" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "replaces all occurrences" },
+                                                                        { "name": "returns new String" },
+                                                                        { "name": "case-sensitive" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toUpperCase()",
+                                                                    "children": [
+                                                                        { "name": "converts to uppercase" },
+                                                                        { "name": "uses default locale" },
+                                                                        { "name": "returns new String" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toLowerCase()",
+                                                                    "children": [
+                                                                        { "name": "converts to lowercase" },
+                                                                        { "name": "uses default locale" },
+                                                                        { "name": "returns new String" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".equals(Object obj)",
+                                                                    "children": [
+                                                                        { "name": "compares content for equality" },
+                                                                        { "name": "case-sensitive" },
+                                                                        { "name": "returns boolean" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".compareTo(String another)",
+                                                                    "children": [
+                                                                        { "name": "lexicographic comparison" },
+                                                                        { "name": "returns negative, zero, or positive" },
+                                                                        { "name": "implements Comparable" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "StringBuilder",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Mutable sequence of characters" },
+                                                                { "name": "Not thread-safe (no synchronization)" },
+                                                                { "name": "Faster than StringBuffer" },
+                                                                { "name": "Preferred for single-threaded use" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".append(String str)",
+                                                                    "children": [
+                                                                        { "name": "appends string to end" },
+                                                                        { "name": "supports chaining" },
+                                                                        { "name": "returns this" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".insert(int offset, String str)",
+                                                                    "children": [
+                                                                        { "name": "inserts at specified position" },
+                                                                        { "name": "shifts existing content" },
+                                                                        { "name": "throws StringIndexOutOfBoundsException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".delete(int start, int end)",
+                                                                    "children": [
+                                                                        { "name": "removes characters in range" },
+                                                                        { "name": "end index exclusive" },
+                                                                        { "name": "returns this" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".reverse()",
+                                                                    "children": [
+                                                                        { "name": "reverses character sequence" },
+                                                                        { "name": "in-place modification" },
+                                                                        { "name": "returns this" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toString()",
+                                                                    "children": [
+                                                                        { "name": "converts to immutable String" },
+                                                                        { "name": "creates new String copy" },
+                                                                        { "name": "commonly called at end" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "StringBuffer",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Mutable sequence of characters" },
+                                                                { "name": "Thread-safe (synchronized methods)" },
+                                                                { "name": "Slower than StringBuilder" },
+                                                                { "name": "Legacy class, use StringBuilder if possible" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".append(String str)",
+                                                                    "children": [
+                                                                        { "name": "thread-safe append" },
+                                                                        { "name": "supports chaining" },
+                                                                        { "name": "returns this" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".insert(int offset, String str)",
+                                                                    "children": [
+                                                                        { "name": "thread-safe insert" },
+                                                                        { "name": "shifts existing content" },
+                                                                        { "name": "throws StringIndexOutOfBoundsException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".delete(int start, int end)",
+                                                                    "children": [
+                                                                        { "name": "thread-safe removal" },
+                                                                        { "name": "end index exclusive" },
+                                                                        { "name": "returns this" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".reverse()",
+                                                                    "children": [
+                                                                        { "name": "thread-safe reversal" },
+                                                                        { "name": "in-place modification" },
+                                                                        { "name": "returns this" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toString()",
+                                                                    "children": [
+                                                                        { "name": "converts to immutable String" },
+                                                                        { "name": "creates new String copy" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "System",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Utility class for system operations" },
+                                                                { "name": "Cannot be instantiated (final class)" },
+                                                                { "name": "All methods are static" },
+                                                                { "name": "Provides standard I/O streams" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".exit(int status)",
+                                                                    "children": [
+                                                                        { "name": "terminates JVM" },
+                                                                        { "name": "0 = normal termination" },
+                                                                        { "name": "non-zero = error" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".currentTimeMillis()",
+                                                                    "children": [
+                                                                        { "name": "returns time in milliseconds" },
+                                                                        { "name": "since Jan 1, 1970 UTC" },
+                                                                        { "name": "used for timestamps" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".arraycopy()",
+                                                                    "children": [
+                                                                        { "name": "efficient array copying" },
+                                                                        { "name": "native method" },
+                                                                        { "name": "fastest way to copy arrays" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".gc()",
+                                                                    "children": [
+                                                                        { "name": "suggests garbage collection" },
+                                                                        { "name": "not guaranteed to run" },
+                                                                        { "name": "performance overhead" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Throwable",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Superclass of all errors and exceptions" },
+                                                                { "name": "Only objects of Throwable can be thrown" },
+                                                                { "name": "Provides stack trace functionality" },
+                                                                { "name": "Root of exception hierarchy" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Exception (Checked)",
+                                                            "children": [
+                                                                {
+                                                                    "name": "IOException",
+                                                                    "children": [
+                                                                        { "name": "I/O operation failure" },
+                                                                        { "name": "file not found" },
+                                                                        { "name": "network errors" },
+                                                                        { "name": "permission denied" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "SQLException",
+                                                                    "children": [
+                                                                        { "name": "database access failure" },
+                                                                        { "name": "provides error code" },
+                                                                        { "name": "provides SQL state" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "ClassNotFoundException",
+                                                                    "children": [
+                                                                        { "name": "class cannot be loaded" },
+                                                                        { "name": "thrown by Class.forName()" },
+                                                                        { "name": "classpath issue" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "FileNotFoundException",
+                                                                    "children": [
+                                                                        { "name": "file doesn't exist" },
+                                                                        { "name": "file inaccessible" },
+                                                                        { "name": "subclass of IOException" }
                                                                     ]
                                                                 }
                                                             ]
                                                         },
                                                         {
-                                                            "name": "Set (interface - unordered, NO duplicates)",
+                                                            "name": "RuntimeException (Unchecked)",
                                                             "children": [
-                                                                { "name": "Does NOT allow duplicate elements" },
-                                                                { "name": "Usually unordered (depends on implementation)" },
                                                                 {
-                                                                    "name": "Methods of Set",
+                                                                    "name": "NullPointerException",
                                                                     "children": [
-                                                                        { "name": ".add(E e) → adds element if not already present" },
-                                                                        { "name": ".remove(Object o) → removes element" },
-                                                                        { "name": ".contains(Object o) → checks existence" },
-                                                                        { "name": ".size() → returns number of elements" },
-                                                                        { "name": ".clear() → removes all elements" }
+                                                                        { "name": "accessing null reference" },
+                                                                        { "name": "most common runtime exception" },
+                                                                        { "name": "can be avoided with null checks" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "HashSet",
+                                                                    "name": "IllegalArgumentException",
                                                                     "children": [
-                                                                        { "name": "Hash table based" },
-                                                                        { "name": "Average add/remove/contains: O(1)" },
-                                                                        { "name": "No insertion order guarantee" },
-                                                                        { "name": "Allows one null value" },
-                                                                        {
-                                                                            "name": "Methods of HashSet",
-                                                                            "children": [
-                                                                                { "name": ".add(E e) → inserts element" },
-                                                                                { "name": ".contains(Object o) → checks existence" },
-                                                                                { "name": ".remove(Object o) → removes element" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "invalid argument passed" },
+                                                                        { "name": "method precondition violation" },
+                                                                        { "name": "use parameter validation" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "LinkedHashSet",
+                                                                    "name": "ArithmeticException",
                                                                     "children": [
-                                                                        { "name": "Maintains insertion order" },
-                                                                        { "name": "Internally uses linked list + hash table" },
-                                                                        {
-                                                                            "name": "Methods of LinkedHashSet",
-                                                                            "children": [
-                                                                                { "name": ".add(E e) → inserts while preserving order" },
-                                                                                { "name": ".iterator() → iterates in insertion order" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "division by zero" },
+                                                                        { "name": "other arithmetic errors" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "TreeSet",
+                                                                    "name": "IndexOutOfBoundsException",
                                                                     "children": [
-                                                                        { "name": "Red-Black tree based" },
-                                                                        { "name": "Stores elements in sorted order" },
-                                                                        { "name": "add/remove/contains: O(log n)" },
-                                                                        {
-                                                                            "name": "Methods of TreeSet",
-                                                                            "children": [
-                                                                                { "name": ".first() → returns smallest element" },
-                                                                                { "name": ".last() → returns largest element" },
-                                                                                { "name": ".floor(E e) → greatest element <= given element" },
-                                                                                { "name": ".ceiling(E e) → smallest element >= given element" },
-                                                                                { "name": ".higher(E e) → next greater element" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "index out of range" },
+                                                                        { "name": "parent of Array/Str exceptions" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "CopyOnWriteArraySet",
+                                                                    "name": "ArrayIndexOutOfBoundsException",
                                                                     "children": [
-                                                                        { "name": "Thread-safe Set implementation" },
-                                                                        { "name": "Best for read-heavy concurrency" },
-                                                                        {
-                                                                            "name": "Methods of CopyOnWriteArraySet",
-                                                                            "children": [
-                                                                                { "name": ".add(E e) → safely adds element" },
-                                                                                { "name": ".iterator() → snapshot iterator" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "array index out of bounds" },
+                                                                        { "name": "negative index" },
+                                                                        { "name": "index >= array.length" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "EnumSet",
+                                                                    "name": "StringIndexOutOfBoundsException",
                                                                     "children": [
-                                                                        { "name": "Optimized Set for enum types" },
-                                                                        { "name": "Very memory efficient" },
-                                                                        {
-                                                                            "name": "Methods of EnumSet",
-                                                                            "children": [
-                                                                                { "name": ".of() → creates EnumSet with values" },
-                                                                                { "name": ".allOf(Class<E>) → includes all enum constants" },
-                                                                                { "name": ".noneOf(Class<E>) → empty EnumSet" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "string index out of bounds" },
+                                                                        { "name": "from charAt()" },
+                                                                        { "name": "from substring()" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "ClassCastException",
+                                                                    "children": [
+                                                                        { "name": "illegal type casting" },
+                                                                        { "name": "not instanceof target type" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "IllegalStateException",
+                                                                    "children": [
+                                                                        { "name": "object in wrong state" },
+                                                                        { "name": "e.g., iterator after removal" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": "UnsupportedOperationException",
+                                                                    "children": [
+                                                                        { "name": "operation not supported" },
+                                                                        { "name": "e.g., modifying immutable collection" }
                                                                     ]
                                                                 }
                                                             ]
                                                         },
                                                         {
-                                                            "name": "Queue (interface - FIFO by default)",
+                                                            "name": "Error (Serious Issues)",
                                                             "children": [
-                                                                { "name": "Typically follows FIFO (First In First Out)" },
                                                                 {
-                                                                    "name": "Methods of Queue",
+                                                                    "name": "OutOfMemoryError",
                                                                     "children": [
-                                                                        { "name": ".offer(E e) → inserts element" },
-                                                                        { "name": ".poll() → removes and returns head" },
-                                                                        { "name": ".peek() → retrieves head without removal" },
-                                                                        { "name": ".remove() → removes head (throws exception if empty)" }
+                                                                        { "name": "JVM cannot allocate more memory" },
+                                                                        { "name": "usually unrecoverable" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "PriorityQueue",
+                                                                    "name": "StackOverflowError",
                                                                     "children": [
-                                                                        { "name": "Min-heap based by default" },
-                                                                        { "name": "Elements retrieved in priority order" },
-                                                                        {
-                                                                            "name": "Methods of PriorityQueue",
-                                                                            "children": [
-                                                                                { "name": ".offer(E e) → inserts element into heap" },
-                                                                                { "name": ".poll() → removes smallest/highest priority element" },
-                                                                                { "name": ".peek() → views highest priority element" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "stack exceeds limit" },
+                                                                        { "name": "e.g., infinite recursion" }
                                                                     ]
                                                                 },
                                                                 {
-                                                                    "name": "ConcurrentLinkedQueue",
+                                                                    "name": "VirtualMachineError",
                                                                     "children": [
-                                                                        { "name": "Thread-safe non-blocking queue" },
-                                                                        { "name": "Uses lock-free algorithm" },
-                                                                        {
-                                                                            "name": "Methods of ConcurrentLinkedQueue",
-                                                                            "children": [
-                                                                                { "name": ".offer(E e) → thread-safe insert" },
-                                                                                { "name": ".poll() → thread-safe removal" },
-                                                                                { "name": ".peek() → safely retrieves head" }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "name": "Deque (Double-ended Queue - FIFO/LIFO)",
-                                                            "children": [
-                                                                { "name": "Supports insertion/removal from both ends" },
-                                                                { "name": "Can work as Queue or Stack" },
-                                                                {
-                                                                    "name": "Methods of Deque",
-                                                                    "children": [
-                                                                        { "name": ".addFirst(E e) → inserts at front (throws exception if fails)" },
-                                                                        { "name": ".addLast(E e) → inserts at rear" },
-                                                                        { "name": ".offerFirst(E e) → inserts at front safely" },
-                                                                        { "name": ".offerLast(E e) → inserts at rear safely" },
-                                                                        { "name": ".removeFirst() → removes front element" },
-                                                                        { "name": ".removeLast() → removes rear element" },
-                                                                        { "name": ".pollFirst() → removes front safely (returns null if empty)" },
-                                                                        { "name": ".pollLast() → removes rear safely" },
-                                                                        { "name": ".getFirst() → retrieves front element" },
-                                                                        { "name": ".getLast() → retrieves rear element" },
-                                                                        { "name": ".peekFirst() → views front safely" },
-                                                                        { "name": ".peekLast() → views rear safely" },
-                                                                        { "name": ".push(E e) → stack push operation" },
-                                                                        { "name": ".pop() → stack pop operation" },
-                                                                        { "name": ".contains(Object o) → checks existence" },
-                                                                        { "name": ".size() → returns number of elements" },
-                                                                        { "name": ".iterator() → traverses front → rear" },
-                                                                        { "name": ".descendingIterator() → traverses rear → front" }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "name": "ArrayDeque",
-                                                                    "children": [
-                                                                        { "name": "Efficient double-ended queue" },
-                                                                        { "name": "Preferred over Stack class" },
-                                                                        {
-                                                                            "name": "Methods of ArrayDeque",
-                                                                            "children": [
-                                                                                { "name": ".push(E e) → inserts at front" },
-                                                                                { "name": ".pop() → removes from front" },
-                                                                                { "name": ".peek() → retrieves front element" }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "name": "LinkedList (also implements Deque)",
-                                                                    "children": [
-                                                                        {
-                                                                            "name": "Methods of LinkedList as Deque",
-                                                                            "children": [
-                                                                                { "name": ".addFirst(E e) → inserts at beginning" },
-                                                                                { "name": ".addLast(E e) → inserts at end" },
-                                                                                { "name": ".removeFirst() → removes first node" },
-                                                                                { "name": ".removeLast() → removes last node" }
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "name": "ConcurrentLinkedDeque",
-                                                                    "children": [
-                                                                        { "name": "Thread-safe Deque implementation" },
-                                                                        {
-                                                                            "name": "Methods of ConcurrentLinkedDeque",
-                                                                            "children": [
-                                                                                { "name": ".offerFirst(E e) → thread-safe insert at front" },
-                                                                                { "name": ".offerLast(E e) → thread-safe insert at rear" },
-                                                                                { "name": ".pollFirst() → thread-safe remove from front" },
-                                                                                { "name": ".pollLast() → thread-safe remove from rear" }
-                                                                            ]
-                                                                        }
+                                                                        { "name": "JVM is broken" },
+                                                                        { "name": "resource exhausted" }
                                                                     ]
                                                                 }
                                                             ]
@@ -2931,78 +2768,355 @@ export const javaBackendTree = {
                                             ]
                                         },
                                         {
-                                            "name": "Map (interface)",
+                                            "name": "Data Structures Framework (java.util)",
                                             "children": [
-                                                { "name": "Stores data as key-value pairs" },
-                                                { "name": "Keys are unique" },
-                                                { "name": "Values can be duplicated" },
                                                 {
-                                                    "name": "Methods of Map",
+                                                    "name": "ArrayList",
                                                     "children": [
-                                                        { "name": ".put(K key, V value) → inserts/replaces key-value pair" },
-                                                        { "name": ".get(Object key) → retrieves value using key" },
-                                                        { "name": ".remove(Object key) → removes key-value pair" },
-                                                        { "name": ".containsKey(Object key) → checks if key exists" },
-                                                        { "name": ".containsValue(Object value) → checks if value exists" },
-                                                        { "name": ".keySet() → returns all keys as Set" },
-                                                        { "name": ".values() → returns all values as Collection" },
-                                                        { "name": ".entrySet() → returns key-value entries as Set" },
-                                                        { "name": ".putIfAbsent(K key, V value) → inserts only if key absent" },
-                                                        { "name": ".getOrDefault(Object key, V defaultVal) → returns value or default" },
-                                                        { "name": ".replace(K key, V value) → replaces existing value" },
-                                                        { "name": ".size() → returns number of entries" },
-                                                        { "name": ".clear() → removes all entries" }
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Resizable array implementation of List" },
+                                                                { "name": "Random access O(1)" },
+                                                                { "name": "Add/Remove at end O(1) amortized" },
+                                                                { "name": "Add/Remove at beginning/middle O(n)" },
+                                                                { "name": "Grows by 50% when full" },
+                                                                { "name": "Initial capacity: 10" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".add(E element)",
+                                                                    "children": [
+                                                                        { "name": "appends element to end" },
+                                                                        { "name": "O(1) amortized" },
+                                                                        { "name": "returns true" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".get(int index)",
+                                                                    "children": [
+                                                                        { "name": "retrieves element at position" },
+                                                                        { "name": "O(1) random access" },
+                                                                        { "name": "throws IndexOutOfBoundsException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".set(int index, E element)",
+                                                                    "children": [
+                                                                        { "name": "replaces element at position" },
+                                                                        { "name": "returns old value" },
+                                                                        { "name": "O(1) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".remove(int index)",
+                                                                    "children": [
+                                                                        { "name": "removes element at position" },
+                                                                        { "name": "shifts elements left" },
+                                                                        { "name": "O(n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".size()",
+                                                                    "children": [
+                                                                        { "name": "returns number of elements" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "returns int" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".indexOf(Object o)",
+                                                                    "children": [
+                                                                        { "name": "finds first occurrence" },
+                                                                        { "name": "returns -1 if not found" },
+                                                                        { "name": "uses equals()" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "LinkedList",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Doubly linked list implementation" },
+                                                                { "name": "Implements List, Deque, Queue" },
+                                                                { "name": "Sequential access O(n)" },
+                                                                { "name": "Add/Remove at ends O(1)" },
+                                                                { "name": "More memory overhead (prev/next references)" },
+                                                                { "name": "Good for frequent insert/delete operations" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".addFirst(E element)",
+                                                                    "children": [
+                                                                        { "name": "inserts at beginning" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "implements Deque" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".addLast(E element)",
+                                                                    "children": [
+                                                                        { "name": "inserts at end" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "same as add()" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".removeFirst()",
+                                                                    "children": [
+                                                                        { "name": "removes first element" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".removeLast()",
+                                                                    "children": [
+                                                                        { "name": "removes last element" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getFirst()",
+                                                                    "children": [
+                                                                        { "name": "retrieves first element" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getLast()",
+                                                                    "children": [
+                                                                        { "name": "retrieves last element" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "HashSet",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Hash table based implementation" },
+                                                                { "name": "No duplicates allowed" },
+                                                                { "name": "Unordered collection" },
+                                                                { "name": "Average O(1) operations" },
+                                                                { "name": "Allows one null value" },
+                                                                { "name": "Uses equals() and hashCode()" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".add(E element)",
+                                                                    "children": [
+                                                                        { "name": "adds if not present" },
+                                                                        { "name": "returns true if added" },
+                                                                        { "name": "O(1) average" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".contains(Object o)",
+                                                                    "children": [
+                                                                        { "name": "checks if element exists" },
+                                                                        { "name": "O(1) average" },
+                                                                        { "name": "uses equals() and hashCode()" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".remove(Object o)",
+                                                                    "children": [
+                                                                        { "name": "removes if present" },
+                                                                        { "name": "returns true if removed" },
+                                                                        { "name": "O(1) average" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".size()",
+                                                                    "children": [
+                                                                        { "name": "returns number of elements" },
+                                                                        { "name": "O(1) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isEmpty()",
+                                                                    "children": [
+                                                                        { "name": "returns true if empty" },
+                                                                        { "name": "O(1) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".clear()",
+                                                                    "children": [
+                                                                        { "name": "removes all elements" },
+                                                                        { "name": "O(n) operation" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "TreeSet",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Red-Black tree based implementation" },
+                                                                { "name": "Sorted order (natural or custom)" },
+                                                                { "name": "No duplicates allowed" },
+                                                                { "name": "O(log n) operations" },
+                                                                { "name": "Requires Comparable or Comparator" },
+                                                                { "name": "NavigableSet implementation" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".add(E element)",
+                                                                    "children": [
+                                                                        { "name": "adds in sorted order" },
+                                                                        { "name": "returns true if added" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".first()",
+                                                                    "children": [
+                                                                        { "name": "returns smallest element" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".last()",
+                                                                    "children": [
+                                                                        { "name": "returns largest element" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ceiling(E element)",
+                                                                    "children": [
+                                                                        { "name": "returns smallest >= given" },
+                                                                        { "name": "null if none" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".floor(E element)",
+                                                                    "children": [
+                                                                        { "name": "returns largest <= given" },
+                                                                        { "name": "null if none" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
                                                     ]
                                                 },
                                                 {
                                                     "name": "HashMap",
                                                     "children": [
-                                                        { "name": "Hash table based" },
-                                                        { "name": "Average get/put/remove: O(1)" },
-                                                        { "name": "Allows one null key and multiple null values" },
-                                                        { "name": "Not thread-safe" },
                                                         {
-                                                            "name": "Methods of HashMap",
+                                                            "name": "Description",
                                                             "children": [
-                                                                { "name": "new HashMap<>() → HashMap<K,V> → creates empty HashMap" },
-                                                                { "name": ".put(K key, V value) → V → inserts/updates key-value pair" },
-                                                                { "name": ".get(Object key) → V → retrieves value using key" },
-                                                                { "name": ".containsKey(Object key) → boolean → checks if key exists" },
-                                                                { "name": ".containsValue(Object value) → boolean → checks if value exists" },
-                                                                { "name": ".remove(Object key) → V → removes key-value pair" },
-                                                                { "name": ".size() → int → returns number of entries" },
-                                                                { "name": ".isEmpty() → boolean → checks if map is empty" },
-                                                                { "name": ".clear() → void → removes all entries" },
-                                                                { "name": ".keySet() → Set<K> → returns all keys" },
-                                                                { "name": ".values() → Collection<V> → returns all values" },
-                                                                { "name": ".entrySet() → Set<Map.Entry<K,V>> → returns key-value entries" },
-                                                                { "name": ".getOrDefault(K key, V defaultVal) → V → returns default if key absent" },
-                                                                { "name": ".putIfAbsent(K key, V value) → V → inserts only if key absent" },
-                                                                { "name": ".replace(K key, V value) → V → replaces existing value" },
-                                                                { "name": ".computeIfAbsent() → V → computes value if key missing" },
-                                                                { "name": ".merge() → V → merges values" }
+                                                                { "name": "Hash table based implementation" },
+                                                                { "name": "Key-value pair storage" },
+                                                                { "name": "Average O(1) operations" },
+                                                                { "name": "Allows one null key" },
+                                                                { "name": "Allows multiple null values" },
+                                                                { "name": "Not thread-safe" },
+                                                                { "name": "Worst-case O(n) for collisions" }
                                                             ]
                                                         },
                                                         {
-                                                            "name": "Traversal",
+                                                            "name": "Methods",
                                                             "children": [
-                                                                { "name": "Ex:- for(Map.Entry<Integer,String> entry : map.entrySet()) { System.out.println(entry.getKey() + \" \" + entry.getValue()); }" }
-                                                            ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "LinkedHashMap",
-                                                    "children": [
-                                                        { "name": "Hash table + doubly linked list" },
-                                                        { "name": "Maintains insertion order (or access order)" },
-                                                        { "name": "O(1) operations like HashMap" },
-                                                        {
-                                                            "name": "Methods of LinkedHashMap",
-                                                            "children": [
-                                                                { "name": ".put(K key, V value) → inserts while preserving order" },
-                                                                { "name": ".get(Object key) → can update access order" },
-                                                                { "name": ".removeEldestEntry() → useful for LRU cache" }
+                                                                {
+                                                                    "name": ".put(K key, V value)",
+                                                                    "children": [
+                                                                        { "name": "associates key with value" },
+                                                                        { "name": "returns previous value" },
+                                                                        { "name": "O(1) average" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".get(Object key)",
+                                                                    "children": [
+                                                                        { "name": "retrieves value for key" },
+                                                                        { "name": "returns null if not found" },
+                                                                        { "name": "O(1) average" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".remove(Object key)",
+                                                                    "children": [
+                                                                        { "name": "removes key-value mapping" },
+                                                                        { "name": "returns removed value" },
+                                                                        { "name": "O(1) average" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".containsKey(Object key)",
+                                                                    "children": [
+                                                                        { "name": "checks if key exists" },
+                                                                        { "name": "O(1) average" },
+                                                                        { "name": "uses equals() and hashCode()" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".containsValue(Object value)",
+                                                                    "children": [
+                                                                        { "name": "checks if value exists" },
+                                                                        { "name": "O(n) operation" },
+                                                                        { "name": "uses equals()" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".keySet()",
+                                                                    "children": [
+                                                                        { "name": "returns Set of keys" },
+                                                                        { "name": "view of the map" },
+                                                                        { "name": "changes reflected" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".values()",
+                                                                    "children": [
+                                                                        { "name": "returns Collection of values" },
+                                                                        { "name": "view of the map" },
+                                                                        { "name": "supports iteration" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".entrySet()",
+                                                                    "children": [
+                                                                        { "name": "returns Set of entries" },
+                                                                        { "name": "Map.Entry objects" },
+                                                                        { "name": "for iteration with key+value" }
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ]
@@ -3010,36 +3124,59 @@ export const javaBackendTree = {
                                                 {
                                                     "name": "TreeMap",
                                                     "children": [
-                                                        { "name": "Red-Black tree based" },
-                                                        { "name": "Sorted by key (natural/custom ordering)" },
-                                                        { "name": "get/put/remove: O(log n)" },
                                                         {
-                                                            "name": "Methods of TreeMap",
+                                                            "name": "Description",
                                                             "children": [
-                                                                { "name": ".firstKey() → returns smallest key" },
-                                                                { "name": ".lastKey() → returns largest key" },
-                                                                { "name": ".floorKey(K key) → greatest key <= given key" },
-                                                                { "name": ".ceilingKey(K key) → smallest key >= given key" },
-                                                                { "name": ".higherKey(K key) → next greater key" },
-                                                                { "name": ".lowerKey(K key) → next smaller key" }
+                                                                { "name": "Red-Black tree based implementation" },
+                                                                { "name": "Sorted by key (natural or custom)" },
+                                                                { "name": "O(log n) operations" },
+                                                                { "name": "NavigableMap implementation" },
+                                                                { "name": "Requires Comparable or Comparator" }
                                                             ]
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "name": "Hashtable",
-                                                    "children": [
-                                                        { "name": "Legacy synchronized hash table" },
-                                                        { "name": "Thread-safe" },
-                                                        { "name": "Slower than HashMap" },
-                                                        { "name": "Does NOT allow null key/value" },
+                                                        },
                                                         {
-                                                            "name": "Methods of Hashtable",
+                                                            "name": "Methods",
                                                             "children": [
-                                                                { "name": ".put(K key, V value) → inserts entry" },
-                                                                { "name": ".get(Object key) → retrieves value" },
-                                                                { "name": ".keys() → returns Enumeration of keys" },
-                                                                { "name": ".elements() → returns Enumeration of values" }
+                                                                {
+                                                                    "name": ".put(K key, V value)",
+                                                                    "children": [
+                                                                        { "name": "associates key with value" },
+                                                                        { "name": "O(log n) operation" },
+                                                                        { "name": "sorted by key" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".firstKey()",
+                                                                    "children": [
+                                                                        { "name": "returns smallest key" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".lastKey()",
+                                                                    "children": [
+                                                                        { "name": "returns largest key" },
+                                                                        { "name": "O(1) operation" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ceilingKey(K key)",
+                                                                    "children": [
+                                                                        { "name": "returns smallest key >= given" },
+                                                                        { "name": "null if none" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".floorKey(K key)",
+                                                                    "children": [
+                                                                        { "name": "returns largest key <= given" },
+                                                                        { "name": "null if none" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ]
@@ -3047,60 +3184,1482 @@ export const javaBackendTree = {
                                                 {
                                                     "name": "ConcurrentHashMap",
                                                     "children": [
-                                                        { "name": "Thread-safe HashMap" },
-                                                        { "name": "High concurrency support" },
-                                                        { "name": "Better performance than Hashtable" },
                                                         {
-                                                            "name": "Methods of ConcurrentHashMap",
+                                                            "name": "Description",
                                                             "children": [
-                                                                { "name": ".putIfAbsent() → thread-safe conditional insert" },
-                                                                { "name": ".computeIfAbsent() → atomically computes missing value" },
-                                                                { "name": ".replace() → thread-safe replace" },
-                                                                { "name": ".forEach() → concurrent traversal" }
+                                                                { "name": "Thread-safe HashMap" },
+                                                                { "name": "High concurrency support" },
+                                                                { "name": "Segmented locking for better performance" },
+                                                                { "name": "No null keys or values" },
+                                                                { "name": "Better than synchronized HashMap" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".put(K key, V value)",
+                                                                    "children": [
+                                                                        { "name": "thread-safe put" },
+                                                                        { "name": "returns previous value" },
+                                                                        { "name": "null not allowed" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".get(Object key)",
+                                                                    "children": [
+                                                                        { "name": "thread-safe get" },
+                                                                        { "name": "returns value" },
+                                                                        { "name": "no locking for reads" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".remove(Object key)",
+                                                                    "children": [
+                                                                        { "name": "thread-safe removal" },
+                                                                        { "name": "returns removed value" },
+                                                                        { "name": "null not allowed" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".putIfAbsent(K key, V value)",
+                                                                    "children": [
+                                                                        { "name": "puts only if absent" },
+                                                                        { "name": "atomic operation" },
+                                                                        { "name": "returns existing value" }
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    "name": "WeakHashMap",
+                                                    "name": "Collections (Utility Class)",
                                                     "children": [
-                                                        { "name": "Uses weak references for keys" },
-                                                        { "name": "Keys eligible for garbage collection" },
-                                                        { "name": "Useful for caches/memory-sensitive mappings" },
                                                         {
-                                                            "name": "Methods of WeakHashMap",
+                                                            "name": "Description",
                                                             "children": [
-                                                                { "name": ".put(K key, V value) → inserts weakly referenced key" },
-                                                                { "name": ".get(Object key) → retrieves value if key not GC'd" }
+                                                                { "name": "Utility class with static methods" },
+                                                                { "name": "Provides collection operations" },
+                                                                { "name": "Cannot be instantiated" },
+                                                                { "name": "All methods are static" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".sort(List<T> list)",
+                                                                    "children": [
+                                                                        { "name": "sorts in natural order" },
+                                                                        { "name": "requires Comparable" },
+                                                                        { "name": "modifies original list" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".shuffle(List<?> list)",
+                                                                    "children": [
+                                                                        { "name": "randomly permutes elements" },
+                                                                        { "name": "uses Random by default" },
+                                                                        { "name": "modifies original list" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".reverse(List<?> list)",
+                                                                    "children": [
+                                                                        { "name": "reverses element order" },
+                                                                        { "name": "modifies original list" },
+                                                                        { "name": "O(n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".binarySearch(List list, T key)",
+                                                                    "children": [
+                                                                        { "name": "searches sorted list" },
+                                                                        { "name": "returns index or negative" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".max(Collection col)",
+                                                                    "children": [
+                                                                        { "name": "returns maximum element" },
+                                                                        { "name": "natural order" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".min(Collection col)",
+                                                                    "children": [
+                                                                        { "name": "returns minimum element" },
+                                                                        { "name": "natural order" },
+                                                                        { "name": "throws if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".frequency(Collection c, Object o)",
+                                                                    "children": [
+                                                                        { "name": "counts occurrences" },
+                                                                        { "name": "uses equals()" },
+                                                                        { "name": "O(n) operation" }
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    "name": "IdentityHashMap",
+                                                    "name": "Arrays (Utility Class)",
                                                     "children": [
-                                                        { "name": "Uses reference equality (==) instead of equals()" },
-                                                        { "name": "Uses System.identityHashCode()" },
                                                         {
-                                                            "name": "Methods of IdentityHashMap",
+                                                            "name": "Description",
                                                             "children": [
-                                                                { "name": ".put(K key, V value) → inserts using reference equality" },
-                                                                { "name": ".get(Object key) → retrieves by object reference" }
+                                                                { "name": "Utility class for array operations" },
+                                                                { "name": "Contains methods for sorting, searching" },
+                                                                { "name": "Cannot be instantiated" },
+                                                                { "name": "All methods are static" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".sort(T[] a)",
+                                                                    "children": [
+                                                                        { "name": "sorts array" },
+                                                                        { "name": "natural order" },
+                                                                        { "name": "uses Dual-Pivot Quicksort" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".binarySearch(T[] a, T key)",
+                                                                    "children": [
+                                                                        { "name": "binary search on sorted array" },
+                                                                        { "name": "returns index or negative" },
+                                                                        { "name": "O(log n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".equals(T[] a, T[] b)",
+                                                                    "children": [
+                                                                        { "name": "compares arrays for equality" },
+                                                                        { "name": "deep equality" },
+                                                                        { "name": "returns boolean" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".copyOf(T[] original, int newLength)",
+                                                                    "children": [
+                                                                        { "name": "creates new array copy" },
+                                                                        { "name": "truncates or pads" },
+                                                                        { "name": "useful for resizing" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".fill(T[] a, T val)",
+                                                                    "children": [
+                                                                        { "name": "fills array with value" },
+                                                                        { "name": "modifies original array" },
+                                                                        { "name": "O(n) operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".asList(T... a)",
+                                                                    "children": [
+                                                                        { "name": "returns List view of array" },
+                                                                        { "name": "changes reflect in array" },
+                                                                        { "name": "fixed size (no add/remove)" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Functional Programming (java.util.stream)",
+                                            "children": [
+                                                {
+                                                    "name": "Stream",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Enables functional-style operations" },
+                                                                { "name": "Supports sequential and parallel processing" },
+                                                                { "name": "Lazy evaluation (intermediate operations)" },
+                                                                { "name": "Cannot be reused after terminal operation" },
+                                                                { "name": "Works with collections and arrays" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Intermediate Operations",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".filter(Predicate p)",
+                                                                    "children": [
+                                                                        { "name": "keeps matching elements" },
+                                                                        { "name": "returns new Stream" },
+                                                                        { "name": "lazy operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".map(Function f)",
+                                                                    "children": [
+                                                                        { "name": "transforms each element" },
+                                                                        { "name": "one-to-one mapping" },
+                                                                        { "name": "lazy operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".flatMap(Function f)",
+                                                                    "children": [
+                                                                        { "name": "flattens nested streams" },
+                                                                        { "name": "one-to-many mapping" },
+                                                                        { "name": "lazy operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".distinct()",
+                                                                    "children": [
+                                                                        { "name": "removes duplicates" },
+                                                                        { "name": "uses equals() and hashCode()" },
+                                                                        { "name": "lazy operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".sorted()",
+                                                                    "children": [
+                                                                        { "name": "natural ordering" },
+                                                                        { "name": "requires Comparable" },
+                                                                        { "name": "lazy operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".limit(long maxSize)",
+                                                                    "children": [
+                                                                        { "name": "truncates stream" },
+                                                                        { "name": "first n elements" },
+                                                                        { "name": "short-circuiting" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".skip(long n)",
+                                                                    "children": [
+                                                                        { "name": "discards first n elements" },
+                                                                        { "name": "returns remaining stream" },
+                                                                        { "name": "lazy operation" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Terminal Operations",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".forEach(Consumer c)",
+                                                                    "children": [
+                                                                        { "name": "performs action on each" },
+                                                                        { "name": "no return value" },
+                                                                        { "name": "eager operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".collect(Collector c)",
+                                                                    "children": [
+                                                                        { "name": "accumulates into collection" },
+                                                                        { "name": "e.g., toList(), toSet()" },
+                                                                        { "name": "eager operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".reduce(BinaryOperator op)",
+                                                                    "children": [
+                                                                        { "name": "reduces to single value" },
+                                                                        { "name": "returns Optional" },
+                                                                        { "name": "eager operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".count()",
+                                                                    "children": [
+                                                                        { "name": "returns number of elements" },
+                                                                        { "name": "long primitive" },
+                                                                        { "name": "eager operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".anyMatch(Predicate p)",
+                                                                    "children": [
+                                                                        { "name": "returns true if any match" },
+                                                                        { "name": "short-circuiting" },
+                                                                        { "name": "eager operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".allMatch(Predicate p)",
+                                                                    "children": [
+                                                                        { "name": "returns true if all match" },
+                                                                        { "name": "short-circuiting" },
+                                                                        { "name": "eager operation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".findFirst()",
+                                                                    "children": [
+                                                                        { "name": "returns first element" },
+                                                                        { "name": "returns Optional" },
+                                                                        { "name": "short-circuiting" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".findAny()",
+                                                                    "children": [
+                                                                        { "name": "returns any element" },
+                                                                        { "name": "returns Optional" },
+                                                                        { "name": "better for parallel streams" }
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ]
                                                 },
                                                 {
-                                                    "name": "EnumMap",
+                                                    "name": "Optional",
                                                     "children": [
-                                                        { "name": "Optimized Map for Enum keys" },
-                                                        { "name": "Very memory efficient" },
-                                                        { "name": "Maintains natural order of enum constants" },
                                                         {
-                                                            "name": "Methods of EnumMap",
+                                                            "name": "Description",
                                                             "children": [
-                                                                { "name": ".put(Enum key, V value) → inserts enum key mapping" },
-                                                                { "name": ".get(Object key) → retrieves value" }
+                                                                { "name": "Container for possibly-null values" },
+                                                                { "name": "Avoids NullPointerException" },
+                                                                { "name": "Encourages null-safe programming" },
+                                                                { "name": "Provides functional operations" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".of(T value)",
+                                                                    "children": [
+                                                                        { "name": "creates Optional with non-null" },
+                                                                        { "name": "throws if null" },
+                                                                        { "name": "factory method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofNullable(T value)",
+                                                                    "children": [
+                                                                        { "name": "creates Optional (null allowed)" },
+                                                                        { "name": "returns empty if null" },
+                                                                        { "name": "preferred method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".empty()",
+                                                                    "children": [
+                                                                        { "name": "returns empty Optional" },
+                                                                        { "name": "singleton instance" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".orElse(T other)",
+                                                                    "children": [
+                                                                        { "name": "returns value if present" },
+                                                                        { "name": "returns other if empty" },
+                                                                        { "name": "eager evaluation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".orElseGet(Supplier s)",
+                                                                    "children": [
+                                                                        { "name": "returns value if present" },
+                                                                        { "name": "supplies value if empty" },
+                                                                        { "name": "lazy evaluation" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".orElseThrow()",
+                                                                    "children": [
+                                                                        { "name": "returns value if present" },
+                                                                        { "name": "throws if empty" },
+                                                                        { "name": "throws NoSuchElementException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isPresent()",
+                                                                    "children": [
+                                                                        { "name": "returns true if value exists" },
+                                                                        { "name": "simple check" },
+                                                                        { "name": "avoid if using functional" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ifPresent(Consumer c)",
+                                                                    "children": [
+                                                                        { "name": "executes consumer if present" },
+                                                                        { "name": "does nothing if empty" },
+                                                                        { "name": "preferred over isPresent()" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".map(Function f)",
+                                                                    "children": [
+                                                                        { "name": "transforms if present" },
+                                                                        { "name": "returns Optional of result" },
+                                                                        { "name": "returns empty if empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".filter(Predicate p)",
+                                                                    "children": [
+                                                                        { "name": "filters if present" },
+                                                                        { "name": "returns empty if not match" },
+                                                                        { "name": "returns self if match" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Modern Time API (java.time)",
+                                            "children": [
+                                                {
+                                                    "name": "LocalDate",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Date without time (year, month, day)" },
+                                                                { "name": "Immutable and thread-safe" },
+                                                                { "name": "ISO-8601 calendar system" },
+                                                                { "name": "Replaces java.util.Date" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".now()",
+                                                                    "children": [
+                                                                        { "name": "returns current date" },
+                                                                        { "name": "from system clock" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".of(int year, int month, int day)",
+                                                                    "children": [
+                                                                        { "name": "creates date manually" },
+                                                                        { "name": "validates values" },
+                                                                        { "name": "throws DateTimeException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".parse(String text)",
+                                                                    "children": [
+                                                                        { "name": "parses ISO-8601 date" },
+                                                                        { "name": "YYYY-MM-DD format" },
+                                                                        { "name": "throws DateTimeParseException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getYear()",
+                                                                    "children": [
+                                                                        { "name": "returns year" },
+                                                                        { "name": "int value" },
+                                                                        { "name": "could be negative for BC" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getMonth()",
+                                                                    "children": [
+                                                                        { "name": "returns Month enum" },
+                                                                        { "name": "JANUARY to DECEMBER" },
+                                                                        { "name": "type-safe" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getDayOfMonth()",
+                                                                    "children": [
+                                                                        { "name": "returns day of month" },
+                                                                        { "name": "1-31 range" },
+                                                                        { "name": "int value" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getDayOfWeek()",
+                                                                    "children": [
+                                                                        { "name": "returns DayOfWeek enum" },
+                                                                        { "name": "MONDAY to SUNDAY" },
+                                                                        { "name": "ISO-8601 standard" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isLeapYear()",
+                                                                    "children": [
+                                                                        { "name": "checks if leap year" },
+                                                                        { "name": "follows Gregorian rules" },
+                                                                        { "name": "returns boolean" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".plusDays(long days)",
+                                                                    "children": [
+                                                                        { "name": "adds days" },
+                                                                        { "name": "returns new LocalDate" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".minusDays(long days)",
+                                                                    "children": [
+                                                                        { "name": "subtracts days" },
+                                                                        { "name": "returns new LocalDate" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isBefore(LocalDate other)",
+                                                                    "children": [
+                                                                        { "name": "compares chronological order" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "negative means earlier" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isAfter(LocalDate other)",
+                                                                    "children": [
+                                                                        { "name": "compares chronological order" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "positive means later" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".format(DateTimeFormatter fmt)",
+                                                                    "children": [
+                                                                        { "name": "formats date" },
+                                                                        { "name": "custom patterns" },
+                                                                        { "name": "returns String" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "LocalTime",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Time without date (hour, minute, second)" },
+                                                                { "name": "Immutable and thread-safe" },
+                                                                { "name": "Nanosecond precision" },
+                                                                { "name": "Replaces java.util.Date time handling" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".now()",
+                                                                    "children": [
+                                                                        { "name": "returns current time" },
+                                                                        { "name": "from system clock" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".of(int hour, int minute)",
+                                                                    "children": [
+                                                                        { "name": "creates time manually" },
+                                                                        { "name": "validates values" },
+                                                                        { "name": "throws DateTimeException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getHour()",
+                                                                    "children": [
+                                                                        { "name": "returns hour" },
+                                                                        { "name": "0-23 range" },
+                                                                        { "name": "24-hour clock" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getMinute()",
+                                                                    "children": [
+                                                                        { "name": "returns minute" },
+                                                                        { "name": "0-59 range" },
+                                                                        { "name": "int value" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".plusHours(long hours)",
+                                                                    "children": [
+                                                                        { "name": "adds hours" },
+                                                                        { "name": "returns new LocalTime" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".minusHours(long hours)",
+                                                                    "children": [
+                                                                        { "name": "subtracts hours" },
+                                                                        { "name": "returns new LocalTime" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isBefore(LocalTime other)",
+                                                                    "children": [
+                                                                        { "name": "compares time order" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "negative means earlier" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isAfter(LocalTime other)",
+                                                                    "children": [
+                                                                        { "name": "compares time order" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "positive means later" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "LocalDateTime",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Date and time combined" },
+                                                                { "name": "Immutable and thread-safe" },
+                                                                { "name": "Combines LocalDate + LocalTime" },
+                                                                { "name": "Most commonly used date-time class" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".now()",
+                                                                    "children": [
+                                                                        { "name": "returns current date-time" },
+                                                                        { "name": "from system clock" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".of(int year, int month, int day, int hour, int min)",
+                                                                    "children": [
+                                                                        { "name": "creates date-time manually" },
+                                                                        { "name": "combines date and time" },
+                                                                        { "name": "validates all values" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toLocalDate()",
+                                                                    "children": [
+                                                                        { "name": "extracts date part" },
+                                                                        { "name": "returns LocalDate" },
+                                                                        { "name": "useful for splitting" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toLocalTime()",
+                                                                    "children": [
+                                                                        { "name": "extracts time part" },
+                                                                        { "name": "returns LocalTime" },
+                                                                        { "name": "useful for splitting" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".atZone(ZoneId zone)",
+                                                                    "children": [
+                                                                        { "name": "converts to ZonedDateTime" },
+                                                                        { "name": "adds timezone info" },
+                                                                        { "name": "returns ZonedDateTime" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".format(DateTimeFormatter fmt)",
+                                                                    "children": [
+                                                                        { "name": "formats date-time" },
+                                                                        { "name": "custom patterns" },
+                                                                        { "name": "returns String" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "ZonedDateTime",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Date-time with timezone information" },
+                                                                { "name": "Immutable and thread-safe" },
+                                                                { "name": "Handles daylight saving time" },
+                                                                { "name": "For international applications" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".now()",
+                                                                    "children": [
+                                                                        { "name": "returns current date-time with zone" },
+                                                                        { "name": "from system clock" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".of(LocalDateTime dateTime, ZoneId zone)",
+                                                                    "children": [
+                                                                        { "name": "creates with date-time and zone" },
+                                                                        { "name": "combines components" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getZone()",
+                                                                    "children": [
+                                                                        { "name": "returns timezone" },
+                                                                        { "name": "ZoneId object" },
+                                                                        { "name": "read only" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".withZoneSameInstant(ZoneId zone)",
+                                                                    "children": [
+                                                                        { "name": "converts timezone" },
+                                                                        { "name": "maintains instant" },
+                                                                        { "name": "returns new ZonedDateTime" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toLocalDateTime()",
+                                                                    "children": [
+                                                                        { "name": "converts to LocalDateTime" },
+                                                                        { "name": "removes zone info" },
+                                                                        { "name": "useful for local processing" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".format(DateTimeFormatter fmt)",
+                                                                    "children": [
+                                                                        { "name": "formats with zone" },
+                                                                        { "name": "custom patterns" },
+                                                                        { "name": "returns String" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Duration",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Time-based interval" },
+                                                                { "name": "Hours, minutes, seconds, nanoseconds" },
+                                                                { "name": "Immutable and thread-safe" },
+                                                                { "name": "For machine time calculations" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".between(Temporal start, Temporal end)",
+                                                                    "children": [
+                                                                        { "name": "creates duration" },
+                                                                        { "name": "between time objects" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofHours(long hours)",
+                                                                    "children": [
+                                                                        { "name": "creates from hours" },
+                                                                        { "name": "factory method" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofMinutes(long minutes)",
+                                                                    "children": [
+                                                                        { "name": "creates from minutes" },
+                                                                        { "name": "factory method" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofSeconds(long seconds)",
+                                                                    "children": [
+                                                                        { "name": "creates from seconds" },
+                                                                        { "name": "factory method" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toDays()",
+                                                                    "children": [
+                                                                        { "name": "converts to days" },
+                                                                        { "name": "long value" },
+                                                                        { "name": "truncates" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toHours()",
+                                                                    "children": [
+                                                                        { "name": "converts to hours" },
+                                                                        { "name": "long value" },
+                                                                        { "name": "truncates" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".toMinutes()",
+                                                                    "children": [
+                                                                        { "name": "converts to minutes" },
+                                                                        { "name": "long value" },
+                                                                        { "name": "truncates" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".plus(Duration other)",
+                                                                    "children": [
+                                                                        { "name": "adds another duration" },
+                                                                        { "name": "returns new Duration" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".minus(Duration other)",
+                                                                    "children": [
+                                                                        { "name": "subtracts another duration" },
+                                                                        { "name": "returns new Duration" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isNegative()",
+                                                                    "children": [
+                                                                        { "name": "checks if negative" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "for validation" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Period",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Date-based interval" },
+                                                                { "name": "Years, months, days" },
+                                                                { "name": "Immutable and thread-safe" },
+                                                                { "name": "For human date calculations" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".between(LocalDate start, LocalDate end)",
+                                                                    "children": [
+                                                                        { "name": "creates period" },
+                                                                        { "name": "between dates" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofYears(int years)",
+                                                                    "children": [
+                                                                        { "name": "creates from years" },
+                                                                        { "name": "factory method" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofMonths(int months)",
+                                                                    "children": [
+                                                                        { "name": "creates from months" },
+                                                                        { "name": "factory method" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofWeeks(int weeks)",
+                                                                    "children": [
+                                                                        { "name": "creates from weeks" },
+                                                                        { "name": "converts to days" },
+                                                                        { "name": "7 days per week" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ofDays(int days)",
+                                                                    "children": [
+                                                                        { "name": "creates from days" },
+                                                                        { "name": "factory method" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getYears()",
+                                                                    "children": [
+                                                                        { "name": "returns years component" },
+                                                                        { "name": "int value" },
+                                                                        { "name": "may be negative" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getMonths()",
+                                                                    "children": [
+                                                                        { "name": "returns months component" },
+                                                                        { "name": "int value" },
+                                                                        { "name": "may be negative" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getDays()",
+                                                                    "children": [
+                                                                        { "name": "returns days component" },
+                                                                        { "name": "int value" },
+                                                                        { "name": "may be negative" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".plus(Period other)",
+                                                                    "children": [
+                                                                        { "name": "adds another period" },
+                                                                        { "name": "returns new Period" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".minus(Period other)",
+                                                                    "children": [
+                                                                        { "name": "subtracts another period" },
+                                                                        { "name": "returns new Period" },
+                                                                        { "name": "immutable" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isNegative()",
+                                                                    "children": [
+                                                                        { "name": "checks if negative" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "for validation" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Concurrency (java.util.concurrent)",
+                                            "children": [
+                                                {
+                                                    "name": "Thread",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Represents thread of execution" },
+                                                                { "name": "Implements Runnable" },
+                                                                { "name": "Provides thread management" },
+                                                                { "name": "JVM schedules threads" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".start()",
+                                                                    "children": [
+                                                                        { "name": "starts new thread" },
+                                                                        { "name": "must be called once" },
+                                                                        { "name": "cannot call twice" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".run()",
+                                                                    "children": [
+                                                                        { "name": "contains thread logic" },
+                                                                        { "name": "called by JVM after start" },
+                                                                        { "name": "can be overridden" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".sleep(long millis)",
+                                                                    "children": [
+                                                                        { "name": "pauses thread" },
+                                                                        { "name": "static method" },
+                                                                        { "name": "throws InterruptedException" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".join()",
+                                                                    "children": [
+                                                                        { "name": "waits for thread to die" },
+                                                                        { "name": "throws InterruptedException" },
+                                                                        { "name": "synchronizes with thread" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".interrupt()",
+                                                                    "children": [
+                                                                        { "name": "interrupts thread" },
+                                                                        { "name": "sets interrupt flag" },
+                                                                        { "name": "wakes sleeping thread" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".yield()",
+                                                                    "children": [
+                                                                        { "name": "hints scheduler" },
+                                                                        { "name": "gives up CPU" },
+                                                                        { "name": "static method" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getName()",
+                                                                    "children": [
+                                                                        { "name": "returns thread name" },
+                                                                        { "name": "default: Thread-X" },
+                                                                        { "name": "useful for debugging" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".setName(String name)",
+                                                                    "children": [
+                                                                        { "name": "sets thread name" },
+                                                                        { "name": "for identification" },
+                                                                        { "name": "can be set anytime" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "ExecutorService",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Manages thread pool for task execution" },
+                                                                { "name": "Better than creating threads manually" },
+                                                                { "name": "Provides task lifecycle management" },
+                                                                { "name": "Recommended for production code" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".submit(Callable<T> task)",
+                                                                    "children": [
+                                                                        { "name": "submits task for execution" },
+                                                                        { "name": "returns Future<T>" },
+                                                                        { "name": "handles exceptions" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".submit(Runnable task)",
+                                                                    "children": [
+                                                                        { "name": "submits task for execution" },
+                                                                        { "name": "returns Future" },
+                                                                        { "name": "no return value" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".invokeAll(Collection tasks)",
+                                                                    "children": [
+                                                                        { "name": "executes all tasks" },
+                                                                        { "name": "returns list of Futures" },
+                                                                        { "name": "waits for all to complete" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".invokeAny(Collection tasks)",
+                                                                    "children": [
+                                                                        { "name": "executes tasks" },
+                                                                        { "name": "returns first successful result" },
+                                                                        { "name": "cancels remaining" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".shutdown()",
+                                                                    "children": [
+                                                                        { "name": "initiates orderly shutdown" },
+                                                                        { "name": "no new tasks accepted" },
+                                                                        { "name": "completes existing tasks" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".shutdownNow()",
+                                                                    "children": [
+                                                                        { "name": "immediately shuts down" },
+                                                                        { "name": "returns pending tasks" },
+                                                                        { "name": "interrupts running tasks" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".awaitTermination(long timeout, TimeUnit unit)",
+                                                                    "children": [
+                                                                        { "name": "waits for termination" },
+                                                                        { "name": "blocks until done or timeout" },
+                                                                        { "name": "returns boolean" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Future",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Represents asynchronous computation result" },
+                                                                { "name": "Provides methods to check completion" },
+                                                                { "name": "Can cancel execution" },
+                                                                { "name": "Blocks on get() until result available" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".get()",
+                                                                    "children": [
+                                                                        { "name": "waits for result" },
+                                                                        { "name": "blocks until available" },
+                                                                        { "name": "throws exceptions" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".get(long timeout, TimeUnit unit)",
+                                                                    "children": [
+                                                                        { "name": "waits with timeout" },
+                                                                        { "name": "throws TimeoutException" },
+                                                                        { "name": "for non-blocking code" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".cancel(boolean mayInterruptIfRunning)",
+                                                                    "children": [
+                                                                        { "name": "attempts to cancel" },
+                                                                        { "name": "true if cancelled" },
+                                                                        { "name": "may interrupt if running" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isCancelled()",
+                                                                    "children": [
+                                                                        { "name": "checks if cancelled" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "before/after completion" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isDone()",
+                                                                    "children": [
+                                                                        { "name": "checks if completed" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "normal or exceptional" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "AtomicInteger",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Thread-safe integer wrapper" },
+                                                                { "name": "Atomic operations without synchronization" },
+                                                                { "name": "Uses CAS (Compare-And-Swap)" },
+                                                                { "name": "Better performance than synchronized" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".get()",
+                                                                    "children": [
+                                                                        { "name": "returns current value" },
+                                                                        { "name": "thread-safe read" },
+                                                                        { "name": "volatile semantics" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".set(int newValue)",
+                                                                    "children": [
+                                                                        { "name": "sets new value" },
+                                                                        { "name": "thread-safe write" },
+                                                                        { "name": "volatile semantics" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".compareAndSet(int expect, int update)",
+                                                                    "children": [
+                                                                        { "name": "sets if current == expected" },
+                                                                        { "name": "atomic operation" },
+                                                                        { "name": "returns true if successful" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".getAndIncrement()",
+                                                                    "children": [
+                                                                        { "name": "increments atomically" },
+                                                                        { "name": "returns old value" },
+                                                                        { "name": "post-increment" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".incrementAndGet()",
+                                                                    "children": [
+                                                                        { "name": "increments atomically" },
+                                                                        { "name": "returns new value" },
+                                                                        { "name": "pre-increment" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".addAndGet(int delta)",
+                                                                    "children": [
+                                                                        { "name": "adds delta atomically" },
+                                                                        { "name": "returns new value" },
+                                                                        { "name": "for arbitrary addition" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "name": "I/O & File Operations (java.io)",
+                                            "children": [
+                                                {
+                                                    "name": "File",
+                                                    "children": [
+                                                        {
+                                                            "name": "Description",
+                                                            "children": [
+                                                                { "name": "Represents file/directory path" },
+                                                                { "name": "Not the file content itself" },
+                                                                { "name": "Provides metadata operations" },
+                                                                { "name": "Older API (java.nio.file preferred)" }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".exists()",
+                                                                    "children": [
+                                                                        { "name": "checks if file exists" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "follows symbolic links" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isFile()",
+                                                                    "children": [
+                                                                        { "name": "checks if regular file" },
+                                                                        { "name": "returns false for directories" },
+                                                                        { "name": "returns false if not exists" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".isDirectory()",
+                                                                    "children": [
+                                                                        { "name": "checks if directory" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "follows symbolic links" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".length()",
+                                                                    "children": [
+                                                                        { "name": "returns file size in bytes" },
+                                                                        { "name": "long value" },
+                                                                        { "name": "0 if directory" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".list()",
+                                                                    "children": [
+                                                                        { "name": "returns directory contents" },
+                                                                        { "name": "String array of names" },
+                                                                        { "name": "null if not directory" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".mkdir()",
+                                                                    "children": [
+                                                                        { "name": "creates directory" },
+                                                                        { "name": "returns true if successful" },
+                                                                        { "name": "only last directory" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".mkdirs()",
+                                                                    "children": [
+                                                                        { "name": "creates all directories" },
+                                                                        { "name": "including parents" },
+                                                                        { "name": "returns true if successful" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".delete()",
+                                                                    "children": [
+                                                                        { "name": "deletes file/directory" },
+                                                                        { "name": "returns true if successful" },
+                                                                        { "name": "directory must be empty" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".createNewFile()",
+                                                                    "children": [
+                                                                        { "name": "creates empty file" },
+                                                                        { "name": "returns true if created" },
+                                                                        { "name": "false if already exists" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "BufferedReader",
+                                                    "children": [
+
+                                                        { "name": "Buffered character input" },
+                                                        { "name": "Reads text efficiently" },
+                                                        { "name": "Wraps other Readers" },
+                                                        { "name": "Provides readLine() method" }
+                                                        ,
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".readLine()",
+                                                                    "children": [
+                                                                        { "name": "reads a line of text" },
+                                                                        { "name": "returns null at EOF" },
+                                                                        { "name": "most commonly used" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".ready()",
+                                                                    "children": [
+                                                                        { "name": "checks if can read" },
+                                                                        { "name": "returns boolean" },
+                                                                        { "name": "non-blocking check" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".mark(int readAheadLimit)",
+                                                                    "children": [
+                                                                        { "name": "marks current position" },
+                                                                        { "name": "supports reset" },
+                                                                        { "name": "requires readAheadLimit" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".reset()",
+                                                                    "children": [
+                                                                        { "name": "resets to marked position" },
+                                                                        { "name": "re-reads from mark" },
+                                                                        { "name": "throws if mark invalid" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".close()",
+                                                                    "children": [
+                                                                        { "name": "closes reader" },
+                                                                        { "name": "releases resources" },
+                                                                        { "name": "should be in finally" }
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "BufferedWriter",
+                                                    "children": [
+
+                                                        { "name": "Buffered character output" },
+                                                        { "name": "Writes text efficiently" },
+                                                        { "name": "Wraps other Writers" },
+                                                        { "name": "Reduces I/O operations" }
+                                                        ,
+                                                        {
+                                                            "name": "Methods",
+                                                            "children": [
+                                                                {
+                                                                    "name": ".write(String str)",
+                                                                    "children": [
+                                                                        { "name": "writes string" },
+                                                                        { "name": "buffered writing" },
+                                                                        { "name": "can be many writes" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".newLine()",
+                                                                    "children": [
+                                                                        { "name": "writes platform-specific line" },
+                                                                        { "name": "\\n on Unix" },
+                                                                        { "name": "\\r\\n on Windows" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".flush()",
+                                                                    "children": [
+                                                                        { "name": "forces buffer write" },
+                                                                        { "name": "ensures data written" },
+                                                                        { "name": "performance impact" }
+                                                                    ]
+                                                                },
+                                                                {
+                                                                    "name": ".close()",
+                                                                    "children": [
+                                                                        { "name": "flushes and closes" },
+                                                                        { "name": "releases resources" },
+                                                                        { "name": "should be in finally" }
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ]
@@ -5489,18 +7048,182 @@ export const javaBackendTree = {
                                 {
                                     "name": "OSI Model (7 Layers)",
                                     "children": [
-                                        { "name": "All (7) - Application: HTTP, DNS, SMTP, SSH" },
-                                        { "name": "People (6) - Presentation: Compression, encryption handshake" },
-                                        { "name": "Should (5) - Session: Sockets, WebSocket" },
-                                        { "name": "Try (4) - Transport: TCP, UDP" },
-                                        { "name": "New (3) - Network: IP, ICMP, ARP, routing" },
-                                        { "name": "Dominos (2) - Data Link: Ethernet, MAC, switching" },
-                                        { "name": "Pizza (1) - Physical: Cables, signals, voltage" },
+                                        {
+                                            "name": "All (7) - Application: HTTP, DNS, SMTP, SSH",
+                                            "children": [
+                                                { "name": "Protocols: HTTP/HTTPS, DNS, SMTP, POP3, IMAP, SSH, Telnet, FTP, SFTP" },
+                                                { "name": "Services: Email, Web browsing, File transfer, Remote login, Chat applications" },
+                                                { "name": "Functions: User interface, Network services, Authentication, Resource sharing" },
+                                                { "name": "Examples: Web browsers, Email clients, FTP clients, SSH clients" },
+                                                { "name": "Port Range: Well-known ports (0-1023)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "People (6) - Presentation: Compression, encryption handshake",
+                                            "children": [
+                                                { "name": "Functions: Data encryption/decryption, Compression, Translation" },
+                                                { "name": "Encryption: SSL/TLS handshake, Data encryption algorithms (AES, RSA)" },
+                                                { "name": "Compression: GZIP, DEFLATE, LZ4" },
+                                                { "name": "Character Encoding: ASCII, Unicode, UTF-8" },
+                                                { "name": "Image/Video Format: JPEG, PNG, MPEG, H.264" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Should (5) - Session: Sockets, WebSocket",
+                                            "children": [
+                                                { "name": "Functions: Establish, maintain, terminate sessions" },
+                                                { "name": "Session Management: Authentication, Authorization, Session tokens" },
+                                                { "name": "Protocols: NetBIOS, PPTP, RPC, AppleTalk" },
+                                                { "name": "WebSocket: Full-duplex communication, HTML5 protocol" },
+                                                { "name": "Examples: Dialog control, Connection checkpointing, Recovery" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Try (4) - Transport: TCP, UDP",
+                                            "children": [
+                                                {
+                                                    "name": "TCP (Transmission Control Protocol)",
+                                                    "children": [
+                                                        { "name": "Connection-oriented, Reliable, In-order delivery" },
+                                                        { "name": "3-way handshake: SYN, SYN-ACK, ACK" },
+                                                        { "name": "Flow control, Congestion control, Error checking" },
+                                                        { "name": "Slower but guaranteed delivery" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "UDP (User Datagram Protocol)",
+                                                    "children": [
+                                                        { "name": "Connectionless, Unreliable, No ordering guarantee" },
+                                                        { "name": "Fast, Low overhead, Lightweight" },
+                                                        { "name": "No handshake, No flow control" },
+                                                        { "name": "Used for: DNS, VoIP, Online gaming, Streaming" }
+                                                    ]
+                                                },
+                                                { "name": "Ports: Source and Destination port numbers (16-bit)" },
+                                                { "name": "Segmentation: Data divided into segments" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "New (3) - Network: IP, ICMP, ARP, routing",
+                                            "children": [
+                                                {
+                                                    "name": "IP (Internet Protocol)",
+                                                    "children": [
+                                                        { "name": "IPv4: 32-bit addresses (192.168.1.1)" },
+                                                        { "name": "IPv6: 128-bit addresses (2001:db8::1)" },
+                                                        { "name": "Routing: Path determination using routing tables" },
+                                                        { "name": "Fragmentation: Breaking packets into smaller sizes" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "ICMP (Internet Control Message Protocol)",
+                                                    "children": [
+                                                        { "name": "Ping: Echo request/reply for connectivity testing" },
+                                                        { "name": "Traceroute: Path tracing to destination" },
+                                                        { "name": "Error messages: Unreachable, Time exceeded" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "ARP (Address Resolution Protocol)",
+                                                    "children": [
+                                                        { "name": "Maps IP addresses to MAC addresses" },
+                                                        { "name": "ARP Request/Reply process" },
+                                                        { "name": "ARP Cache/Table maintenance" }
+                                                    ]
+                                                },
+                                                { "name": "Routers: Forward packets between networks" },
+                                                { "name": "Logical Addressing: IP addresses for device identification" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Dominos (2) - Data Link: Ethernet, MAC, switching",
+                                            "children": [
+                                                {
+                                                    "name": "Ethernet",
+                                                    "children": [
+                                                        { "name": "LAN technology, Frame-based transmission" },
+                                                        { "name": "Carrier Sense Multiple Access (CSMA/CD)" },
+                                                        { "name": "Speed: 10 Mbps to 100 Gbps" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "MAC (Media Access Control)",
+                                                    "children": [
+                                                        { "name": "48-bit address: AA:BB:CC:DD:EE:FF" },
+                                                        { "name": "Unicast, Broadcast, Multicast addressing" },
+                                                        { "name": "MAC address resolution via ARP" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Switching",
+                                                    "children": [
+                                                        { "name": "Switches: Forward frames based on MAC addresses" },
+                                                        { "name": "Learning: Build MAC address table" },
+                                                        { "name": "Flooding: Forward to all ports if MAC unknown" },
+                                                        { "name": "VLANs: Virtual segmentation of networks" }
+                                                    ]
+                                                },
+                                                { "name": "Frames: Data Link layer PDU (Preamble, Dest MAC, Src MAC, Data, CRC)" },
+                                                { "name": "Error Detection: CRC (Cyclic Redundancy Check)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Pizza (1) - Physical: Cables, signals, voltage",
+                                            "children": [
+                                                {
+                                                    "name": "Cabling",
+                                                    "children": [
+                                                        { "name": "Twisted Pair: Cat5e, Cat6, Cat6a, Cat7 (Ethernet)" },
+                                                        { "name": "Fiber Optic: Single-mode, Multi-mode (Long distance)" },
+                                                        { "name": "Coaxial: Legacy, Cable TV" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Transmission Media",
+                                                    "children": [
+                                                        { "name": "Guided: Wired (Copper, Fiber)" },
+                                                        { "name": "Unguided: Wireless (Radio, Microwave, Infrared)" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Signaling",
+                                                    "children": [
+                                                        { "name": "Digital Signals: Binary (0, 1)" },
+                                                        { "name": "Modulation: Encoding data into signals" },
+                                                        { "name": "Voltage/Frequency: Signal representation" }
+                                                    ]
+                                                },
+                                                { "name": "Connectors: RJ45, SMA, LC, SC" },
+                                                { "name": "Network Devices: Hubs, Repeaters, NIC cards" }
+                                            ]
+                                        },
                                         {
                                             "name": "Data Flow",
                                             "children": [
-                                                { "name": "Sender: Top-to-Bottom (encapsulation, add headers)" },
-                                                { "name": "Receiver: Bottom-to-Top (de-encapsulation, remove headers)" }
+                                                {
+                                                    "name": "Sender: Top-to-Bottom (Encapsulation, add headers)",
+                                                    "children": [
+                                                        { "name": "Layer 7: Application prepares data (HTTP request)" },
+                                                        { "name": "Layer 6: Presentation encrypts/compresses data" },
+                                                        { "name": "Layer 5: Session establishes connection" },
+                                                        { "name": "Layer 4: Transport adds port info (TCP/UDP header)" },
+                                                        { "name": "Layer 3: Network adds IP addresses (IP header)" },
+                                                        { "name": "Layer 2: Data Link adds MAC addresses (Frame header)" },
+                                                        { "name": "Layer 1: Physical converts to bits and transmits" }
+                                                    ]
+                                                },
+                                                {
+                                                    "name": "Receiver: Bottom-to-Top (De-encapsulation, remove headers)",
+                                                    "children": [
+                                                        { "name": "Layer 1: Physical receives bits and converts to frames" },
+                                                        { "name": "Layer 2: Data Link removes frame header, checks CRC" },
+                                                        { "name": "Layer 3: Network removes IP header, checks destination" },
+                                                        { "name": "Layer 4: Transport removes port info, delivers to app" },
+                                                        { "name": "Layer 5: Session manages connection state" },
+                                                        { "name": "Layer 6: Presentation decrypts/decompresses data" },
+                                                        { "name": "Layer 7: Application processes the received data" }
+                                                    ]
+                                                }
                                             ]
                                         }
                                     ]
