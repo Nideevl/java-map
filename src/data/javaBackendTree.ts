@@ -10280,11 +10280,263 @@ export const javaBackendTree = {
                 {
                     name: "Message Queues",
                     children: [
-                        { name: "Kafka / RabbitMQ basics" },
-                        { name: "Producers & Consumers" },
-                        { name: "Partitions & Consumer Groups" },
-                        { name: "Retries & Dead Letter Queues" },
-                    ],
+                        {
+                            name: "Kafka / RabbitMQ basics",
+                            children: [
+                                {
+                                    name: "Kafka",
+                                    children: [
+                                        { name: "Distributed event streaming platform" },
+                                        { name: "Broker Architecture: Cluster of brokers, ZooKeeper coordination" },
+                                        { name: "Topics: Logical channels for messages" },
+                                        { name: "Log-based storage: Messages stored as immutable logs" },
+                                        { name: "Retention Policy: Time-based, Size-based, Compact logs" },
+                                        { name: "Use cases: Real-time analytics, Log aggregation, Event sourcing" },
+                                        { name: "Performance: High throughput (millions msg/sec), Low latency" },
+                                        { name: "Durability: Replication across brokers for fault tolerance" },
+                                        { name: "Ordering guarantees: Per-partition message ordering" },
+                                        { name: "Kafka Cluster Setup: Multiple brokers, Leader-Follower model" }
+                                    ]
+                                },
+                                {
+                                    name: "RabbitMQ",
+                                    children: [
+                                        { name: "Message broker with AMQP protocol" },
+                                        { name: "Queue-based model: Messages routed to specific queues" },
+                                        { name: "Exchange Types: Direct, Fanout, Topic, Headers" },
+                                        { name: "Routing Keys: Dynamic message routing to queues" },
+                                        { name: "Acknowledgments: Manual or automatic message confirmation" },
+                                        { name: "Message Persistence: Optional durability guarantees" },
+                                        { name: "TTL (Time To Live): Message expiration support" },
+                                        { name: "Priority Queues: Message priority levels" },
+                                        { name: "Delayed Queues: Schedule message delivery" },
+                                        { name: "Clustering & Mirroring: High availability setup" }
+                                    ]
+                                },
+                                {
+                                    name: "Kafka vs RabbitMQ Comparison",
+                                    children: [
+                                        { name: "Kafka: Better for high-volume, streaming, event sourcing" },
+                                        { name: "RabbitMQ: Better for traditional queuing, routing complexity" },
+                                        { name: "Kafka: Message replay capability, RabbitMQ: One-time delivery" },
+                                        { name: "Kafka: Horizontal scaling through partitions" },
+                                        { name: "RabbitMQ: Simpler setup, lower operational overhead" }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Producers & Consumers",
+                            children: [
+                                {
+                                    name: "Kafka Producers",
+                                    children: [
+                                        { name: "Producer Configuration: bootstrap.servers, key.serializer, value.serializer" },
+                                        { name: "Delivery Semantics: acks=0 (no ack), acks=1 (leader ack), acks=all (all replicas)" },
+                                        { name: "Send Methods: fire-and-forget, sync, async with callbacks" },
+                                        { name: "Batching: batch.size, linger.ms for throughput optimization" },
+                                        { name: "Compression: snappy, lz4, gzip, zstd" },
+                                        { name: "Idempotent Producers: enable.idempotence=true to prevent duplicates" },
+                                        { name: "Transactional Producers: Exactly-once semantics (EOS)" },
+                                        { name: "Retries & Backoff: retry.backoff.ms, max.in.flight.requests" },
+                                        { name: "Partitioning: Default (round-robin), Key-based, Custom partitioner" },
+                                        { name: "Error Handling: Exceptions, Callbacks, Monitoring" }
+                                    ]
+                                },
+                                {
+                                    name: "Kafka Consumers",
+                                    children: [
+                                        { name: "Consumer Configuration: bootstrap.servers, group.id, auto.offset.reset" },
+                                        { name: "Group Management: Multiple consumers in a group for parallel processing" },
+                                        { name: "Offset Management: Tracking read position in partition" },
+                                        { name: "Auto Commit: auto.commit.interval.ms, enable.auto.commit" },
+                                        { name: "Manual Commit: commitSync(), commitAsync() for explicit control" },
+                                        { name: "Rebalancing: Process when consumers join/leave group" },
+                                        { name: "Fetch Configuration: fetch.min.bytes, fetch.max.wait.ms" },
+                                        { name: "Session Management: session.timeout.ms, heartbeat.interval.ms" },
+                                        { name: "Offset Reset Policies: earliest (from beginning), latest (from end)" },
+                                        { name: "Consumer Lag: Monitoring lag between latest & consumed offset" }
+                                    ]
+                                },
+                                {
+                                    name: "RabbitMQ Producers",
+                                    children: [
+                                        { name: "Connection: Channel, Virtual Host setup" },
+                                        { name: "Publishing: basicPublish() method with exchange & routing key" },
+                                        { name: "Message Properties: content-type, correlation-id, reply-to" },
+                                        { name: "Publisher Confirms: confirm.select() for delivery acknowledgment" },
+                                        { name: "Mandatory Flag: Receive notification if message not routed" },
+                                        { name: "Error Handling: nack (negative acknowledgment) handling" }
+                                    ]
+                                },
+                                {
+                                    name: "RabbitMQ Consumers",
+                                    children: [
+                                        { name: "Subscription: basicConsume() with consumer callback" },
+                                        { name: "QoS (Quality of Service): basicQos() for prefetch limit" },
+                                        { name: "Manual Ack: basicAck() after processing message" },
+                                        { name: "Nack & Requeue: basicNack() to reject and requeue message" },
+                                        { name: "Consumer Tags: Unique identifier for consumer instance" },
+                                        { name: "Message Handling: Process in callback function" }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Partitions & Consumer Groups",
+                            children: [
+                                {
+                                    name: "Kafka Partitions",
+                                    children: [
+                                        { name: "Partition Concept: Horizontal scaling unit of a topic" },
+                                        { name: "Leader-Follower: One leader, multiple followers (in-sync replicas)" },
+                                        { name: "Replication Factor: Number of copies across brokers" },
+                                        { name: "In-Sync Replicas (ISR): Replicas caught up with leader" },
+                                        { name: "Leader Election: Automatic failover if leader fails" },
+                                        { name: "Min.insync.replicas: Minimum ISRs for acks=all to succeed" },
+                                        { name: "Partition Assignment: Static vs Dynamic (Sticky Assignor)" },
+                                        { name: "Offset Management: Each partition maintains separate offsets" },
+                                        { name: "Log Compaction: Retain latest message per key for compacted topics" },
+                                        { name: "Partition Key: Determines which partition gets the message" }
+                                    ]
+                                },
+                                {
+                                    name: "Consumer Groups",
+                                    children: [
+                                        { name: "Group Concept: Multiple consumers reading from same topic in parallel" },
+                                        { name: "Parallel Processing: Each partition assigned to one consumer in group" },
+                                        { name: "Scalability: Add consumers to group = automatic load balancing" },
+                                        { name: "Rebalancing: Reassignment of partitions when consumers join/leave" },
+                                        { name: "Group Coordinator: Broker managing group metadata & rebalancing" },
+                                        { name: "Group State: Stable, PreparingRebalance, CompletingRebalance, Dead" },
+                                        { name: "Consumer ID: Instance ID for tracking in group" },
+                                        { name: "Generation ID: Epoch number for partition assignment" },
+                                        { name: "Partition Ordering: Guarantees order within partition, not across" },
+                                        { name: "Lag Monitoring: Track consumer lag for alerting & debugging" }
+                                    ]
+                                },
+                                {
+                                    name: "Partition & Group Scenarios",
+                                    children: [
+                                        { name: "Scenario 1: More consumers than partitions → Some stay idle" },
+                                        { name: "Scenario 2: Fewer consumers than partitions → Each consumes multiple" },
+                                        { name: "Scenario 3: Consumer crashes → Partition reassigned to healthy consumer" },
+                                        { name: "Scenario 4: Scale up → Add consumer, trigger rebalance, faster processing" },
+                                        { name: "Rebalance Overhead: Stop world pause, latency spike during rebalancing" },
+                                        { name: "Sticky Assignment: Minimize partition movement during rebalance" }
+                                    ]
+                                },
+                                {
+                                    name: "RabbitMQ Queues",
+                                    children: [
+                                        { name: "Queue Concept: Destination for routed messages" },
+                                        { name: "Durable Queues: Survive broker restart" },
+                                        { name: "Exclusive Queues: Only one consumer, deleted on disconnect" },
+                                        { name: "Auto-delete Queues: Deleted when last consumer unsubscribes" },
+                                        { name: "Queue Arguments: Message TTL, Max length, Dead letter exchange" },
+                                        { name: "Queue Binding: Connect queue to exchange with routing key" },
+                                        { name: "Message Ordering: FIFO within single queue" },
+                                        { name: "Queue Durability vs Message Durability: Both must be set for guarantee" }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            name: "Retries & Dead Letter Queues",
+                            children: [
+                                {
+                                    name: "Kafka Retries",
+                                    children: [
+                                        { name: "Producer Retries: retries property (default infinite)" },
+                                        { name: "Retry Backoff: retry.backoff.ms exponential backoff delay" },
+                                        { name: "Max in-flight Requests: max.in.flight.requests.per.connection (affects ordering)" },
+                                        { name: "Timeout Configuration: request.timeout.ms" },
+                                        { name: "Idempotent Retries: enable.idempotence prevents duplicate on retry" },
+                                        { name: "Transactional Retries: Automatic retry within transaction boundary" },
+                                        { name: "Consumer Retries: Application-level retry logic in consumer" },
+                                        { name: "Offset Commit Retries: Auto-retry offset commit failures" }
+                                    ]
+                                },
+                                {
+                                    name: "Dead Letter Queues (DLQ) in Kafka",
+                                    children: [
+                                        { name: "DLQ Concept: Separate topic for failed messages" },
+                                        { name: "DLQ Design: Create dedicated topic for poison messages" },
+                                        { name: "DLQ Naming Convention: {topic}-dlq or {topic}-dead-letter" },
+                                        { name: "Failure Conditions: Message processing exception, max retries exceeded" },
+                                        { name: "DLQ Handling: Send to DLQ after N retries in consumer" },
+                                        { name: "Message Metadata: Add headers for error cause, timestamp, retry count" },
+                                        { name: "DLQ Monitoring: Alert on messages arriving in DLQ" },
+                                        { name: "Manual Replay: Re-process DLQ messages after fixing root cause" },
+                                        { name: "DLQ Retention: Keep DLQ messages longer for investigation" }
+                                    ]
+                                },
+                                {
+                                    name: "RabbitMQ Retries",
+                                    children: [
+                                        { name: "Manual Retries: Application-level retry logic on nack" },
+                                        { name: "basicNack with Requeue: Requeue message for retry" },
+                                        { name: "Retry Delay: Use TTL + DLX to implement delay before retry" },
+                                        { name: "Max Retries: Track retry count in message headers" },
+                                        { name: "Exponential Backoff: Implement custom delay strategy" },
+                                        { name: "Circuit Breaker: Stop retrying if consumer keeps failing" }
+                                    ]
+                                },
+                                {
+                                    name: "Dead Letter Exchange (DLX) in RabbitMQ",
+                                    children: [
+                                        { name: "DLX Concept: Exchange for handling failed messages" },
+                                        { name: "Dead Letter Reasons: Message nacked, TTL expired, Queue length exceeded" },
+                                        { name: "DLX Configuration: x-dead-letter-exchange header on queue" },
+                                        { name: "DLX Routing: Use x-dead-letter-routing-key to route to DLQ" },
+                                        { name: "DLQ Setup: Create queue, bind to DLX for failed messages" },
+                                        { name: "Headers Preservation: Dead letter headers contain original routing info" },
+                                        { name: "DLX Monitoring: Monitor DLX for failed message handling" }
+                                    ]
+                                },
+                                {
+                                    name: "Transactional Outbox Pattern",
+                                    children: [
+                                        { name: "Pattern Concept: Ensure message sent if database transaction succeeds" },
+                                        { name: "Outbox Table: Store messages in DB before publishing" },
+                                        { name: "Atomicity: Single transaction for both business & outbox data" },
+                                        { name: "Outbox Polling: Separate process reads outbox, publishes to queue" },
+                                        { name: "Exactly-once Semantics: Guarantees message delivery" },
+                                        { name: "Idempotency: Include correlation-id for duplicate detection" },
+                                        { name: "Polling Interval: Balance latency vs CPU usage" },
+                                        { name: "Cleanup: Delete published messages from outbox" },
+                                        { name: "Implementation: Spring Cloud Stream, Debezium CDC, Custom polling" }
+                                    ]
+                                },
+                                {
+                                    name: "Write-Ahead Logging (WAL)",
+                                    children: [
+                                        { name: "WAL Concept: Log changes before applying to data" },
+                                        { name: "Durability Guarantee: Survives crashes & power failures" },
+                                        { name: "Recovery: Replay WAL to restore state after failure" },
+                                        { name: "Message Broker Use: Kafka uses WAL in broker persistence" },
+                                        { name: "Database Use: PostgreSQL, MySQL use WAL for replication" },
+                                        { name: "Fsync Operations: Flush to disk for persistence" },
+                                        { name: "Performance Trade-off: Durability vs Write latency" },
+                                        { name: "Checkpoint: Periodic snapshots to speed up recovery" }
+                                    ]
+                                },
+                                {
+                                    name: "Error Handling Strategy",
+                                    children: [
+                                        { name: "Classification: Transient (retry) vs Permanent (DLQ) errors" },
+                                        { name: "Retry Backoff: Exponential, Linear, or Fixed delay" },
+                                        { name: "Circuit Breaker: Stop retries if downstream keeps failing" },
+                                        { name: "Bulkhead Pattern: Isolate failing consumer from others" },
+                                        { name: "Graceful Degradation: Handle failures without stopping pipeline" },
+                                        { name: "Alerting: Monitor DLQ, error rates, consumer lag" },
+                                        { name: "Debugging: Log headers, body, error stack trace" },
+                                        { name: "Recovery Automation: Auto-replay DLQ after issue resolution" }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
                 },
             ],
         },
