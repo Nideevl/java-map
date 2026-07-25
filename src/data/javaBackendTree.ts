@@ -10024,9 +10024,26 @@ export const javaBackendTree = {
                         {
                             "name": "Indexing Basics",
                             "children": [
-                                { "name": "\"Improves query/search performance by avoiding full table scans\"" },
+                                { "name": "Improves query/search performance by avoiding full table scans" },
                                 { "name": "Works like book index → DB jumps directly to data" },
-                                { "name": "Commonly implemented using B-Tree" }
+                                {
+                                    "name": "Data Structures for Indexing",
+                                    "children": [
+                                        {
+                                            "name": "B+ Tree (Standard in PostgreSQL/MySQL)",
+                                            "children": [
+                                                { "name": "High branching factor keeps tree shallow (3-4 levels for 1M rows vs 20 for BST)" },
+                                                { "name": "All data stored at leaf nodes; internal nodes guide searches" },
+                                                { "name": "Leaf nodes are linked → efficient range queries without re-traversal" },
+                                                { "name": "Optimized for disk I/O: minimizes random seeks, maximizes sequential access" },
+                                                { "name": "Why B+ over BST: BST gets too deep (more disk reads), unpredictable access patterns" },
+                                                { "name": "Why B+ over standard B-Tree: Data scattered throughout standard B-Tree causes random I/O; B+ keeps it at leaves" }
+                                            ]
+                                        },
+                                        { "name": "Binary Search Tree (BST) → Deep trees, unbalanced, poor for disk-based systems" },
+                                        { "name": "Hash Index → Very fast for exact matches, NOT suitable for range queries" }
+                                    ]
+                                }
                             ]
                         },
                         {
@@ -10036,43 +10053,81 @@ export const javaBackendTree = {
                                 { "name": "Secondary Index (Non-Clustering) → Created on non-PK columns, multiple allowed, points to actual data" },
                                 { "name": "Unique Index → Ensures all values unique (Ex: email column)" },
                                 { "name": "Composite Index → Index on multiple columns (order matters)" },
-                                { "name": "B-Tree Index → Efficient for range queries + sorting (Ex: WHERE age > 20)" },
-                                { "name": "Hash Index → Very fast for exact matches, NOT for range queries (Ex: WHERE email = 'x@y')" }
+                                {
+                                    "name": "B-Tree Index → Efficient for range queries + sorting",
+                                    "children": [
+                                        { "name": "Example: WHERE age > 20 benefits from B-Tree (sequential leaf scan)" },
+                                        { "name": "Example: ORDER BY name uses B-Tree for sorted traversal" },
+                                        { "name": "Composite B-Tree on (customer_id, order_date) supports both exact match and range" }
+                                    ]
+                                },
+                                {
+                                    "name": "Hash Index → Very fast for exact matches only",
+                                    "children": [
+                                        { "name": "Example: WHERE email = 'x@y.com' is O(1)" },
+                                        { "name": "Cannot do: WHERE email LIKE 'x%' or range queries" }
+                                    ]
+                                }
                             ]
                         },
                         {
                             "name": "Index Tradeoffs",
                             "children": [
-                                { "name": "Benefits: Faster reads/searches" },
-                                { "name": "Costs: Slower INSERT/UPDATE/DELETE, extra storage, index maintenance overhead" }
+                                { "name": "Benefits: Faster reads/searches, faster JOIN operations, faster ORDER BY/GROUP BY" },
+                                { "name": "Costs: Slower INSERT/UPDATE/DELETE (index must be maintained), extra storage space, index rebuilding overhead" },
+                                { "name": "Write penalty: Every INSERT/UPDATE requires index re-balancing (more for B-Tree than Hash)" }
                             ]
                         },
                         {
                             "name": "When to Use Indexes",
                             "children": [
-                                { "name": "Frequently searched columns" },
-                                { "name": "Columns used in WHERE, JOIN, ORDER BY" },
+                                { "name": "Frequently searched columns (high SELECT ratio)" },
+                                { "name": "Columns used in WHERE, JOIN, ORDER BY clauses" },
                                 { "name": "Foreign keys (for joins)" },
-                                { "name": "Large tables with many SELECT queries" }
+                                { "name": "Large tables with many SELECT queries relative to writes" },
+                                { "name": "Don't index: Low-cardinality columns (few unique values), write-heavy tables, tiny tables" }
                             ]
                         },
                         {
-                            "name": "Query Optimization",
+                            "name": "Query Optimization Techniques",
                             "children": [
-                                { "name": "Avoid SELECT * → specify needed columns" },
-                                { "name": "Filter early using WHERE" },
-                                { "name": "Use proper JOIN conditions" },
-                                { "name": "Avoid deeply nested subqueries" },
-                                { "name": "Use indexes on WHERE, JOIN, ORDER BY columns" }
+                                { "name": "Avoid SELECT * → specify only needed columns" },
+                                { "name": "Filter early using WHERE (before JOIN if possible)" },
+                                { "name": "Use proper JOIN conditions to leverage indexes" },
+                                { "name": "Avoid deeply nested subqueries → flatten or use CTEs" },
+                                { "name": "Use indexes on WHERE, JOIN, ORDER BY columns" },
+                                { "name": "Avoid functions in WHERE clause (prevents index usage)" }
                             ]
                         },
                         {
                             "name": "Execution Plans (EXPLAIN)",
                             "children": [
-                                { "name": "\"Database strategy used to execute query\"" },
-                                { "name": "Shows scans, joins, indexes, sorting operations" },
-                                { "name": "PostgreSQL: EXPLAIN ANALYZE SELECT ... shows cost, rows, execution time" },
-                                { "name": "Seq Scan = sequential scan (full table scan) vs Index Scan = using index" }
+                                { "name": "Database strategy used to execute query → shows cost, rows affected, actual execution time" },
+                                { "name": "Shows operation types: Seq Scan, Index Scan, Index Only Scan, Join methods" },
+                                {
+                                    "name": "Reading EXPLAIN output",
+                                    "children": [
+                                        { "name": "Seq Scan = full table scan (no index used, slow for large tables)" },
+                                        { "name": "Index Scan = using index to locate data (faster)" },
+                                        { "name": "Index Only Scan = entire result in index (fastest, no table access)" },
+                                        { "name": "Cost = relative estimate (lower is better, unit-less)" },
+                                        { "name": "Rows = estimated rows returned (compare to 'actual rows' in ANALYZE)" }
+                                    ]
+                                },
+                                {
+                                    "name": "PostgreSQL usage",
+                                    "children": [
+                                        { "name": "EXPLAIN SELECT ... → shows estimated plan" },
+                                        { "name": "EXPLAIN ANALYZE SELECT ... → executes query, shows actual vs estimated" }
+                                    ]
+                                },
+                                {
+                                    "name": "MySQL usage",
+                                    "children": [
+                                        { "name": "EXPLAIN SELECT ... → shows type, possible_keys, key, rows, Extra" },
+                                        { "name": "EXPLAIN FORMAT=JSON SELECT ... → detailed JSON output" }
+                                    ]
+                                }
                             ]
                         }
                     ]
