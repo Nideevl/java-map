@@ -1865,14 +1865,34 @@ export const javaBackendTree = {
                                                 }
                                             ]
                                         },
-                                        {
-                                            "name": "Dependency Inversion Principle (DIP)",
-                                            "children": [
-                                                { "name": "\"Depend on abstractions, not concrete implementations\"" },
-                                                { "name": "Use interfaces/abstract classes as dependencies\"" },
-                                                { "name": "Enables loose coupling\"" }
-                                            ]
-                                        }
+                                       {
+    "name": "Dependency Inversion Principle (DIP)",
+    "children": [
+        {
+            "name": "Depend on abstractions, not concrete implementations"
+        },
+        {
+            "name": "Use interfaces or abstract classes as dependencies"
+        },
+        {
+            "name": "Enables loose coupling and easier unit testing"
+        },
+        {
+            "name": "Example: Notification System",
+            "children": [
+                {
+                    "name": "Abstraction: MessageSender (Interface)"
+                },
+                {
+                    "name": "Low-level module: EmailSender (Implements MessageSender)"
+                },
+                {
+                    "name": "High-level module: NotificationService (Depends on MessageSender, not EmailSender)"
+                }
+            ]
+        }
+    ]
+}
                                     ]
                                 },
                                 {
@@ -9715,7 +9735,7 @@ export const javaBackendTree = {
                                 {
                                     "name": "DCL (Data Control Language)",
                                     "children": [
-                                        { "name": "GRANT → Give user access privileges (Ex: GRANT SELECT, INSERT ON users TO developer_role)" },
+                                        { "name": "GRANT → Give user access privileges (Ex: GRANT SELECT, INSERT ON users TO developer_role) (GRANT privilege_name ON object_name TO user_or_role)" },
                                         { "name": "REVOKE → Take away user access privileges (Ex: REVOKE DELETE ON users FROM intern_role)" }
                                     ]
                                 }
