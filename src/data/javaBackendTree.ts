@@ -1870,7 +1870,13 @@ export const javaBackendTree = {
                                             "children": [
                                                 { "name": "\"Depend on abstractions, not concrete implementations\"" },
                                                 { "name": "Use interfaces/abstract classes as dependencies\"" },
-                                                { "name": "Enables loose coupling\"" }
+                                                { "name": "Enables loose coupling\"" },
+                                                {
+                                                    "name": "Bad:-\n\nclass PaymentProcessor {\n  private StripePayment stripe = new StripePayment();\n  void process() { stripe.charge(); }\n}\n// Tightly coupled to StripePayment"
+                                                },
+                                                {
+                                                    "name": "Good:-\n\ninterface PaymentGateway { void charge(); }\nclass PaymentProcessor {\n  private PaymentGateway gateway;\n  PaymentProcessor(PaymentGateway g) { this.gateway = g; }\n  void process() { gateway.charge(); }\n}"
+                                                }
                                             ]
                                         }
                                     ]
@@ -10595,7 +10601,6 @@ export const javaBackendTree = {
                 },
             ],
         },
-
         {
             name: "System Design & Architecture",
             children: [
@@ -10623,6 +10628,146 @@ export const javaBackendTree = {
                         { name: "Idempotency" },
                         { name: "Retries & Timeouts" },
                     ],
+                },
+                {
+                    "name": "Resilience & Failure Handling",
+                    "children": [
+                        {
+                            "name": "Failure Modes in Microservices",
+                            "children": [
+                                { "name": "Cascading failures: One service slowdown brings down entire system" },
+                                { "name": "Thread starvation: All Tomcat threads blocked waiting for slow dependency" },
+                                { "name": "Resource exhaustion: Connections, memory fill up while waiting for responses" },
+                                { "name": "Timeout chains: Long timeouts compound across service calls" }
+                            ]
+                        },
+                        {
+                            "name": "Circuit Breaker Pattern",
+                            "children": [
+                                {
+                                    "name": "Three States",
+                                    "children": [
+                                        {
+                                            "name": "Closed (Normal Operation)",
+                                            "children": [
+                                                { "name": "Everything working → requests flow normally to downstream service" },
+                                                { "name": "Each failure is counted against a threshold" },
+                                                { "name": "Example: Rental Service calls Payment Service normally" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Open (Fast Fail)",
+                                            "children": [
+                                                { "name": "Threshold of failures exceeded → circuit 'trips'" },
+                                                { "name": "All requests immediately rejected without calling downstream" },
+                                                { "name": "Fallback response returned instantly (default, cached data, or error)" },
+                                                { "name": "Threads released almost immediately instead of waiting for timeout" },
+                                                { "name": "Example: Payment Service is down → Rental Service returns cached booking or 'payment unavailable'" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Half-Open (Recovery Test)",
+                                            "children": [
+                                                { "name": "After configured timeout (e.g., 30s), circuit allows a few test requests" },
+                                                { "name": "If test requests succeed → circuit returns to Closed (back to normal)" },
+                                                { "name": "If test requests fail → circuit returns to Open (continue failing fast)" },
+                                                { "name": "Example: After 30s, Rental Service tries calling Payment Service again" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "State Transition Flow",
+                                    "children": [
+                                        { "name": "Closed → Open: Failures exceed threshold (e.g., 5 failures in 10s)" },
+                                        { "name": "Open → Half-Open: Wait timeout expires (e.g., 30 seconds)" },
+                                        { "name": "Half-Open → Closed: Test requests succeed" },
+                                        { "name": "Half-Open → Open: Test requests fail (reset and try again later)" }
+                                    ]
+                                },
+                                {
+                                    "name": "How It Prevents Cascading Failures",
+                                    "children": [
+                                        {
+                                            "name": "Problem Without Circuit Breaker",
+                                            "children": [
+                                                { "name": "Rental Service calls slow Payment Service" },
+                                                { "name": "Each request waits for timeout (e.g., 30s)" },
+                                                { "name": "All Tomcat threads become blocked waiting for Payment Service" },
+                                                { "name": "Thread pool exhausted → new requests queued or rejected" },
+                                                { "name": "Failure spreads: Rental Service becomes slow for ALL users, not just Payment" },
+                                                { "name": "Other services calling Rental also start timing out (cascading effect)" }
+                                            ]
+                                        },
+                                        {
+                                            "name": "Solution With Circuit Breaker",
+                                            "children": [
+                                                { "name": "First few failures: Closed state, normal retries" },
+                                                { "name": "Threshold hit: Circuit opens, stops calling Payment Service" },
+                                                { "name": "Fallback executed: Returns cached price or 'payment pending' immediately (~1-5ms)" },
+                                                { "name": "Threads released: Tomcat threads freed instantly, not held by long timeouts" },
+                                                { "name": "Rental Service remains responsive: Can serve other bookings, other services" },
+                                                { "name": "Isolation achieved: Payment Service failure doesn't cascade to others" }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "name": "Configuration Parameters",
+                                    "children": [
+                                        { "name": "failure-rate-threshold: Percentage of failures to trigger open (e.g., 50%)" },
+                                        { "name": "slow-call-duration-threshold: Time to consider request as 'slow' (e.g., 2s)" },
+                                        { "name": "slow-call-rate-threshold: % of slow calls to trigger open (e.g., 100%)" },
+                                        { "name": "wait-duration-in-open-state: Time before trying Half-Open (e.g., 30s)" },
+                                        { "name": "minimum-number-of-calls: Min calls before evaluating failure rate (e.g., 10)" }
+                                    ]
+                                },
+                                {
+                                    "name": "Fallback Strategies",
+                                    "children": [
+                                        { "name": "Default value: Return hardcoded/cached response (fastest)" },
+                                        { "name": "Cached data: Return last successful response from service" },
+                                        { "name": "Alternative service: Call a backup/secondary service" },
+                                        { "name": "Graceful degradation: Return partial data or reduced functionality" },
+                                        { "name": "Error response: Return explicit error with retry instructions" }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Retry Pattern",
+                            "children": [
+                                { "name": "Retry transient failures (network hiccup, temporary timeout)" },
+                                { "name": "Exponential backoff: Wait 1s, 2s, 4s between retries" },
+                                { "name": "Max retries: Limit attempts (e.g., max 3 times)" },
+                                { "name": "Don't retry permanent failures (4xx errors, invalid data)" }
+                            ]
+                        },
+                        {
+                            "name": "Timeout Pattern",
+                            "children": [
+                                { "name": "Set maximum wait time for external call (e.g., 2s)" },
+                                { "name": "Fail fast: Return error or fallback instead of waiting indefinitely" },
+                                { "name": "Prevent thread starvation: Threads not stuck forever" }
+                            ]
+                        },
+                        {
+                            "name": "Bulkhead Pattern",
+                            "children": [
+                                { "name": "Isolate resources (threads, connections) per service" },
+                                { "name": "Payment service gets 10 threads, Order service gets 20 threads" },
+                                { "name": "If Payment threads exhaust, Order Service still responsive" }
+                            ]
+                        },
+                        {
+                            "name": "Implementation in Java (Resilience4j)",
+                            "children": [
+                                { "name": "@CircuitBreaker(name = 'paymentService', fallbackMethod = 'fallback')" },
+                                { "name": "Wraps method call: if fails repeatedly, opens circuit" },
+                                { "name": "Fallback method called when circuit is Open" }
+                            ]
+                        }
+                    ]
                 },
                 {
                     name: "Security",
