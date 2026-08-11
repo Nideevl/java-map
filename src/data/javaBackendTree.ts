@@ -940,7 +940,9 @@ export const javaBackendTree = {
                                                         {
                                                             name: "JNI",
                                                             children: [
-                                                                { name: "Connects Java with native (C/C++) code" }
+                                                                { name: "Connects Java with native (C/C++) code" },
+                                                                {name: "Allows calling OS-level libraries or legacy code as OS is written in C/C++"},
+                                                                {name: "JNI stops JVM for some time to execute native code and then resumes JVM execution."}
                                                             ]
                                                         }
                                                     ]
@@ -1679,9 +1681,10 @@ export const javaBackendTree = {
                                                 {
                                                     "name": "Proxy Pattern",
                                                     "children": [
-                                                        { "name": "\"Provides placeholder/surrogate for another object\"" },
+                                                        { "name": "\"Provides placeholder/surrogate for another object and then gives it to real object \"" },
                                                         { "name": "Controls access to real object\"" },
-                                                        { "name": "Useful for lazy loading, caching, access control\"" }
+                                                        { "name": "Useful for lazy loading, caching, access control\"" },
+                                                        {"name" : " in videoProxy pattern, the proxy object controls access to the real video object, allowing for lazy loading and caching of video data. by in videoProxy if realVideo is null then return new realVideo() then realVideo.display() else return realVideo.display() so it can be used for controlled acessed and lazy loading "}
                                                     ]
                                                 }
                                             ]
@@ -1865,36 +1868,6 @@ export const javaBackendTree = {
                                                 }
                                             ]
                                         },
-<<<<<<< HEAD
-                                       {
-    "name": "Dependency Inversion Principle (DIP)",
-    "children": [
-        {
-            "name": "Depend on abstractions, not concrete implementations"
-        },
-        {
-            "name": "Use interfaces or abstract classes as dependencies"
-        },
-        {
-            "name": "Enables loose coupling and easier unit testing"
-        },
-        {
-            "name": "Example: Notification System",
-            "children": [
-                {
-                    "name": "Abstraction: MessageSender (Interface)"
-                },
-                {
-                    "name": "Low-level module: EmailSender (Implements MessageSender)"
-                },
-                {
-                    "name": "High-level module: NotificationService (Depends on MessageSender, not EmailSender)"
-                }
-            ]
-        }
-    ]
-}
-=======
                                         {
                                             "name": "Dependency Inversion Principle (DIP)",
                                             "children": [
@@ -1909,7 +1882,6 @@ export const javaBackendTree = {
                                                 }
                                             ]
                                         }
->>>>>>> 0b2c1d425e81d36bc78236079e044f6b40f25d57
                                     ]
                                 },
                                 {
@@ -9746,7 +9718,7 @@ export const javaBackendTree = {
                                     "children": [
                                         { "name": "COMMIT → Save transaction permanently" },
                                         { "name": "ROLLBACK → Undo changes before commit" },
-                                        { "name": "SAVEPOINT → Create checkpoint inside transaction" }
+                                        { "name": "SAVEPOINT → Create checkpoint inside transaction suppose it is SP1 SP2 inside transaction we manually write it after this if we want revert SP1 so it will rollback all changes that are made till SP1" }
                                     ]
                                 },
                                 {
@@ -10334,7 +10306,7 @@ export const javaBackendTree = {
                             "name": "Cache Management",
                             "children": [
                                 { "name": "TTL (Time-To-Live) → Auto-expire cache entries after time (prevents stale data)" },
-                                { "name": "Distributed Locks → Lock shared resource across servers (prevent race conditions)" }
+                                { "name": "Distributed Locks → There are mupltiple servers with mupltiple threads all thread shares common redis during cache miss all thread want ticket for database only one win because of all thread have common redis which has only one ticket and rest all threads wait and again wait for cache in cache 9999 threads get using Random Backoff " }
                             ]
                         }
                     ]
