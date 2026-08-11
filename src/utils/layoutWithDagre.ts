@@ -4,7 +4,6 @@ export function layoutWithDagre(
   nodes: any[], 
   edges: any[],
   nodeDimensions: Map<string, { width: number; height: number }>,
-  expandedNodes?: Set<string>
 ) {
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));

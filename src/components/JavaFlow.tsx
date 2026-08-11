@@ -255,7 +255,7 @@ function JavaFlowInner() {
     const result = convertTreeToFlow(javaBackendTree, expanded);
     const dims = new Map<string, { width: number; height: number }>();
     result.nodes.forEach((node) => dims.set(node.id, getNodeDimensions(node.data.label)));
-    const layoutedNodes = layoutWithDagre(result.nodes, result.edges, dims, expanded);
+    const layoutedNodes = layoutWithDagre(result.nodes, result.edges, dims);
     setNodes(buildStyledNodes(layoutedNodes, isDark, searchResults, currentSearchIndex));
     setEdges(buildStyledEdges(result.edges, selectedNode, isDark));
   }, [expanded, isDark, isLoading, selectedNode, searchResults, currentSearchIndex]);
@@ -412,7 +412,7 @@ function JavaFlowInner() {
         <Controls showInteractive={false} />
       </ReactFlow>
 
-      <style jsx>{`
+      <style>{`
         .btn-ui {
           background: ${isDark ? '#111827' : '#fff'};
           border: 1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'};
