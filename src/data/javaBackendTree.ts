@@ -9494,13 +9494,28 @@ export const javaBackendTree = {
                             ]
                         },
                         {
-                            "name": "Entities & Entity Sets",
-                            "children": [
-                                { "name": "Entity → object with independent existence (Ex: Student, Course)" },
-                                { "name": "Strong Entity → has its own primary key" },
-                                { "name": "Weak Entity → depends on another entity for identity (Ex: Dependent depends on Employee)" }
-                            ]
-                        },
+    "name": "Entities & Entity Sets",
+    "children": [
+        { "name": "Entity → object with independent existence (Ex: Student, Course)" },
+        { "name": "Strong Entity → has its own primary key" },
+        { "name": "Weak Entity → depends on another entity for identity (Ex: Dependent depends on Employee)" },
+        {
+            "name": "Discriminator (Partial Key)",
+            "children": [
+                { "name": "\"Attribute that distinguishes weak entities belonging to the SAME owner entity\"" },
+                { "name": "Also called: Partial Key" },
+                { "name": "By itself, discriminator does NOT uniquely identify a row across the whole table" },
+                { "name": "Only unique WITHIN the scope of one owner entity" },
+                { "name": "Combined with owner's primary key (FK) → forms the weak entity's composite primary key" },
+                {
+                    "name": "Ex:-\n\nEmployee(emp_id) -- strong entity, own PK\nDependent(emp_id, dep_name, age)\n  -- dep_name is the discriminator\n  -- emp_id + dep_name = composite PK\n\n// emp_id=101 can have dep_name='Alex' and dep_name='Sara'\n// emp_id=102 can ALSO have dep_name='Alex' (different employee)\n// dep_name alone is NOT unique — only unique per emp_id"
+                },
+                { "name": "Represented in ER diagrams with a DOUBLE underline (vs single underline for full PK)" },
+                { "name": "Not to be confused with the 'discriminator column' used in specialization/generalization mapping (Single Table Strategy), which stores a type flag like 'Student'/'Employee' instead of identifying rows within an owner" }
+            ]
+        }
+    ]
+},
                         {
                             "name": "Attributes & Types",
                             "children": [
